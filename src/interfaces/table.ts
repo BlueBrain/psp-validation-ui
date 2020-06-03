@@ -89,9 +89,8 @@ interface MTypeConstantsInterface {
 }
 
 interface TargetQuery {
-  // how to make this mandatory?
-  M_TYPE: string
-  ME_TYPE: string
+  M_TYPE: string;
+  SYNAPSE_CLASS: string;
 }
 
 
