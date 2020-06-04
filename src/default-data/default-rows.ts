@@ -50,7 +50,7 @@ const row1: TableRowInterface = {
         value: '0.2',
       },
       link: {
-        value: 'https://test.co.uk',
+        value: 'https://test.co.uk/paper/this-is-an-example-of-a-long-link.html',
       },
     },
     synapseCount: {
@@ -61,7 +61,7 @@ const row1: TableRowInterface = {
         value: '0.2',
       },
       link: {
-        value: 'https://test.co.uk',
+        value: 'https://test.co.uk/paper/this-is-an-example-of-a-long-link.html',
       },
     },
   },
@@ -130,7 +130,7 @@ const row2: TableRowInterface = {
         value: '0.2',
       },
       link: {
-        value: 'https://test.co.uk',
+        value: 'https://test.co.uk/paper/this-is-an-example-of-a-long-link.html',
       },
     },
     synapseCount: {
@@ -141,7 +141,7 @@ const row2: TableRowInterface = {
         value: '0.2',
       },
       link: {
-        value: 'https://test.co.uk',
+        value: 'https://test.co.uk/paper/this-is-an-example-of-a-long-link.html',
       },
     },
   },

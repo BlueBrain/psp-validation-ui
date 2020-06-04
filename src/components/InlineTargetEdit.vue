@@ -8,21 +8,21 @@
     >
       <Row>
         <!-- use i-col to avoid linting error -->
-        <i-col span="8">Name</i-col>
-        <i-col span="8">Query Definition</i-col>
-        <i-col span="8">Value</i-col>
+        <i-col :span="columnSize">Name</i-col>
+        <i-col :span="columnSize">Query Definition</i-col>
+        <i-col :span="columnSize">Value</i-col>
       </Row>
       <Row>
-        <i-col span="8">
+        <i-col :span="columnSize">
           <Input v-model="localTarget.name" />
         </i-col>
-        <i-col span="8">
+        <i-col :span="columnSize">
           <Select v-model="localTarget.query">
             <Option :value="targetQuery.M_TYPE">MType</Option>
             <Option :value="targetQuery.SYNAPSE_CLASS">SynapseClass</Option>
           </Select>
         </i-col>
-        <i-col span="8">
+        <i-col :span="columnSize">
           <Select
             v-if="localTarget.query === targetQuery.M_TYPE"
             v-model="localTarget.value"
@@ -71,6 +71,8 @@ import get from 'lodash/get';
 import { Target } from '@/interfaces/table';
 import { circuitMTypes, targetQuery } from '@/constants/target-types';
 
+const columnSize = 8;
+
 export default Vue.extend({
   name: 'InlineTargetEdit',
   props: {
@@ -83,6 +85,7 @@ export default Vue.extend({
       localTarget: {} as Target, // will be filled on created
       circuitMTypes,
       targetQuery,
+      columnSize,
     };
   },
   computed: {

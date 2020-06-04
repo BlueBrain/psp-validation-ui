@@ -48,16 +48,12 @@
 import Vue from 'vue';
 import { GeneralPanelParamsInterface } from '@/interfaces/general-panel';
 
-const labelSize = 3;
-const contentSize = 3;
-const columnSize = 4;
+const columnSize = 8;
 
 export default Vue.extend({
   name: 'GeneralParams',
   data() {
     return {
-      labelSize,
-      contentSize,
       columnSize,
       generalParams: {
         ...this.$store.state.generalParamsModule.generalParams,

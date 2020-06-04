@@ -1,6 +1,6 @@
 
 <template>
-  <div>
+  <div class="main-table">
     <Table
       :columns="columns"
       :data="rowData"
@@ -78,5 +78,12 @@ export default Vue.extend({
 <style lang="scss">
 th .ivu-table-cell {
   word-break: normal;
+}
+.main-table .link-paper span {
+  display: inline-block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
