@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import PSPTable from '@/components/PSPTable.vue';
+import PSPTable from '@/components/configure-table/PSPTable.vue';
 
 export default Vue.extend({
   name: 'ConfigureTable',

@@ -26,7 +26,7 @@
       </template>
     </Table>
 
-    <Button @click="retrieveFullObject">Continue</Button>
+    <!-- <Button @click="retrieveFullObject">Continue</Button> -->
 
   </div>
 </template>
@@ -35,8 +35,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import get from 'lodash/get';
-import InlineStringEdit from '@/components/InlineStringEdit.vue';
-import InlineTargetEdit from '@/components/InlineTargetEdit.vue';
+import InlineStringEdit from '@/components/configure-table/InlineStringEdit.vue';
+import InlineTargetEdit from '@/components/configure-table/InlineTargetEdit.vue';
 import defaultColumns from '@/default-data/default-columns';
 import defaultRows from '@/default-data/default-rows';
 import { Target } from '@/interfaces/table';
@@ -73,17 +73,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-
-<style lang="scss">
-th .ivu-table-cell {
-  word-break: normal;
-}
-.main-table .link-paper span {
-  display: inline-block;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-</style>
