@@ -1,7 +1,7 @@
 
-import { MTypeConstantsInterface } from '@/interfaces/table';
+import { MTypeConstantsInterface, TargetQuery } from '@/interfaces/table';
 
-const targetQuery = {
+const targetQuery: TargetQuery = {
   M_TYPE: 'mType',
   SYNAPSE_CLASS: 'synapseClass',
 };
