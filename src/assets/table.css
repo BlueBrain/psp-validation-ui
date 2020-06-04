@@ -1,0 +1,10 @@
+th .ivu-table-cell {
+  word-break: normal;
+}
+.ivu-table .link-paper span {
+  display: inline-block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
