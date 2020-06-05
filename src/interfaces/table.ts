@@ -1,11 +1,4 @@
 
-interface TableRendererParams {
-  column: {
-    _index: number;
-  };
-  index: number;
-}
-
 interface TableEntryObjectInterface {
   value: string;
   isEditing?: boolean;
@@ -15,10 +8,11 @@ interface TableEntryObjectInterface {
 interface TableColumnInterface {
   title: string;
   width?: number;
-  slot?: string; // how to make mandatory except if has children?
+  slot?: string; // TODO how to make mandatory except if has children?
   path?: string;
   align?: string;
   className?: string;
+  rules?: Array<string>;
   children?: TableColumnInterface[];
 }
 
@@ -94,16 +88,28 @@ interface TargetQuery {
   SYNAPSE_CLASS: string;
 }
 
+interface CheckResultInterface {
+  message: string;
+  hasError: boolean;
+}
+
+interface ChangeTableCellEventInterface {
+  path: string;
+  newTarget: Target;
+  newValue: string | boolean;
+  message: string;
+}
 
 export default {};
 
 export {
   TableRowInterface,
-  TableRendererParams,
   TableEntryObjectInterface,
   TableColumnInterface,
   ColumnIndexToPathMappingInterface,
   Target,
   MTypeConstantsInterface,
   TargetQuery,
+  CheckResultInterface,
+  ChangeTableCellEventInterface,
 };

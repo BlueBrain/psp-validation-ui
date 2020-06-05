@@ -1,5 +1,6 @@
 
 import { TableColumnInterface, ColumnIndexToPathMappingInterface } from '@/interfaces/table';
+import { ruleNames } from '@/constants/rule-names';
 
 const tableConstants = {
   WIDTH_CHILDREN: 148,
@@ -36,6 +37,7 @@ const columns: Array<TableColumnInterface> = [
     slot: 'target-editor',
     align: 'center',
     path: getPathByKey('preSyn'),
+    // rules: [],
   },
   {
     title: 'Post Synaptic',
@@ -43,6 +45,7 @@ const columns: Array<TableColumnInterface> = [
     slot: 'target-editor',
     align: 'center',
     path: getPathByKey('postSyn'),
+    // rules: [],
   },
   {
     title: 'Reference',
@@ -58,6 +61,7 @@ const columns: Array<TableColumnInterface> = [
             width: tableConstants.WIDTH_CHILDREN,
             slot: 'string-editor',
             path: getPathByKey('ampMean'),
+            rules: [ruleNames.FLOAT],
           },
           {
             title: 'std',
@@ -65,6 +69,7 @@ const columns: Array<TableColumnInterface> = [
             width: tableConstants.WIDTH_CHILDREN,
             slot: 'string-editor',
             path: getPathByKey('ampStd'),
+            rules: [ruleNames.POSITIVE],
           },
           {
             title: 'link to paper',
@@ -73,6 +78,7 @@ const columns: Array<TableColumnInterface> = [
             slot: 'string-editor',
             path: getPathByKey('ampLink'),
             className: 'link-paper',
+            rules: [ruleNames.URL],
           },
         ],
       },
@@ -86,6 +92,7 @@ const columns: Array<TableColumnInterface> = [
             width: tableConstants.WIDTH_CHILDREN,
             slot: 'string-editor',
             path: getPathByKey('synMean'),
+            rules: [ruleNames.FLOAT],
           },
           {
             title: 'std',
@@ -93,6 +100,7 @@ const columns: Array<TableColumnInterface> = [
             width: tableConstants.WIDTH_CHILDREN,
             slot: 'string-editor',
             path: getPathByKey('synStd'),
+            rules: [ruleNames.POSITIVE],
           },
           {
             title: 'link to paper',
@@ -101,6 +109,7 @@ const columns: Array<TableColumnInterface> = [
             slot: 'string-editor',
             path: getPathByKey('synLink'),
             className: 'link-paper',
+            rules: [ruleNames.URL],
           },
         ],
       },
@@ -116,6 +125,7 @@ const columns: Array<TableColumnInterface> = [
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
         path: getPathByKey('minNumSyn'),
+        rules: [ruleNames.POSITIVE],
       },
       {
         title: 'max number of synapses',
@@ -123,6 +133,7 @@ const columns: Array<TableColumnInterface> = [
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
         path: getPathByKey('maxNumSyn'),
+        rules: [ruleNames.POSITIVE],
       },
       {
         title: 'max distance in x',
@@ -130,6 +141,7 @@ const columns: Array<TableColumnInterface> = [
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
         path: getPathByKey('maxDistX'),
+        rules: [ruleNames.POSITIVE],
       },
       {
         title: 'max distance in y',
@@ -137,6 +149,7 @@ const columns: Array<TableColumnInterface> = [
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
         path: getPathByKey('maxDistY'),
+        rules: [ruleNames.POSITIVE],
       },
       {
         title: 'max distance in z',
@@ -144,6 +157,7 @@ const columns: Array<TableColumnInterface> = [
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
         path: getPathByKey('maxDistZ'),
+        rules: [ruleNames.POSITIVE],
       },
     ],
   },
@@ -157,6 +171,7 @@ const columns: Array<TableColumnInterface> = [
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
         path: getPathByKey('holdV'),
+        rules: [ruleNames.FLOAT],
       },
       {
         title: 'post ttx',
@@ -164,6 +179,7 @@ const columns: Array<TableColumnInterface> = [
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
         path: getPathByKey('postTtx'),
+        rules: [ruleNames.FLOAT],
       },
     ],
   },

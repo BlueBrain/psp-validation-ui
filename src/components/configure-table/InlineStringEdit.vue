@@ -14,6 +14,7 @@
     >
       <span
         :class="{'entry-with-errors': tableEntryObject.hasError}"
+        :title="tableEntryObject.message"
       >{{ tableEntryObject.value || 'None' }}</span>
     </div>
   </div>
@@ -22,10 +23,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { TableEntryObjectInterface } from '@/interfaces/table';
-import { EditingObject, TableStateInterface } from '@/interfaces/store';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
+import { TableEntryObjectInterface, CheckResultInterface } from '@/interfaces/table';
+import { EditingObject, TableStateInterface } from '@/interfaces/store';
+import { checkStringByRule } from '@/helpers/inline-table-helpers';
+
 
 export default Vue.extend({
   name: 'InlineStringEdit',
@@ -75,16 +78,23 @@ export default Vue.extend({
       // use the stored value if available
       const indexToChange = isNil(this.storedElem.currentlyEditingRowIndex) ? this.index : this.storedElem.currentlyEditingRowIndex;
       const pathToChange = isNil(this.storedElem.currentlyEditingPath) ? this.column.path : this.storedElem.currentlyEditingPath;
+      const fullPathWithRowIndex = `[${indexToChange}].${pathToChange}`;
 
       this.$emit('changed', {
-        path: `[${indexToChange}].${pathToChange}`,
+        path: fullPathWithRowIndex,
         newValue,
       });
 
-      console.debug('NEED TO CHECK IF CORRECT');
       this.$emit('setEditing', {
-        path: `[${indexToChange}].${pathToChange}`,
+        path: fullPathWithRowIndex,
         newValue: false,
+      });
+
+      const result: CheckResultInterface = checkStringByRule(newValue, this.column.rules);
+      this.$emit('setError', {
+        path: fullPathWithRowIndex,
+        newValue: result.hasError,
+        message: result.message,
       });
 
       // reset the editing element in store

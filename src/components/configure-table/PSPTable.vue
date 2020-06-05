@@ -14,6 +14,7 @@
           :index="index"
           @changed="dataChanged"
           @setEditing="setEditing"
+          @setError="setError"
         />
       </template>
 
@@ -41,7 +42,7 @@ import InlineStringEdit from '@/components/configure-table/InlineStringEdit.vue'
 import InlineTargetEdit from '@/components/configure-table/InlineTargetEdit.vue';
 import defaultColumns from '@/default-data/default-columns';
 import defaultRows from '@/default-data/default-rows';
-import { Target } from '@/interfaces/table';
+import { ChangeTableCellEventInterface } from '@/interfaces/table';
 
 
 export default Vue.extend({
@@ -64,16 +65,22 @@ export default Vue.extend({
         content: JSON.stringify(this.rowData, null, 2),
       });
     },
-    dataChanged({ path, newValue }: { path: string; newValue: string }) {
+    dataChanged({ path, newValue }: ChangeTableCellEventInterface) {
       this.$set(get(this.rowData, path), 'value', newValue);
     },
-    targetChanged({ path, newTarget }: { path: string; newTarget: Target }) {
-      this.$set(get(this.rowData, path), 'value', newTarget.value);
-      this.$set(get(this.rowData, path), 'name', newTarget.name);
-      this.$set(get(this.rowData, path), 'query', newTarget.query);
+    targetChanged({ path, newTarget }: ChangeTableCellEventInterface) {
+      const modifyingCell = get(this.rowData, path);
+      this.$set(modifyingCell, 'value', newTarget.value);
+      this.$set(modifyingCell, 'name', newTarget.name);
+      this.$set(modifyingCell, 'query', newTarget.query);
     },
-    setEditing({ path, newValue }: { path: string; newValue: boolean }) {
+    setEditing({ path, newValue }: ChangeTableCellEventInterface) {
       this.$set(get(this.rowData, path), 'isEditing', newValue);
+    },
+    setError({ path, newValue, message }: ChangeTableCellEventInterface) {
+      const modifyingCell = get(this.rowData, path);
+      this.$set(modifyingCell, 'hasError', newValue);
+      this.$set(modifyingCell, 'message', message);
     },
   },
 });
