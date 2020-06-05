@@ -68,7 +68,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import get from 'lodash/get';
+import isNil from 'lodash/isNil';
 import { Target } from '@/interfaces/table';
+import { EditingObject, TableStateInterface } from '@/interfaces/store';
 import { circuitMTypes, targetQuery } from '@/constants/target-types';
 
 const columnSize = 8;
@@ -95,6 +97,9 @@ export default Vue.extend({
     areFieldsComplete(): boolean {
       return !!(this.localTarget.name && this.localTarget.value && this.localTarget.query);
     },
+    storedElem(): TableStateInterface {
+      return this.$store.state.tableEditingModule;
+    },
   },
   created() {
     this.localTarget = this.resetTarget();
@@ -104,18 +109,21 @@ export default Vue.extend({
       this.doneChanging(this.localTarget);
     },
     openTargetEditModal() {
-      const storedElem = this.$store.state.tableEditingModule;
-      if (storedElem.currentlyEditingColumn) {
+      if (this.storedElem.currentlyEditingPath) {
         // an element was edited but not saved yet. Save it
-        this.doneChanging(storedElem.currentlyEditingValue);
+        this.doneChanging(this.storedElem.currentlyEditingTarget);
       }
 
       this.$store.commit('setCurrentEditObj', {
-        row: this.row,
-        column: this.column,
-        value: this.localTarget,
+        rowIndex: this.index,
+        path: this.column.path,
+        target: this.localTarget,
+      } as EditingObject);
+
+      this.$emit('setEditing', {
+        path: `[${this.index}].${this.column.path}`,
+        newValue: true,
       });
-      this.$set(get(this.row, this.column.path), 'isEditing', true);
     },
     doneChanging(newTarget: Target) {
       this.$emit('changed', {
@@ -126,13 +134,19 @@ export default Vue.extend({
       this.endEditing();
     },
     endEditing() {
-      const storedElem = this.$store.state.tableEditingModule;
-      const storeObject = get(storedElem.currentlyEditingRow, storedElem.currentlyEditingColumn.path);
-      this.$set(storeObject, 'isEditing', false);
-      this.$store.commit('setCurrentEditObj', {}); // reset the editing element in store
+      // use the stored value if available
+      const indexToChange = isNil(this.storedElem.currentlyEditingRowIndex) ? this.index : this.storedElem.currentlyEditingRowIndex;
+      const pathToChange = isNil(this.storedElem.currentlyEditingPath) ? this.column.path : this.storedElem.currentlyEditingPath;
+
+      this.$emit('setEditing', {
+        path: `[${indexToChange}].${pathToChange}`,
+        newValue: false,
+      });
+
+      // reset the editing element in store
+      this.$store.commit('setCurrentEditObj', {} as EditingObject);
     },
     cancelClicked() {
-      console.log('cancelClicked');
       this.endEditing();
       this.localTarget = this.resetTarget();
     },

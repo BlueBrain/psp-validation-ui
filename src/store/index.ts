@@ -2,16 +2,16 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import tableEditingModule from '@/store/table-editing-module';
 import generalParamsModule from '@/store/general-panel-module';
+import { StateInterface } from '@/interfaces/store';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     title: '',
-  },
+  } as StateInterface,
   mutations: {
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    changeTitle(state: any, newTitle: string) {
+    changeTitle(state: StateInterface, newTitle: string) {
       state.title = newTitle;
     },
   },

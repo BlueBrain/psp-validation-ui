@@ -13,6 +13,7 @@
           :column="column"
           :index="index"
           @changed="dataChanged"
+          @setEditing="setEditing"
         />
       </template>
 
@@ -22,6 +23,7 @@
           :column="column"
           :index="index"
           @changed="targetChanged"
+          @setEditing="setEditing"
         />
       </template>
     </Table>
@@ -69,6 +71,9 @@ export default Vue.extend({
       this.$set(get(this.rowData, path), 'value', newTarget.value);
       this.$set(get(this.rowData, path), 'name', newTarget.name);
       this.$set(get(this.rowData, path), 'query', newTarget.query);
+    },
+    setEditing({ path, newValue }: { path: string; newValue: boolean }) {
+      this.$set(get(this.rowData, path), 'isEditing', newValue);
     },
   },
 });

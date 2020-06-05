@@ -1,21 +1,21 @@
 
-import { EditingObject } from '@/interfaces/store';
+import { TableStateInterface, EditingObject } from '@/interfaces/store';
 
 const tableEditingModule = {
   state: {
-    currentlyEditingRow: null,
-    currentlyEditingColumn: null,
-    currentlyEditingValue: null,
-  },
+    currentlyEditingRowIndex: -1,
+    currentlyEditingPath: '',
+    currentlyEditingValue: '',
+    currentlyEditingTarget: {},
+  } as TableStateInterface,
   mutations: {
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    setCurrentEditObj(state: any, elementObj: EditingObject) {
-      state.currentlyEditingColumn = elementObj.column;
-      state.currentlyEditingRow = elementObj.row;
+    setCurrentEditObj(state: TableStateInterface, elementObj: EditingObject) {
+      state.currentlyEditingPath = elementObj.path;
+      state.currentlyEditingRowIndex = elementObj.rowIndex;
       state.currentlyEditingValue = elementObj.value;
+      state.currentlyEditingTarget = elementObj.target;
     },
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    modifyCurrentValue(state: any, newValue: string) {
+    modifyStoredValue(state: TableStateInterface, newValue: string) {
       state.currentlyEditingValue = newValue;
     },
   },

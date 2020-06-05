@@ -5,6 +5,7 @@
       v-model="localValue"
       v-show="tableEntryObject.isEditing"
       @on-enter="enterPressed"
+      @on-blur="stopEditing"
     />
 
     <div
@@ -13,7 +14,7 @@
     >
       <span
         :class="{'entry-with-errors': tableEntryObject.hasError}"
-      >{{ tableEntryObject.value }}</span>
+      >{{ tableEntryObject.value || 'None' }}</span>
     </div>
   </div>
 </template>
@@ -22,7 +23,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { TableEntryObjectInterface } from '@/interfaces/table';
+import { EditingObject, TableStateInterface } from '@/interfaces/store';
 import get from 'lodash/get';
+import isNil from 'lodash/isNil';
 
 export default Vue.extend({
   name: 'InlineStringEdit',
@@ -33,8 +36,8 @@ export default Vue.extend({
   },
   watch: {
     localValue(newValue: string) {
-      if (!this.$store.state.tableEditingModule.currentlyEditingValue) return;
-      this.$store.commit('modifyCurrentValue', newValue);
+      if (!this.$store.state.tableEditingModule.currentlyEditingPath) return;
+      this.$store.commit('modifyStoredValue', newValue);
     },
   },
   data() {
@@ -46,35 +49,55 @@ export default Vue.extend({
     tableEntryObject(): TableEntryObjectInterface {
       return get(this.row, this.column.path);
     },
+    storedElem(): TableStateInterface {
+      return this.$store.state.tableEditingModule;
+    },
   },
   methods: {
     toggleInput() {
-      const storedElem = this.$store.state.tableEditingModule;
-      if (storedElem.currentlyEditingColumn) {
+      if (this.storedElem.currentlyEditingPath) {
         // an element was edited but not saved yet. Save it
-        this.doneChanging(storedElem.currentlyEditingValue);
+        this.doneChanging(this.storedElem.currentlyEditingValue);
       }
 
       this.$store.commit('setCurrentEditObj', {
-        row: this.row,
-        column: this.column,
+        rowIndex: this.index,
+        path: this.column.path,
         value: this.localValue,
+      } as EditingObject);
+
+      this.$emit('setEditing', {
+        path: `[${this.index}].${this.column.path}`,
+        newValue: true,
       });
-      this.$set(get(this.row, this.column.path), 'isEditing', true);
     },
     doneChanging(newValue: string) {
+      // use the stored value if available
+      const indexToChange = isNil(this.storedElem.currentlyEditingRowIndex) ? this.index : this.storedElem.currentlyEditingRowIndex;
+      const pathToChange = isNil(this.storedElem.currentlyEditingPath) ? this.column.path : this.storedElem.currentlyEditingPath;
+
       this.$emit('changed', {
-        path: `[${this.index}].${this.column.path}`,
+        path: `[${indexToChange}].${pathToChange}`,
         newValue,
       });
+
       console.debug('NEED TO CHECK IF CORRECT');
-      const storedElem = this.$store.state.tableEditingModule;
-      const storeObject = get(storedElem.currentlyEditingRow, storedElem.currentlyEditingColumn.path);
-      this.$set(storeObject, 'isEditing', false);
-      this.$store.commit('setCurrentEditObj', {}); // reset the editing element in store
+      this.$emit('setEditing', {
+        path: `[${indexToChange}].${pathToChange}`,
+        newValue: false,
+      });
+
+      // reset the editing element in store
+      this.$store.commit('setCurrentEditObj', {} as EditingObject);
     },
     enterPressed() {
       this.doneChanging(this.localValue);
+    },
+    stopEditing() {
+      if (!this.storedElem.currentlyEditingPath) {
+        return;
+      }
+      this.doneChanging(this.storedElem.currentlyEditingValue);
     },
   },
 });
