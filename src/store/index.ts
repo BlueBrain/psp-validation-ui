@@ -9,6 +9,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     title: '',
+    packageVersion: process.env.PACKAGE_VERSION || '0',
   } as StateInterface,
   mutations: {
     changeTitle(state: StateInterface, newTitle: string) {

@@ -17,6 +17,7 @@ interface TableStateInterface {
 
 interface StateInterface {
   title: string;
+  packageVersion: string;
 }
 
 export default {};

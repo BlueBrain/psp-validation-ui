@@ -23,13 +23,28 @@
       </Header>
 
       <Content class="app-content">
-        <router-view/>
+        <router-view />
       </Content>
 
-      <Footer></Footer>
+      <Footer>
+        <FooterVersion />
+      </Footer>
     </Layout>
   </div>
 </template>
+
+
+<script lang="ts">
+import Vue from 'vue';
+import FooterVersion from '@/components/FooterVersion.vue';
+
+export default Vue.extend({
+  name: 'App',
+  components: {
+    FooterVersion,
+  },
+});
+</script>
 
 
 <style lang="scss">
