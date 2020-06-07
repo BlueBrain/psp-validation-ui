@@ -120,7 +120,7 @@ export default Vue.extend({
         target: this.localTarget,
       } as EditingObject);
 
-      this.$emit('setEditing', {
+      this.$emit('set-editing', {
         path: `[${this.index}].${this.column.path}`,
         newValue: true,
       });
@@ -138,7 +138,7 @@ export default Vue.extend({
       const indexToChange = isNil(this.storedElem.currentlyEditingRowIndex) ? this.index : this.storedElem.currentlyEditingRowIndex;
       const pathToChange = isNil(this.storedElem.currentlyEditingPath) ? this.column.path : this.storedElem.currentlyEditingPath;
 
-      this.$emit('setEditing', {
+      this.$emit('set-editing', {
         path: `[${indexToChange}].${pathToChange}`,
         newValue: false,
       });

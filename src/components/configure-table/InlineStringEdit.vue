@@ -69,7 +69,7 @@ export default Vue.extend({
         value: this.localValue,
       } as EditingObject);
 
-      this.$emit('setEditing', {
+      this.$emit('set-editing', {
         path: `[${this.index}].${this.column.path}`,
         newValue: true,
       });
@@ -85,13 +85,13 @@ export default Vue.extend({
         newValue,
       });
 
-      this.$emit('setEditing', {
+      this.$emit('set-editing', {
         path: fullPathWithRowIndex,
         newValue: false,
       });
 
       const result: CheckResultInterface = checkStringByRule(newValue, this.column.rules);
-      this.$emit('setError', {
+      this.$emit('set-error', {
         path: fullPathWithRowIndex,
         newValue: result.hasError,
         message: result.message,

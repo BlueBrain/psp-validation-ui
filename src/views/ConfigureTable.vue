@@ -41,7 +41,7 @@ export default Vue.extend({
 
 <style lang="scss">
 .configure-table {
-  margin-top: 20vh;
+  margin-top: 15vh;
 
   .buttons-container {
     width: 200px;

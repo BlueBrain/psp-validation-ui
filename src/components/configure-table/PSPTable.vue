@@ -1,9 +1,15 @@
 
 <template>
   <div class="main-table">
+    <div>
+      <ConfigTableActionButtons
+        :table-data="rowsData"
+        @add-row="addRow"
+      />
+    </div>
     <Table
       :columns="columns"
-      :data="rowData"
+      :data="rowsData"
       ref="table"
       border
     >
@@ -13,8 +19,8 @@
           :column="column"
           :index="index"
           @changed="dataChanged"
-          @setEditing="setEditing"
-          @setError="setError"
+          @set-editing="setEditing"
+          @set-error="setError"
         />
       </template>
 
@@ -24,13 +30,10 @@
           :column="column"
           :index="index"
           @changed="targetChanged"
-          @setEditing="setEditing"
+          @set-editing="setEditing"
         />
       </template>
     </Table>
-
-    <!-- <Button @click="retrieveFullObject">Continue</Button> -->
-
   </div>
 </template>
 
@@ -42,43 +45,40 @@ import InlineStringEdit from '@/components/configure-table/InlineStringEdit.vue'
 import InlineTargetEdit from '@/components/configure-table/InlineTargetEdit.vue';
 import defaultColumns from '@/default-data/default-columns';
 import defaultRows from '@/default-data/default-rows';
-import { ChangeTableCellEventInterface } from '@/interfaces/table';
-
+import { ChangeTableCellEventInterface, TableRowInterface } from '@/interfaces/table';
+import ConfigTableActionButtons from '@/components/configure-table/ConfigTableActionButtons.vue';
 
 export default Vue.extend({
   name: 'PSPTable',
   data() {
     return {
       columns: defaultColumns,
-      rowData: defaultRows,
+      rowsData: defaultRows,
     };
   },
   components: {
     InlineStringEdit,
     InlineTargetEdit,
+    ConfigTableActionButtons,
   },
   methods: {
-    retrieveFullObject() {
-      console.debug(this.rowData);
-      this.$Modal.confirm({
-        title: 'Table Data',
-        content: JSON.stringify(this.rowData, null, 2),
-      });
+    addRow(newRow: TableRowInterface) {
+      this.rowsData.push(newRow);
     },
     dataChanged({ path, newValue }: ChangeTableCellEventInterface) {
-      this.$set(get(this.rowData, path), 'value', newValue);
+      this.$set(get(this.rowsData, path), 'value', newValue);
     },
     targetChanged({ path, newTarget }: ChangeTableCellEventInterface) {
-      const modifyingCell = get(this.rowData, path);
+      const modifyingCell = get(this.rowsData, path);
       this.$set(modifyingCell, 'value', newTarget.value);
       this.$set(modifyingCell, 'name', newTarget.name);
       this.$set(modifyingCell, 'query', newTarget.query);
     },
     setEditing({ path, newValue }: ChangeTableCellEventInterface) {
-      this.$set(get(this.rowData, path), 'isEditing', newValue);
+      this.$set(get(this.rowsData, path), 'isEditing', newValue);
     },
     setError({ path, newValue, message }: ChangeTableCellEventInterface) {
-      const modifyingCell = get(this.rowData, path);
+      const modifyingCell = get(this.rowsData, path);
       this.$set(modifyingCell, 'hasError', newValue);
       this.$set(modifyingCell, 'message', message);
     },
