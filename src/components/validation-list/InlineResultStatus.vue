@@ -1,9 +1,9 @@
 
 <template>
   <div>
-    <span
-      :class="{'entry-with-errors': tableEntryObject.hasError}"
-    >{{ tableEntryObject.value }}</span>
+    <router-link :to="{ name: 'DetailsPage', params: { tableEntryObject: tableEntryObject }}">
+      <Button>{{ tableEntryObject.value }}</Button>
+    </router-link>
   </div>
 </template>
 
@@ -14,29 +14,16 @@ import { TableEntryObjectInterface } from '@/interfaces/table';
 import get from 'lodash/get';
 
 export default Vue.extend({
-  name: 'InlineStringEdit',
+  name: 'InlineResultStatus',
   props: {
     row: Object,
     column: Object,
     index: Number,
-  },
-  watch: {},
-  data() {
-    return {};
   },
   computed: {
     tableEntryObject(): TableEntryObjectInterface {
       return get(this.row, this.column.path);
     },
   },
-  methods: {
-  },
 });
 </script>
-
-
-<style lang="scss" scoped>
-.entry-with-errors {
-  color: red;
-}
-</style>

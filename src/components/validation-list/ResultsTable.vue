@@ -8,7 +8,15 @@
       border
     >
       <template slot-scope="{ row, column, index }" slot="results-viewer">
-        <ResultsViewer
+        <InlineResultViewer
+          :row="row"
+          :column="column"
+          :index="index"
+        />
+      </template>
+
+      <template slot-scope="{ row, column, index }" slot="status-slot">
+        <InlineResultsStatus
           :row="row"
           :column="column"
           :index="index"
@@ -23,7 +31,8 @@
 import Vue from 'vue';
 import defaultColumns from '@/default-data/default-results-columns';
 import defaultRows from '@/default-data/default-results-rows';
-import ResultsViewer from '@/components/validation-list/ResultsViewer.vue';
+import InlineResultViewer from '@/components/validation-list/InlineResultViewer.vue';
+import InlineResultsStatus from '@/components/validation-list/InlineResultStatus.vue';
 
 export default Vue.extend({
   name: 'ResultsTable',
@@ -34,7 +43,8 @@ export default Vue.extend({
     };
   },
   components: {
-    ResultsViewer,
+    InlineResultViewer,
+    InlineResultsStatus,
   },
   created() {
     this.$store.commit('changeTitle', 'Validation List');

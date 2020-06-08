@@ -20,6 +20,12 @@ const routes: Array<RouteConfig> = [
     name: 'ValidationList',
     component: () => import(/* webpackChunkName: "list" */ '@/views/ValidationList.vue'),
   },
+  {
+    path: '/details',
+    name: 'DetailsPage',
+    component: () => import(/* webpackChunkName: "details" */ '@/views/DetailsPage.vue'),
+    props: true,
+  },
 ];
 
 const router = new VueRouter({

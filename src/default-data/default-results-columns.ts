@@ -171,7 +171,7 @@ const columns: Array<TableColumnInterface> = [
   {
     title: 'Status',
     width: tableConstants.WIDTH_HEADERS,
-    slot: 'results-viewer',
+    slot: 'status-slot',
     align: 'center',
     path: getPathByKey('status'),
   },
