@@ -10,6 +10,7 @@
     <Table
       :columns="columns"
       :data="rowsData"
+      :loading="isLoading"
       ref="table"
       border
     >
@@ -45,21 +46,26 @@ import InlineStringEdit from '@/components/configure-table/InlineStringEdit.vue'
 import InlineTargetEdit from '@/components/configure-table/InlineTargetEdit.vue';
 import defaultColumns from '@/default-data/default-columns';
 import defaultRows from '@/default-data/default-rows';
-import { ChangeTableCellEventInterface, TableRowInterface } from '@/interfaces/table';
+import { ChangeTableCellEventInterface, TableRowInterface, TableColumnInterface } from '@/interfaces/table';
 import ConfigTableActionButtons from '@/components/configure-table/ConfigTableActionButtons.vue';
+import { saveTableRowData, getStoredTableRowData } from '@/helpers/db';
 
 export default Vue.extend({
   name: 'PSPTable',
   data() {
     return {
-      columns: defaultColumns,
-      rowsData: defaultRows,
+      columns: defaultColumns as Array<TableColumnInterface>,
+      rowsData: [] as Array<TableRowInterface>,
+      isLoading: true,
     };
   },
   components: {
     InlineStringEdit,
     InlineTargetEdit,
     ConfigTableActionButtons,
+  },
+  created() {
+    this.restoreStoredData();
   },
   methods: {
     addRow(newRow: TableRowInterface) {
@@ -81,6 +87,16 @@ export default Vue.extend({
       const modifyingCell = get(this.rowsData, path);
       this.$set(modifyingCell, 'hasError', newValue);
       this.$set(modifyingCell, 'message', message);
+    },
+    saveToDB() {
+      const circuitPath = this.$store.state.generalParamsModule.currentCircuit.path;
+      saveTableRowData(this.rowsData, circuitPath);
+    },
+    async restoreStoredData() {
+      const circuitPath = this.$store.state.generalParamsModule.currentCircuit.path;
+      const storedRowData = await getStoredTableRowData(circuitPath);
+      this.rowsData = storedRowData || defaultRows;
+      this.isLoading = false;
     },
   },
 });

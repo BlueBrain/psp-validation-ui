@@ -1,6 +1,6 @@
 <template>
   <div class="configure-table">
-    <PSPTable></PSPTable>
+    <PSPTable ref="pspTableRef"></PSPTable>
 
     <div class="buttons-container">
       <router-link :to="{name: 'GeneralPanel'}">
@@ -34,6 +34,13 @@ export default Vue.extend({
         content: 'This is a placeholder for the configuration of the job',
       });
     },
+  },
+  /* eslint-disable-next-line */
+  beforeRouteLeave(to, from, next) {
+    // TODO check why this is failing without parsing
+    // eslint-disable-next-line
+    (this.$refs.pspTableRef as any).saveToDB();
+    next();
   },
 });
 </script>

@@ -1,6 +1,7 @@
 
 import localForage from 'localforage';
 import { CircuitInterface, GeneralPanelParamsInterface } from '@/interfaces/general-panel';
+import { TableRowInterface } from '@/interfaces/table';
 
 function saveCircuitList(circuitList: Array<CircuitInterface>) {
   localForage.setItem('circuitList', circuitList);
@@ -10,6 +11,10 @@ function saveCircuitSelected(circuitSelected: CircuitInterface) {
 }
 function saveGeneralParams(generalParams: GeneralPanelParamsInterface) {
   localForage.setItem('generalPanelParams', generalParams);
+}
+
+function saveTableRowData(rowsData: Array<TableRowInterface>, circuitPath: string) {
+  localForage.setItem(`rowsData - ${circuitPath || 'default'}`, rowsData);
 }
 
 function getStoredGeneralPanelParams(): Promise<GeneralPanelParamsInterface> {
@@ -22,6 +27,11 @@ function getStoredGeneralPanelCircuitList(): Promise<Array<CircuitInterface>> {
   return localForage.getItem('circuitList');
 }
 
+function getStoredTableRowData(circuitPath: string): Promise<Array<TableRowInterface>> {
+  return localForage.getItem(`rowsData - ${circuitPath || 'default'}`);
+}
+
+
 export default {};
 
 export {
@@ -31,4 +41,6 @@ export {
   getStoredGeneralPanelParams,
   getStoredGeneralPanelCircuitSelected,
   getStoredGeneralPanelCircuitList,
+  saveTableRowData,
+  getStoredTableRowData,
 };
