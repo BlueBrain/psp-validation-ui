@@ -13,6 +13,7 @@
     "@types/uuid": "^8.0.0",
     "core-js": "^3.6.4",
     "file-saver": "^2.0.2",
+    "localforage": "^1.7.4",
     "lodash": "^4.17.15",
     "register-service-worker": "^1.7.1",
     "uuid": "^8.0.0",

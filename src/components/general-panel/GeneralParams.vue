@@ -47,6 +47,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { GeneralPanelParamsInterface } from '@/interfaces/general-panel';
+import { saveGeneralParams } from '@/helpers/db';
 
 const columnSize = 8;
 
@@ -63,10 +64,14 @@ export default Vue.extend({
   watch: {
     generalParams: {
       handler(newParams: GeneralPanelParamsInterface) {
-        console.log('changed', newParams);
         this.$store.commit('setGeneralPanelParams', newParams);
       },
       deep: true,
+    },
+  },
+  methods: {
+    saveToDB() {
+      saveGeneralParams(this.generalParams);
     },
   },
 });

@@ -55,6 +55,7 @@
 import Vue from 'vue';
 import defaultCircuits from '@/default-data/default-circuits';
 import { CircuitInterface } from '@/interfaces/general-panel';
+import { saveCircuitList, saveCircuitSelected } from '@/helpers/db';
 
 const labelSize = 6;
 const contentSize = 14;
@@ -122,6 +123,10 @@ export default Vue.extend({
       circuitOnList.path = newCircuit.path;
       circuitOnList.displayName = newCircuit.displayName;
       return circuitOnList;
+    },
+    saveToDB() {
+      saveCircuitList(this.circuitList);
+      saveCircuitSelected(this.currentCircuit);
     },
   },
 });

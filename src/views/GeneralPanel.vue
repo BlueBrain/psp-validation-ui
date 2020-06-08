@@ -3,10 +3,10 @@
   <div class="general-panel">
     <div class="circuit-selection-container">
       <span class="subtitle">Select Circuit:</span>
-      <CircuitSelection />
+      <CircuitSelection ref="circuitSelectionRef"/>
     </div>
     <div class="general-params-container">
-      <GeneralParams />
+      <GeneralParams ref="generalParamsRef"/>
     </div>
     <div class="continue-button-container">
       <router-link :to="{name: 'ConfigureTable'}">
@@ -32,6 +32,12 @@ export default {
   },
   created() {
     this.$store.commit('changeTitle', 'New PSP Validation');
+  },
+  /* eslint-disable @typescript-eslint/typedef */
+  beforeRouteLeave(to, from, next) {
+    this.$refs.circuitSelectionRef.saveToDB();
+    this.$refs.generalParamsRef.saveToDB();
+    next();
   },
 };
 </script>
