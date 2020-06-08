@@ -55,7 +55,12 @@
 import Vue from 'vue';
 import defaultCircuits from '@/default-data/default-circuits';
 import { CircuitInterface } from '@/interfaces/general-panel';
-import { saveCircuitList, saveCircuitSelected } from '@/helpers/db';
+import {
+  saveCircuitList,
+  saveCircuitSelected,
+  getStoredGeneralPanelCircuitSelected,
+  getStoredGeneralPanelCircuitList,
+} from '@/helpers/db';
 
 const labelSize = 6;
 const contentSize = 14;
@@ -64,14 +69,14 @@ export default Vue.extend({
   name: 'CircuitSelection',
   data() {
     return {
-      currentCircuit: defaultCircuits[0],
+      currentCircuit: {} as CircuitInterface,
       isEditing: false,
       newEditingCircuit: {
         name: '',
         path: '',
         displayName: '',
       } as CircuitInterface,
-      circuitList: Object.assign([], defaultCircuits) as Array<CircuitInterface>,
+      circuitList: [] as Array<CircuitInterface>,
       labelSize,
       contentSize,
     };
@@ -83,7 +88,7 @@ export default Vue.extend({
     },
   },
   created() {
-    this.$store.commit('setCurrentCircuitObj', this.currentCircuit);
+    this.restoreStoredData();
   },
   methods: {
     addNewCircuit() {
@@ -127,6 +132,13 @@ export default Vue.extend({
     saveToDB() {
       saveCircuitList(this.circuitList);
       saveCircuitSelected(this.currentCircuit);
+    },
+    async restoreStoredData() {
+      const storedList: Array<CircuitInterface> = await getStoredGeneralPanelCircuitList();
+      const storedCircuitSelected: CircuitInterface | void = await getStoredGeneralPanelCircuitSelected();
+      this.circuitList = storedList || Object.assign([], defaultCircuits);
+      this.currentCircuit = storedCircuitSelected || Object.assign([], defaultCircuits[0]);
+      this.$store.commit('setCurrentCircuitObj', this.currentCircuit);
     },
   },
 });

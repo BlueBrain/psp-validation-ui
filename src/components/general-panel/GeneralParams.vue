@@ -47,7 +47,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { GeneralPanelParamsInterface } from '@/interfaces/general-panel';
-import { saveGeneralParams } from '@/helpers/db';
+import { saveGeneralParams, getStoredGeneralPanelParams } from '@/helpers/db';
 
 const columnSize = 8;
 
@@ -56,9 +56,7 @@ export default Vue.extend({
   data() {
     return {
       columnSize,
-      generalParams: {
-        ...this.$store.state.generalParamsModule.generalParams,
-      } as GeneralPanelParamsInterface,
+      generalParams: {} as GeneralPanelParamsInterface,
     };
   },
   watch: {
@@ -69,9 +67,16 @@ export default Vue.extend({
       deep: true,
     },
   },
+  created() {
+    this.restoreStoredData();
+  },
   methods: {
     saveToDB() {
       saveGeneralParams(this.generalParams);
+    },
+    async restoreStoredData() {
+      const storedParams: GeneralPanelParamsInterface = await getStoredGeneralPanelParams();
+      this.generalParams = storedParams || this.$store.state.generalParamsModule.generalParams;
     },
   },
 });
