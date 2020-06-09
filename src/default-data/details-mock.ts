@@ -1,5 +1,5 @@
 
-import defaultRows from '@/default-data/default-results-rows';
+import defaultRows from '@/default-data/mock-results-rows';
 
 const loremPlaceholder = '------------ PLACEHOLDER FOR THE BLUECONFIG ------------';
 const detailsMock = {

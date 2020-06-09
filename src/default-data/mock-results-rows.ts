@@ -84,6 +84,12 @@ const row1 = {
   status: {
     value: 'Done',
   },
+  launched: {
+    value: '02.03.2020',
+  },
+  startedBy: {
+    value: 'Romani',
+  },
 };
 
 const row2 = {
@@ -166,6 +172,12 @@ const row2 = {
   },
   status: {
     value: 'Done',
+  },
+  launched: {
+    value: '02.03.2020',
+  },
+  startedBy: {
+    value: 'Romani',
   },
 };
 

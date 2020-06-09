@@ -1,8 +1,9 @@
 
 <template>
-  <div>
+  <div class="inline-result-status">
     <router-link :to="{ name: 'DetailsPage', params: { tableEntryObject: tableEntryObject }}">
-      <Button>{{ tableEntryObject.value }}</Button>
+      <span>{{ tableEntryObject.value }} </span>
+      <Icon type="md-open" />
     </router-link>
   </div>
 </template>
@@ -27,3 +28,13 @@ export default Vue.extend({
   },
 });
 </script>
+
+
+<style lang="scss" scoped>
+.inline-result-status {
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}
+</style>

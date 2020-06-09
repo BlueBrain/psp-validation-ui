@@ -21,6 +21,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .validation-list {
-    margin-top: 20vh;
+  margin-top: 20vh;
 }
 </style>
