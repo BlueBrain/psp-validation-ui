@@ -13,9 +13,21 @@ interface GeneralPanelParamsInterface {
   saveAmplitudes: boolean;
 }
 
+interface StoreStateInterface {
+  currentCircuit: CircuitInterface;
+  generalParams: {
+    pairs: number;
+    repetitions: number;
+    clamp: string;
+    saveTraces: boolean;
+    saveAmplitudes: boolean
+  }
+}
+
 export default {};
 
 export {
   CircuitInterface,
   GeneralPanelParamsInterface,
+  StoreStateInterface,
 };

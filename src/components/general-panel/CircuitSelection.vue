@@ -71,11 +71,7 @@ export default Vue.extend({
     return {
       currentCircuit: {} as CircuitInterface,
       isEditing: false,
-      newEditingCircuit: {
-        name: '',
-        path: '',
-        displayName: '',
-      } as CircuitInterface,
+      newEditingCircuit: {} as CircuitInterface,
       circuitList: [] as Array<CircuitInterface>,
       labelSize,
       contentSize,
@@ -105,13 +101,13 @@ export default Vue.extend({
       this.newEditingCircuit = { name: '', path: '', displayName: '' };
     },
     saveNewCircuit() {
-      const circuitCopy = { ...this.newEditingCircuit };
+      const circuitCopy: CircuitInterface = { ...this.newEditingCircuit };
       this.$store.commit('setCurrentCircuitObj', circuitCopy);
       this.currentCircuit = circuitCopy;
       this.updateOrAddToCircuitList(circuitCopy);
       this.isEditing = false;
       // reset new circuit fields
-      this.newEditingCircuit = { name: '', path: '', displayName: '' };
+      this.newEditingCircuit = this.resetCircuit();
     },
     findCircuitByName(circuitName: string): CircuitInterface {
       const foundCircuit = this.circuitList.find((c: CircuitInterface) => c.name === circuitName);
@@ -129,6 +125,9 @@ export default Vue.extend({
       circuitOnList.displayName = newCircuit.displayName;
       return circuitOnList;
     },
+    resetCircuit(): CircuitInterface {
+      return { name: '', path: '', displayName: '' };
+    },
     saveToDB() {
       saveCircuitList(this.circuitList);
       saveCircuitSelected(this.currentCircuit);
@@ -138,6 +137,7 @@ export default Vue.extend({
       const storedCircuitSelected: CircuitInterface | void = await getStoredGeneralPanelCircuitSelected();
       this.circuitList = storedList || Object.assign([], defaultCircuits);
       this.currentCircuit = storedCircuitSelected || Object.assign([], defaultCircuits[0]);
+      this.newEditingCircuit = this.resetCircuit();
       this.$store.commit('setCurrentCircuitObj', this.currentCircuit);
     },
   },

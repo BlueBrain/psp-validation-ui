@@ -21,7 +21,7 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'DetailsFiles',
   props: {
-    resultData: Object, // TODO add complex type
+    resultData: Object, // TODO add complex result type
   },
 });
 </script>

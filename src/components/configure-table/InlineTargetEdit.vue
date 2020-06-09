@@ -66,11 +66,17 @@
 
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { PropType } from 'vue';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
-import { Target } from '@/interfaces/table';
-import { EditingObject, TableStateInterface } from '@/interfaces/store';
+import {
+  Target,
+  ChangeTableCellEventInterface,
+  TableRowInterface,
+  TableColumnInterface,
+  EditingObject,
+  StoreStateInterface,
+} from '@/interfaces/table';
 import { circuitMTypes, targetQuery } from '@/constants/target-types';
 
 const columnSize = 8;
@@ -78,8 +84,8 @@ const columnSize = 8;
 export default Vue.extend({
   name: 'InlineTargetEdit',
   props: {
-    row: Object,
-    column: Object,
+    row: Object as PropType<TableRowInterface>,
+    column: Object as PropType<TableColumnInterface>,
     index: Number,
   },
   data() {
@@ -97,7 +103,7 @@ export default Vue.extend({
     areFieldsComplete(): boolean {
       return !!(this.localTarget.name && this.localTarget.value && this.localTarget.query);
     },
-    storedElem(): TableStateInterface {
+    storedElem(): StoreStateInterface {
       return this.$store.state.tableEditingModule;
     },
   },
@@ -123,13 +129,13 @@ export default Vue.extend({
       this.$emit('set-editing', {
         path: `[${this.index}].${this.column.path}`,
         newValue: true,
-      });
+      } as ChangeTableCellEventInterface);
     },
     doneChanging(newTarget: Target) {
       this.$emit('changed', {
         path: `[${this.index}].${this.column.path}`,
         newTarget,
-      });
+      } as ChangeTableCellEventInterface);
       console.debug('NEED TO CHECK IF CORRECT');
       this.endEditing();
     },
@@ -141,7 +147,7 @@ export default Vue.extend({
       this.$emit('set-editing', {
         path: `[${indexToChange}].${pathToChange}`,
         newValue: false,
-      });
+      } as ChangeTableCellEventInterface);
 
       // reset the editing element in store
       this.$store.commit('setCurrentEditObj', {} as EditingObject);

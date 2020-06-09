@@ -1,5 +1,5 @@
 
-import { TableColumnInterface, ColumnIndexToPathMappingInterface } from '@/interfaces/table';
+import { ColumnIndexToPathMappingInterface } from '@/interfaces/table';
 import { ruleNames } from '@/constants/rule-names';
 
 const tableConstants = {
@@ -30,7 +30,7 @@ function getPathByKey(key: string): string {
   return path;
 }
 
-const columns: Array<TableColumnInterface> = [
+const columns = [
   {
     title: 'Pre Synaptic',
     width: tableConstants.WIDTH_HEADERS,

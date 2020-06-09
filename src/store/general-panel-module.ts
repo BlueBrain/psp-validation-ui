@@ -1,23 +1,28 @@
 
-import { CircuitInterface, GeneralPanelParamsInterface } from '@/interfaces/general-panel';
+import {
+  CircuitInterface,
+  GeneralPanelParamsInterface,
+  StoreStateInterface,
+} from '@/interfaces/general-panel';
+
+const stateValues: StoreStateInterface = {
+  currentCircuit: {} as CircuitInterface,
+  generalParams: {
+    pairs: 4,
+    repetitions: 3,
+    clamp: 'Current',
+    saveTraces: true,
+    saveAmplitudes: false,
+  },
+};
 
 const tableEditingModule = {
-  state: {
-    currentCircuit: {} as CircuitInterface,
-    generalParams: {
-      pairs: 4,
-      repetitions: 3,
-      clamp: 'Current',
-      saveTraces: true,
-      saveAmplitudes: false,
-    },
-  },
+  state: stateValues,
   mutations: {
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    setCurrentCircuitObj(state: any, newCircuit: CircuitInterface) {
+    setCurrentCircuitObj(state: StoreStateInterface, newCircuit: CircuitInterface) {
       state.currentCircuit = newCircuit;
     },
-    setGeneralPanelParams(state: any, newParams: GeneralPanelParamsInterface) {
+    setGeneralPanelParams(state: StoreStateInterface, newParams: GeneralPanelParamsInterface) {
       state.generalParams = newParams;
     },
   },

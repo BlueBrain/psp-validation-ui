@@ -22,19 +22,26 @@
 
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { PropType } from 'vue';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
-import { TableEntryObjectInterface, CheckResultInterface } from '@/interfaces/table';
-import { EditingObject, TableStateInterface } from '@/interfaces/store';
+import {
+  TableEntryObjectInterface,
+  CheckResultInterface,
+  TableColumnInterface,
+  TableRowInterface,
+  ChangeTableCellEventInterface,
+  EditingObject,
+  StoreStateInterface,
+} from '@/interfaces/table';
 import { checkStringByRule } from '@/helpers/inline-table-helpers';
 
 
 export default Vue.extend({
   name: 'InlineStringEdit',
   props: {
-    row: Object,
-    column: Object,
+    row: Object as PropType<TableRowInterface>,
+    column: Object as PropType<TableColumnInterface>,
     index: Number,
   },
   watch: {
@@ -52,7 +59,7 @@ export default Vue.extend({
     tableEntryObject(): TableEntryObjectInterface {
       return get(this.row, this.column.path);
     },
-    storedElem(): TableStateInterface {
+    storedElem(): StoreStateInterface {
       return this.$store.state.tableEditingModule;
     },
   },
@@ -72,7 +79,7 @@ export default Vue.extend({
       this.$emit('set-editing', {
         path: `[${this.index}].${this.column.path}`,
         newValue: true,
-      });
+      } as ChangeTableCellEventInterface);
     },
     doneChanging(newValue: string) {
       // use the stored value if available
@@ -83,22 +90,22 @@ export default Vue.extend({
       this.$emit('changed', {
         path: fullPathWithRowIndex,
         newValue,
-      });
+      } as ChangeTableCellEventInterface);
 
       this.$emit('set-editing', {
         path: fullPathWithRowIndex,
         newValue: false,
-      });
+      } as ChangeTableCellEventInterface);
 
       const result: CheckResultInterface = checkStringByRule(newValue, this.column.rules);
       this.$emit('set-error', {
         path: fullPathWithRowIndex,
         newValue: result.hasError,
         message: result.message,
-      });
+      } as ChangeTableCellEventInterface);
 
       // reset the editing element in store
-      this.$store.commit('setCurrentEditObj', {} as EditingObject);
+      this.$store.commit('setCurrentEditObj', {});
     },
     enterPressed() {
       this.doneChanging(this.localValue);

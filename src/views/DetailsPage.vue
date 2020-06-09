@@ -19,7 +19,7 @@ import resultsMock from '@/default-data/details-mock';
 export default Vue.extend({
   name: 'DetailsPage',
   props: {
-    tableEntryObject: Object as () => TableEntryObjectInterface,
+    tableEntryObject: {} as () => TableEntryObjectInterface,
   },
   data() {
     return {

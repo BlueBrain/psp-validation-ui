@@ -9,11 +9,11 @@ interface TableColumnInterface {
   title: string;
   width?: number;
   slot?: string; // TODO how to make mandatory except if has children?
-  path?: string;
-  align?: string;
+  path: string;
+  align: string;
   className?: string;
-  rules?: Array<string>;
-  children?: TableColumnInterface[];
+  rules: Array<string>;
+  // children?: TableColumnInterface[];
 }
 
 interface ColumnIndexToPathMappingInterface {
@@ -100,6 +100,20 @@ interface ChangeTableCellEventInterface {
   message: string;
 }
 
+interface StoreStateInterface {
+  currentlyEditingRowIndex: number;
+  currentlyEditingPath: string;
+  currentlyEditingValue: string;
+  currentlyEditingTarget: Target;
+}
+
+interface EditingObject {
+  rowIndex: number;
+  path: string;
+  value: string;
+  target: Target;
+}
+
 export default {};
 
 export {
@@ -112,4 +126,6 @@ export {
   TargetQuery,
   CheckResultInterface,
   ChangeTableCellEventInterface,
+  StoreStateInterface,
+  EditingObject,
 };
