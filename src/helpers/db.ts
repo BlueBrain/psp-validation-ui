@@ -14,7 +14,7 @@ function saveGeneralParams(generalParams: GeneralPanelParamsInterface) {
 }
 
 function saveTableRowData(rowsData: Array<TableRowInterface>, circuitPath: string) {
-  localForage.setItem(`rowsData - ${circuitPath || 'default'}`, rowsData);
+  localForage.setItem(`rowsData - ${circuitPath}`, rowsData);
 }
 
 function getStoredGeneralPanelParams(): Promise<GeneralPanelParamsInterface> {
@@ -28,7 +28,7 @@ function getStoredGeneralPanelCircuitList(): Promise<Array<CircuitInterface>> {
 }
 
 function getStoredTableRowData(circuitPath: string): Promise<Array<TableRowInterface>> {
-  return localForage.getItem(`rowsData - ${circuitPath || 'default'}`);
+  return localForage.getItem(`rowsData - ${circuitPath}`);
 }
 
 
