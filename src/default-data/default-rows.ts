@@ -8,13 +8,12 @@ const row1: TableRowInterface = {
   id: uuidv4(),
   pathway: {
     preSyn: {
-      name: 'SP_PC_PRE',
+      name: 'SP_PC',
       query: targetQuery.M_TYPE,
       value: 'SP_PC',
-      hasError: true,
     },
     postSyn: {
-      name: 'SP_PC_POST',
+      name: 'SP_PC',
       query: targetQuery.M_TYPE,
       value: 'SP_PC',
     },
@@ -23,46 +22,46 @@ const row1: TableRowInterface = {
         value: 'true',
       },
       minNumSyn: {
-        value: '4',
+        value: 'None',
       },
       maxNumSyn: {
-        value: '10',
+        value: '2',
       },
       maxDistX: {
-        value: '200.0',
+        value: '100.0',
       },
       maxDistY: {
-        value: '200.0',
+        value: '100.0',
       },
       maxDistZ: {
-        value: '200.0',
+        value: '100.0',
       },
     },
   },
   reference: {
     author: {
-      value: 'Magee and Cook 2000',
+      value: 'Deuchars and Thomson 1996 (syn same article)',
     },
     pspAmplitude: {
       mean: {
-        value: '0.2',
+        value: '0.7',
       },
       std: {
-        value: '0.2',
+        value: '0.5',
       },
       link: {
-        value: 'https://test.co.uk/paper/this-is-an-example-of-a-long-link.html',
+        value: 'https://pubmed.ncbi.nlm.nih.gov/8895869',
       },
     },
     synapseCount: {
       mean: {
-        value: '0.2',
+        value: '1.2',
       },
       std: {
-        value: '0.2',
+        value: '0.0',
       },
       link: {
-        value: 'https://test.co.uk/paper/this-is-an-example-of-a-long-link.html',
+        value: 'None',
       },
     },
   },
@@ -71,7 +70,7 @@ const row1: TableRowInterface = {
       value: '0.1',
     },
     holdV: {
-      value: '-77.0',
+      value: '-70.67',
     },
     tStim: {
       value: '800.0',
@@ -80,7 +79,7 @@ const row1: TableRowInterface = {
       value: '900.0',
     },
     postTtx: {
-      value: '0.8',
+      value: 'false',
     },
   },
 };
@@ -89,24 +88,104 @@ const row2: TableRowInterface = {
   id: uuidv4(),
   pathway: {
     preSyn: {
-      name: 'SP_PC_PRE_2',
+      name: 'SP_PVBC',
       query: targetQuery.M_TYPE,
-      value: 'SP_PC',
+      value: 'SP_PVBC',
     },
     postSyn: {
-      name: 'Mosaic Post',
+      name: 'SP_PC',
       query: targetQuery.M_TYPE,
-      value: 'Mosaic',
+      value: 'SP_PC',
     },
     constraints: {
       uniqueGids: {
         value: 'true',
       },
       minNumSyn: {
-        value: '4',
+        value: '7',
       },
       maxNumSyn: {
-        value: '10',
+        value: '14',
+      },
+      maxDistX: {
+        value: '100.0',
+      },
+      maxDistY: {
+        value: '100.0',
+      },
+      maxDistZ: {
+        value: '100.0',
+      },
+    },
+  },
+  reference: {
+    author: {
+      value: 'Pawelzik 2002 (syn Foldy 2010)',
+    },
+    pspAmplitude: {
+      mean: {
+        value: '0.83',
+      },
+      std: {
+        value: '0.37',
+      },
+      link: {
+        value: 'https://pubmed.ncbi.nlm.nih.gov/11807843',
+      },
+    },
+    synapseCount: {
+      mean: {
+        value: '11.0',
+      },
+      std: {
+        value: '0.6',
+      },
+      link: {
+        value: 'https://pubmed.ncbi.nlm.nih.gov/20676104',
+      },
+    },
+  },
+  protocol: {
+    recordDt: {
+      value: '0.1',
+    },
+    holdV: {
+      value: '-59.0',
+    },
+    tStim: {
+      value: '800.0',
+    },
+    tStop: {
+      value: '900.0',
+    },
+    postTtx: {
+      value: 'false',
+    },
+  },
+};
+
+const row3: TableRowInterface = {
+  id: uuidv4(),
+  pathway: {
+    preSyn: {
+      name: 'SP_PC',
+      query: targetQuery.M_TYPE,
+      value: 'SP_PC',
+    },
+    postSyn: {
+      name: 'SO_OLM',
+      query: targetQuery.M_TYPE,
+      value: 'SO_OLM',
+    },
+    constraints: {
+      uniqueGids: {
+        value: 'true',
+      },
+      minNumSyn: {
+        value: '2',
+      },
+      maxNumSyn: {
+        value: '5',
       },
       maxDistX: {
         value: '200.0',
@@ -121,28 +200,28 @@ const row2: TableRowInterface = {
   },
   reference: {
     author: {
-      value: 'Magee and Cook 2000',
+      value: 'Ali & Thomson 1998 0.3+/-0.13 (outliers removed...) (syn Biro 2005)',
     },
     pspAmplitude: {
       mean: {
-        value: '0.2',
+        value: '0.3',
       },
       std: {
-        value: '0.2',
+        value: '0.13',
       },
       link: {
-        value: 'https://test.co.uk/paper/this-is-an-example-of-a-long-link.html',
+        value: 'https://pubmed.ncbi.nlm.nih.gov/9490837',
       },
     },
     synapseCount: {
       mean: {
-        value: '0.2',
+        value: '2.3',
       },
       std: {
-        value: '0.2',
+        value: '0.8',
       },
       link: {
-        value: 'https://test.co.uk/paper/this-is-an-example-of-a-long-link.html',
+        value: 'https://pubmed.ncbi.nlm.nih.gov/15634785',
       },
     },
   },
@@ -151,7 +230,7 @@ const row2: TableRowInterface = {
       value: '0.1',
     },
     holdV: {
-      value: '-77.0',
+      value: '-72.17',
     },
     tStim: {
       value: '800.0',
@@ -160,10 +239,10 @@ const row2: TableRowInterface = {
       value: '900.0',
     },
     postTtx: {
-      value: '0.8',
+      value: 'false',
     },
   },
 };
 
-const defaultData: Array<TableRowInterface> = cloneDeep([row1, row2]);
+const defaultData: Array<TableRowInterface> = cloneDeep([row1, row2, row3]);
 export default defaultData;
