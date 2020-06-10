@@ -1,5 +1,6 @@
 
 import isNaN from 'lodash/isNaN';
+import toNumber from 'lodash/toNumber';
 import { ruleNames } from '@/constants/rule-names';
 import { CheckResultInterface } from '@/interfaces/table';
 
@@ -19,7 +20,9 @@ const mapRuleFunction = {
     return numb >= 0;
   },
   [ruleNames.FLOAT]: (value: string): boolean => {
-    const numb = parseFloat(value);
+    const numb = toNumber(value);
+    /* use this instead of parseFloat due
+    parseFloat(0.tttt) => 0 instead of NaN */
     return !isNaN(numb);
   },
   [ruleNames.URL]: (value: string): boolean => {
