@@ -23,6 +23,9 @@ const columnIndexToPathMapping: ColumnIndexToPathMappingInterface = {
   maxDistZ: 'pathway.constraints.maxDistZ',
   holdV: 'protocol.holdV',
   postTtx: 'protocol.postTtx',
+  launched: 'launched',
+  startedBy: 'startedBy',
+  status: 'status',
 };
 
 function getPathByKey(key: string): string {
@@ -186,3 +189,7 @@ const columns = [
 ];
 
 export default columns;
+
+export {
+  getPathByKey,
+};

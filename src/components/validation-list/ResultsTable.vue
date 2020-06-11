@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import defaultColumns from '@/default-data/default-results-columns';
+import defaultColumns from '@/default-data/mock-results-columns';
 import defaultRows from '@/default-data/mock-results-rows';
 import InlineResultViewer from '@/components/validation-list/InlineResultViewer.vue';
 import InlineResultsStatus from '@/components/validation-list/InlineResultStatus.vue';

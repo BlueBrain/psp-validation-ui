@@ -1,9 +1,7 @@
 
 <template>
   <div>
-    <span
-      :class="{'entry-with-errors': tableEntryObject.hasError}"
-    >{{ tableEntryObject.value }}</span>
+    <span>{{ tableEntryObject.value }}</span>
   </div>
 </template>
 
