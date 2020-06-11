@@ -72,6 +72,42 @@ interface TableRowInterface {
   };
 }
 
+interface RowToYamlInterface {
+  pathway: {
+    pre: string;
+    post: string;
+    constraints: {
+      unique_gids: boolean;
+      min_nsyn: number | false;
+      max_nsyn: number | false;
+      max_dist_x: number | false;
+      max_dist_y: number | false;
+      max_dist_z: number | false;
+    };
+  };
+  reference: {
+    author: string;
+    psp_amplitude: {
+      mean: number | false;
+      std: number | false;
+      link: string | false;
+    };
+    synapse_count: {
+      mean: number | false;
+      std: number | false;
+      link: string | false;
+    };
+  };
+  protocol: {
+    record_dt: number | false;
+    hold_V: number | false;
+    t_stim: number | false;
+    t_stop: number | false;
+    // TODO ttx is number or boolean?
+    post_ttx: number | boolean;
+  };
+}
+
 interface Target extends TableEntryObjectInterface {
   name: string;
   query: string;
@@ -130,4 +166,5 @@ export {
   ChangeTableCellEventInterface,
   StoreStateInterface,
   EditingObject,
+  RowToYamlInterface,
 };
