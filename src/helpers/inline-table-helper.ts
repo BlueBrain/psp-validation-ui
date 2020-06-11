@@ -36,13 +36,15 @@ function getRuleFunctionByName(ruleName: string) {
 }
 
 function checkStringByRule(value: string, rules: Array<string>): CheckResultInterface {
+  // allow None parameters
+  if (value === 'None') return { message: '', hasError: false };
   let message = '';
 
   const rulesPassed = rules.every((rule: string) => {
     const ruleFn = getRuleFunctionByName(rule);
     const result = ruleFn(value);
     if (!result) {
-      message = `Value (${value}) is not compliant with rule [${rule}]`;
+      message = `Value "${value}" is not compliant with rule [${rule}]`;
       return false;
     }
     return true;

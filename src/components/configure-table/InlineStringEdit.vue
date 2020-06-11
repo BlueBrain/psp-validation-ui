@@ -34,7 +34,7 @@ import {
   EditingObject,
   StoreStateInterface,
 } from '@/interfaces/table';
-import { checkStringByRule } from '@/helpers/inline-table-helpers';
+import { checkStringByRule } from '@/helpers/inline-table-helper';
 
 
 export default Vue.extend({
@@ -74,6 +74,7 @@ export default Vue.extend({
         rowIndex: this.index,
         path: this.column.path,
         value: this.localValue,
+        rules: this.column.rules,
       } as EditingObject);
 
       this.$emit('set-editing', {
@@ -85,11 +86,14 @@ export default Vue.extend({
       // use the stored value if available
       const indexToChange = isNil(this.storedElem.currentlyEditingRowIndex) ? this.index : this.storedElem.currentlyEditingRowIndex;
       const pathToChange = isNil(this.storedElem.currentlyEditingPath) ? this.column.path : this.storedElem.currentlyEditingPath;
+      const rulesToCheck = isNil(this.storedElem.currentlyEditingPath) ? this.column.rules : this.storedElem.currentlyEditingRules;
       const fullPathWithRowIndex = `[${indexToChange}].${pathToChange}`;
+
+      const valueToCommit = (newValue === '') ? 'None' : newValue;
 
       this.$emit('changed', {
         path: fullPathWithRowIndex,
-        newValue,
+        newValue: valueToCommit,
       } as ChangeTableCellEventInterface);
 
       this.$emit('set-editing', {
@@ -97,7 +101,7 @@ export default Vue.extend({
         newValue: false,
       } as ChangeTableCellEventInterface);
 
-      const result: CheckResultInterface = checkStringByRule(newValue, this.column.rules);
+      const result: CheckResultInterface = checkStringByRule(valueToCommit, rulesToCheck);
       this.$emit('set-error', {
         path: fullPathWithRowIndex,
         newValue: result.hasError,

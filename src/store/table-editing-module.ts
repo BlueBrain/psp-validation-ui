@@ -7,6 +7,7 @@ import {
 
 const stateValues: StoreStateInterface = {
   currentlyEditingRowIndex: -1,
+  currentlyEditingRules: [],
   currentlyEditingPath: '',
   currentlyEditingValue: '',
   currentlyEditingTarget: {} as Target,
@@ -20,6 +21,7 @@ const tableEditingModule = {
       state.currentlyEditingRowIndex = elementObj.rowIndex;
       state.currentlyEditingValue = elementObj.value;
       state.currentlyEditingTarget = elementObj.target;
+      state.currentlyEditingRules = elementObj.rules;
     },
     modifyStoredValue(state: StoreStateInterface, newValue: string) {
       state.currentlyEditingValue = newValue;

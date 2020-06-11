@@ -105,6 +105,7 @@ interface StoreStateInterface {
   currentlyEditingPath: string;
   currentlyEditingValue: string;
   currentlyEditingTarget: Target;
+  currentlyEditingRules: Array<string>;
 }
 
 interface EditingObject {
@@ -112,6 +113,7 @@ interface EditingObject {
   path: string;
   value: string;
   target: Target;
+  rules: Array<string>;
 }
 
 export default {};
