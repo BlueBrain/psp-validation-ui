@@ -2,6 +2,8 @@
 import jsYaml from 'js-yaml';
 import isNaN from 'lodash/isNaN';
 import toNumber from 'lodash/toNumber';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import {
   RowToYamlInterface,
   TableRowInterface,
@@ -54,8 +56,50 @@ function convertObjToYaml(obj: TableRowInterface): string {
   return converted;
 }
 
+function getYamlFilesFromData(rowsData: Array<TableRowInterface>): Array <string> {
+  const yamlArray = rowsData.map((row: TableRowInterface) => convertObjToYaml(row));
+  return yamlArray;
+}
+
+function getPrePostNames(str: string): { pre: string; post: string } {
+  const preRegex = /pre: (.+)/;
+  const postRegex = /post: (.+)/;
+
+  const preMatch = str.match(preRegex);
+  if (!preMatch || !preMatch.length) {
+    throw new Error('There is no Pre synaptic target');
+  }
+
+  const postMatch = str.match(postRegex);
+  if (!postMatch || !postMatch.length) {
+    throw new Error('There is no Post synaptic target');
+  }
+
+  return {
+    pre: preMatch[1],
+    post: postMatch[1],
+  };
+}
+
+function exportRowsToZip(rowsData: Array<TableRowInterface>) {
+  const files = getYamlFilesFromData(rowsData);
+
+  const zip = new JSZip();
+
+  files.forEach((yamlFile: string) => {
+    const preAndPost = getPrePostNames(yamlFile);
+    const fileName = `${preAndPost.pre}-${preAndPost.post}.yaml`;
+    zip.file(fileName, yamlFile);
+  });
+
+  zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
+    saveAs(content, 'pathways.zip');
+  });
+}
+
 export default {};
 
 export {
-  convertObjToYaml,
+  getYamlFilesFromData,
+  exportRowsToZip,
 };

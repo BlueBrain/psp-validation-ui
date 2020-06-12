@@ -3,7 +3,7 @@
   <div class="config-table-acction-buttons">
     <div class="action-table-buttons-container">
       <Button
-        @click="retrieveFullObject"
+        @click="exportRowsData"
         type="primary"
         ghost
       >
@@ -28,8 +28,8 @@ import Vue from 'vue';
 import last from 'lodash/last';
 import cloneDeep from 'lodash/cloneDeep';
 import { v4 as uuidv4 } from 'uuid';
-import { saveAs } from 'file-saver';
 import { TableRowInterface } from '@/interfaces/table';
+import { exportRowsToZip } from '@/helpers/yaml-helper';
 
 export default Vue.extend({
   name: 'ConfigTableActionButtons',
@@ -37,10 +37,8 @@ export default Vue.extend({
     tableData: Array as () => Array<TableRowInterface>,
   },
   methods: {
-    retrieveFullObject() {
-      const tableDataStr = JSON.stringify(this.tableData);
-      const blob = new Blob([tableDataStr], { type: 'application/json' });
-      saveAs(blob, 'table-data.json');
+    exportRowsData() {
+      exportRowsToZip(this.tableData);
     },
     addNewRow() {
       const lastEntry: TableRowInterface | undefined = last(this.tableData);
