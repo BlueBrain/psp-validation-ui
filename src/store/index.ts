@@ -10,10 +10,14 @@ export default new Vuex.Store({
   state: {
     title: '',
     packageVersion: process.env.PACKAGE_VERSION || '0',
+    token: '',
   } as StateInterface,
   mutations: {
     changeTitle(state: StateInterface, newTitle: string) {
       state.title = newTitle;
+    },
+    setToken(state: StateInterface, newToken: string) {
+      state.token = `Bearer ${newToken}`;
     },
   },
   actions: {},
