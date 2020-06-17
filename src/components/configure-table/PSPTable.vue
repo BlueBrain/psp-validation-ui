@@ -49,6 +49,7 @@ import defaultRows from '@/default-data/default-rows';
 import { ChangeTableCellEventInterface, TableRowInterface, TableColumnInterface } from '@/interfaces/table';
 import ConfigTableActionButtons from '@/components/configure-table/ConfigTableActionButtons.vue';
 import { saveTableRowData, getStoredTableRowData } from '@/helpers/db';
+import { getYamlFilesFromData } from '@/helpers/yaml-helper';
 
 export default Vue.extend({
   name: 'PSPTable',
@@ -97,6 +98,9 @@ export default Vue.extend({
       const storedRowData = await getStoredTableRowData(circuitPath);
       this.rowsData = storedRowData || defaultRows;
       this.isLoading = false;
+    },
+    getDataToYamlFiles(): Array<string> {
+      return getYamlFilesFromData(this.rowsData);
     },
   },
 });

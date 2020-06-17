@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import tableEditingModule from '@/store/table-editing-module';
 import generalParamsModule from '@/store/general-panel-module';
 import { StateInterface } from '@/interfaces/store';
+import { setAxiosToken } from '@/helpers/unicore';
 
 Vue.use(Vuex);
 
@@ -17,7 +18,8 @@ export default new Vuex.Store({
       state.title = newTitle;
     },
     setToken(state: StateInterface, newToken: string) {
-      state.token = `Bearer ${newToken}`;
+      state.token = newToken;
+      setAxiosToken(newToken);
     },
   },
   actions: {},

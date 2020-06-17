@@ -56,9 +56,8 @@ function convertObjToYaml(obj: TableRowInterface): string {
   return converted;
 }
 
-function getYamlFilesFromData(rowsData: Array<TableRowInterface>): Array <string> {
-  const yamlArray = rowsData.map((row: TableRowInterface) => convertObjToYaml(row));
-  return yamlArray;
+function getYamlFilesFromData(rowsData: Array<TableRowInterface>): Array<string> {
+  return rowsData.map((row: TableRowInterface) => convertObjToYaml(row));
 }
 
 function getPrePostNames(str: string): { pre: string; post: string } {
@@ -101,5 +100,6 @@ export default {};
 
 export {
   getYamlFilesFromData,
+  getPrePostNames,
   exportRowsToZip,
 };
