@@ -2,7 +2,7 @@
 import isNaN from 'lodash/isNaN';
 import toNumber from 'lodash/toNumber';
 import { ruleNames } from '@/constants/rule-names';
-import { CheckResultInterface } from '@/interfaces/table';
+import { CheckResultInterface, TableRowInterface } from '@/interfaces/table';
 
 function validURL(str: string) {
   const pattern = new RegExp('^(https?:\\/\\/)?' // protocol
@@ -53,9 +53,37 @@ function checkStringByRule(value: string, rules: Array<string>): CheckResultInte
   return { message: '', hasError: false };
 }
 
+function hasErrors(dataObjArray: Array<TableRowInterface>) {
+  let errorWasFound = false;
+
+  const iterate = (obj: TableRowInterface) => {
+    Object.keys(obj).forEach((key: string) => {
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      if (key === 'hasError' && (obj as any)[key]) {
+        errorWasFound = true;
+      }
+      // TODO: fix this obj[key]
+      if (typeof ((obj as any)[key]) === 'object') {
+        iterate((obj as any)[key]);
+      }
+      /* eslint-enable @typescript-eslint/no-explicit-any */
+    });
+    return obj;
+  };
+
+  function hasSomeError(element: TableRowInterface) {
+    iterate(element);
+    return errorWasFound;
+  }
+
+  dataObjArray.some(hasSomeError);
+  return errorWasFound;
+}
+
 export default {};
 
 export {
   checkStringByRule,
   getRuleFunctionByName,
+  hasErrors,
 };

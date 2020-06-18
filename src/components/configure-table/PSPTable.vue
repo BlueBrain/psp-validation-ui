@@ -50,6 +50,7 @@ import { ChangeTableCellEventInterface, TableRowInterface, TableColumnInterface 
 import ConfigTableActionButtons from '@/components/configure-table/ConfigTableActionButtons.vue';
 import { saveTableRowData, getStoredTableRowData } from '@/helpers/db';
 import { getYamlFilesFromData } from '@/helpers/yaml-helper';
+import { hasErrors } from '@/helpers/inline-table-helper';
 
 export default Vue.extend({
   name: 'PSPTable',
@@ -101,6 +102,9 @@ export default Vue.extend({
     },
     getDataToYamlFiles(): Array<string> {
       return getYamlFilesFromData(this.rowsData);
+    },
+    tableHasErrors() {
+      return hasErrors(this.rowsData);
     },
   },
 });
