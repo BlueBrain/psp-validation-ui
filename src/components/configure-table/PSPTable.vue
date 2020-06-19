@@ -91,13 +91,18 @@ export default Vue.extend({
       this.$set(modifyingCell, 'message', message);
     },
     saveToDB() {
-      const circuitPath = this.$store.state.generalParamsModule.currentCircuit.path;
+      const { circuitPath } = this.$store.state.generalParamsModule;
       saveTableRowData(this.rowsData, circuitPath);
     },
     async restoreStoredData() {
-      const circuitPath = this.$store.state.generalParamsModule.currentCircuit.path;
-      const storedRowData = await getStoredTableRowData(circuitPath);
-      this.rowsData = storedRowData || defaultRows;
+      const { circuitPath: storedCircuitPath } = this.$store.state.generalParamsModule;
+      if (!storedCircuitPath) {
+        const msg = 'There is no circuit selected';
+        this.$Message.error(msg);
+        throw new Error(msg);
+      }
+      const storedRowData = await getStoredTableRowData(storedCircuitPath);
+      this.rowsData = storedRowData.length ? storedRowData : defaultRows;
       this.isLoading = false;
     },
     getDataToYamlFiles(): Array<string> {

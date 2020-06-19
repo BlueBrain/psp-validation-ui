@@ -60,6 +60,7 @@ import {
   saveCircuitSelected,
   getStoredGeneralPanelCircuitSelected,
   getStoredGeneralPanelCircuitList,
+  saveCircuitPathSync,
 } from '@/helpers/db';
 
 const labelSize = 6;
@@ -131,11 +132,16 @@ export default Vue.extend({
     saveToDB() {
       saveCircuitList(this.circuitList);
       saveCircuitSelected(this.currentCircuit);
+      saveCircuitPathSync(this.currentCircuit.path);
     },
     async restoreStoredData() {
-      const storedList: Array<CircuitInterface> = await getStoredGeneralPanelCircuitList();
+      const { circuitPath } = this.$store.state.generalParamsModule;
+      const storedCircuitList: Array<CircuitInterface> = await getStoredGeneralPanelCircuitList();
       const storedCircuitSelected: CircuitInterface | void = await getStoredGeneralPanelCircuitSelected();
-      this.circuitList = storedList || Object.assign([], defaultCircuits);
+      if (storedCircuitSelected && circuitPath !== storedCircuitSelected.path) {
+        throw new Error('Circuit saved does not match');
+      }
+      this.circuitList = storedCircuitList || Object.assign([], defaultCircuits);
       this.currentCircuit = storedCircuitSelected || Object.assign([], defaultCircuits[0]);
       this.newEditingCircuit = this.resetCircuit();
       this.$store.commit('setCurrentCircuitObj', this.currentCircuit);

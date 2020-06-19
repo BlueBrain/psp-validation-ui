@@ -15,6 +15,7 @@ interface GeneralPanelParamsInterface {
 
 interface StoreStateInterface {
   currentCircuit: CircuitInterface;
+  circuitPath: string;
   generalParams: {
     pairs: number;
     repetitions: number;

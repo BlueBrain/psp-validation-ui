@@ -20,7 +20,10 @@ function convertYamlToInputObj(yamlFile: string) {
 
 function submitPspJob(yamlFiles: Array<string>, circuitPath: string): Promise<JobProperties> {
   const runConfig = defaultJobConfig;
-  if (runConfig.tags) runConfig.tags.push(tags.VALIDATION);
+  if (runConfig.tags) {
+    runConfig.tags.push(tags.VALIDATION);
+    runConfig.tags.push(circuitPath);
+  }
   const inputs: DataToUpload[] = [{
     Data: 'echo "Hello World"',
     To: 'input.sh',
