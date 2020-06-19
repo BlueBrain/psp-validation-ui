@@ -122,7 +122,7 @@ async function getValidationJobUrls(circuitPath: string): Promise<Array<string>>
   // get sims only for this specific circuit
   const queryStr = `tags=${tags.VALIDATION},${circuitPath}`;
   return axiosInstance(`${unicoreURL}/jobs?${queryStr}`)
-    .then((r: AxiosResponse) => r.data)
+    .then((r: AxiosResponse) => get(r, 'data.jobs', []))
     .catch((e: Error) => { throw new Error(`getting getValidationJobUrls ${e}`); });
 }
 

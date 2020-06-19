@@ -1,7 +1,7 @@
 
 import {
-  getAllJobs,
   submitJob,
+  setAxiosToken,
 } from '@/helpers/unicore';
 import defaultJobConfig from '@/helpers/job-config';
 import { DataToUpload, JobProperties } from '@/interfaces/unicore';
@@ -37,13 +37,13 @@ function submitPspJob(yamlFiles: Array<string>, circuitPath: string): Promise<Jo
   return submitJob(runConfig, inputs);
 }
 
-function getJobs() {
-  return getAllJobs();
+function setToken(token: string) {
+  setAxiosToken(token);
 }
 
 export default {};
 
 export {
-  getJobs,
   submitPspJob,
+  setToken,
 };

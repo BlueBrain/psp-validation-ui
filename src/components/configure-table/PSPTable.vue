@@ -14,6 +14,15 @@
       ref="table"
       border
     >
+      <template slot-scope="{ row, column, index }" slot="target-editor">
+        <InlineTargetEdit
+          :row="row"
+          :column="column"
+          :index="index"
+          @changed="targetChanged"
+          @set-editing="setEditing"
+        />
+      </template>
       <template slot-scope="{ row, column, index }" slot="string-editor">
         <InlineStringEdit
           :row="row"
@@ -22,16 +31,6 @@
           @changed="dataChanged"
           @set-editing="setEditing"
           @set-error="setError"
-        />
-      </template>
-
-      <template slot-scope="{ row, column, index }" slot="target-editor">
-        <InlineTargetEdit
-          :row="row"
-          :column="column"
-          :index="index"
-          @changed="targetChanged"
-          @set-editing="setEditing"
         />
       </template>
     </Table>
@@ -102,7 +101,7 @@ export default Vue.extend({
         throw new Error(msg);
       }
       const storedRowData = await getStoredTableRowData(storedCircuitPath);
-      this.rowsData = storedRowData.length ? storedRowData : defaultRows;
+      this.rowsData = storedRowData && storedRowData.length ? storedRowData : defaultRows;
       this.isLoading = false;
     },
     getDataToYamlFiles(): Array<string> {

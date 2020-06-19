@@ -1,9 +1,9 @@
 
 <template>
   <div class="details-page">
-    <DetailsHeader :resultData="resultData"/>
-    <PlotComponent :resultData="resultData"/>
-    <DetailsFiles :resultData="resultData"/>
+    <DetailsHeader :result-data="resultData"/>
+    <PlotComponent :result-data="resultData"/>
+    <DetailsFiles :result-data="resultData"/>
   </div>
 </template>
 
