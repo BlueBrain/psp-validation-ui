@@ -3,12 +3,22 @@ import axios, { AxiosResponse } from 'axios';
 import {
   submitJob,
   setAxiosToken,
+  getValidationJobUrls,
+  getJobProperties,
+  urlToComputerAndId,
 } from '@/helpers/unicore';
 import defaultJobConfig from '@/helpers/job-config';
 import { DataToUpload, JobProperties } from '@/interfaces/unicore';
 import { getPrePostNames } from '@/helpers/yaml-helper';
 import { tags } from '@/constants/hpc-systems';
 import { backendEndpoint } from '@/constants/backend';
+
+const axiosInstance = axios.create({
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+});
 
 function convertYamlToInputObj(yamlFile: string) {
   const preAndPost = getPrePostNames(yamlFile);
@@ -21,14 +31,8 @@ function convertYamlToInputObj(yamlFile: string) {
 }
 
 function saveInDatabase(unicoreJobId: string, inputs: Array<DataToUpload>): Promise<AxiosResponse> {
-  const axiosInstance = axios.create({
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-  });
   return axiosInstance.post(backendEndpoint, {
-    unicoreJobId,
+    id: unicoreJobId,
     files: inputs,
   });
 }
@@ -62,9 +66,39 @@ function setToken(token: string) {
   setAxiosToken(token);
 }
 
+function getFilesFromBackend(unicoreJobId: string) {
+  return axiosInstance.get(backendEndpoint, {
+    params: {
+      id: unicoreJobId,
+    },
+  }).then((r: AxiosResponse) => r.data);
+}
+
+async function getValidationsWithFiles(circuitPath: string) {
+  const jobUrls = await getValidationJobUrls(circuitPath);
+
+  const promises = jobUrls.map(async (url: string) => {
+    const { id } = urlToComputerAndId(url);
+    if (!id) throw new Error(`no job id was found for ${url}`);
+
+    const jobInfo = await getJobProperties(url);
+    if (!jobInfo) throw new Error(`no job info was found for ${id}`);
+
+    const files = await getFilesFromBackend(id);
+    return {
+      id,
+      jobInfo,
+      files,
+    };
+  });
+
+  return Promise.all(promises);
+}
+
 export default {};
 
 export {
   submitPspJob,
+  getValidationsWithFiles,
   setToken,
 };

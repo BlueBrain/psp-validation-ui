@@ -4,6 +4,7 @@
     <Table
       :columns="columns"
       :data="rowData"
+      :loading="isLoading"
       ref="table"
       border
     >
@@ -36,6 +37,9 @@ import InlineResultsStatus from '@/components/validation-list/InlineResultStatus
 
 export default Vue.extend({
   name: 'ResultsTable',
+  props: {
+    isLoading: Boolean,
+  },
   data() {
     return {
       columns: defaultColumns,

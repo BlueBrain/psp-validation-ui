@@ -109,14 +109,6 @@ function uploadData(dataToUpload: DataToUpload, uploadURL: string): Promise<Axio
   });
 }
 
-// TODO: replace this in favor of getValidationJobUrls
-async function getAllJobs(): Promise<Array<string>> {
-  const unicoreURL = getComputerUrl();
-  return axiosInstance(`${unicoreURL}/jobs`)
-    .then((r: AxiosResponse) => r.data)
-    .catch((e: Error) => { throw new Error(`getting getAllJobs ${e}`); });
-}
-
 async function getValidationJobUrls(circuitPath: string): Promise<Array<string>> {
   const unicoreURL = getComputerUrl();
   // get sims only for this specific circuit
@@ -225,9 +217,9 @@ export {
   submitJob,
   getFilesList,
   getComputerUrl,
-  getAllJobs,
   getValidationJobUrls,
   getJobProperties,
+  urlToComputerAndId,
   setAxiosToken,
 };
 

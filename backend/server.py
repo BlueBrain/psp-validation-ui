@@ -9,12 +9,12 @@ client = MongoClient('localhost', 27017)
 db = client['psp']
 
 
+
 class StatusHandler(RequestHandler):
   def get(self):
-    response = do_find_one()
-    # do_insert()
-    print(response)
+    do_find_validation() # to check the connection with the DB
     self.write({'status': 'OK'})
+
 
 
 class JobHandler(RequestHandler):
@@ -22,11 +22,22 @@ class JobHandler(RequestHandler):
     self.set_header("Access-Control-Allow-Origin", "*")
     self.set_header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
     self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+    self.set_header("Content-Type", 'application/json')
 
   def options(self):
     # no body
     self.set_status(204)
     self.finish()
+
+  def get(self):
+    unicore_job_id = self.get_argument("id")
+    
+    if not unicore_job_id:
+      return self.write({'message': 'Object not found'})
+    
+    document = do_find_validation_by_unicore_id(unicore_job_id)
+    files = document['files']
+    self.write(json.dumps(files))
 
   def post(self):
     try:
@@ -44,13 +55,17 @@ def do_find_one():
   document = db.validation_config.find_one()
   return document
 
+def do_find_validation_by_unicore_id(unicore_id):
+  document = db.validation_config.find_one({'id': unicore_id})
+  return document
+
 def do_insert(data):
   db.validation_config.insert_one(data)
 
 def make_app():
   urls = [
     ("/", StatusHandler),
-    ("/api/job/", JobHandler),
+    ("/api/job", JobHandler),
   ]
   return Application(urls, db=db, debug=True)
 
