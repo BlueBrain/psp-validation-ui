@@ -48,14 +48,6 @@ export default Vue.extend({
         return;
       }
 
-      submitPspJob(yamlFiles, circuitPath)
-        .then(() => {
-          this.$Modal.remove();
-        })
-        .catch((e: Error) => {
-          this.$Message.error(`Error submitting psp job: ${e}`);
-        });
-
       // TODO save these YAML files and pass the circuit path and
       // general params from store to the backend
 
@@ -65,6 +57,15 @@ export default Vue.extend({
         title: 'Launch Job',
         content: message,
         loading: true,
+        onOk: () => {
+          submitPspJob(yamlFiles, circuitPath)
+            .then(() => {
+              this.$Modal.remove();
+            })
+            .catch((e: Error) => {
+              this.$Message.error(`Error submitting psp job: ${e}`);
+            });
+        },
       });
     },
     saveTable() {
