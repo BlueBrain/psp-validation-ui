@@ -154,7 +154,6 @@ export default Vue.extend({
       this.currentCircuit = storedCircuitSelected || Object.assign([], defaultCircuits[0]);
       this.newEditingCircuit = this.resetCircuit();
       this.$store.commit('setCurrentCircuitObj', this.currentCircuit);
-      this.saveToDB();
     },
   },
 });

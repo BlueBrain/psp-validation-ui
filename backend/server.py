@@ -16,9 +16,10 @@ L.setLevel(logging.DEBUG)
 
 class StatusHandler(RequestHandler):
   def get(self):
+    L.debug('Showing status. Check DB conenction')
     do_find_validation() # to check the connection with the DB
+    L.debug('DB connection correct')
     self.write({'status': 'OK'})
-
 
 
 class JobHandler(RequestHandler):
@@ -34,7 +35,9 @@ class JobHandler(RequestHandler):
     self.finish()
 
   def get(self):
+    L.debug('[Get] job')
     unicore_job_id = self.get_argument("id")
+    L.debug('ID: %s', unicore_job_id)
     
     if not unicore_job_id:
       return self.write({'message': 'Object not found'})
@@ -44,8 +47,10 @@ class JobHandler(RequestHandler):
     self.write(json.dumps(files))
 
   def post(self):
+    L.debug('[Post] job')
     try:
       data = self.request.body
+      L.debug('Data: %s', data)
       data_json = json.loads(data)
       do_insert(data_json)
       message = 'job was created'
@@ -60,6 +65,7 @@ class CircuitHandler(RequestHandler):
     self.set_header("Access-Control-Allow-Origin", "*")
     self.set_header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
     self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+    self.set_header("Content-Type", 'application/json')
 
   def options(self):
     # no body
