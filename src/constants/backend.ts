@@ -1,9 +1,12 @@
 
 const BACKEND_PORT = '3000';
-const backendEndpoint = `http://localhost:${BACKEND_PORT}/api/job`;
+const BACKEND_BASE = `http://localhost:${BACKEND_PORT}/api`;
+const jobsEndpoint = `${BACKEND_BASE}/job`;
+const circuitEndpoint = `${BACKEND_BASE}/circuits`;
 
-export default backendEndpoint;
+export default {};
 
 export {
-  backendEndpoint,
+  jobsEndpoint,
+  circuitEndpoint,
 };

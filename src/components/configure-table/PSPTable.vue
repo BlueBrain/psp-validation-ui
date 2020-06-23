@@ -90,11 +90,11 @@ export default Vue.extend({
       this.$set(modifyingCell, 'message', message);
     },
     saveToDB() {
-      const { circuitPath } = this.$store.state.generalParamsModule;
+      const { circuitPath } = this.$store.getters;
       saveTableRowData(this.rowsData, circuitPath);
     },
     async restoreStoredData() {
-      const { circuitPath: storedCircuitPath } = this.$store.state.generalParamsModule;
+      const { circuitPath: storedCircuitPath } = this.$store.getters;
       if (!storedCircuitPath) {
         const msg = 'There is no circuit selected';
         this.$Message.error(msg);

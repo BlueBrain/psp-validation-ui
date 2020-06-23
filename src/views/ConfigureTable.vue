@@ -37,7 +37,7 @@ export default Vue.extend({
 
       const errorWasFound: boolean = tableComponent.tableHasErrors();
       const yamlFiles: Array<string> = tableComponent.getDataToYamlFiles();
-      const { circuitPath } = this.$store.state.generalParamsModule;
+      const { circuitPath } = this.$store.getters;
       const { userId } = this.$store.state;
 
       if (errorWasFound) {

@@ -9,9 +9,10 @@ import {
 } from '@/helpers/unicore';
 import defaultJobConfig from '@/helpers/job-config';
 import { DataToUpload, JobProperties } from '@/interfaces/unicore';
+import { CircuitInterface } from '@/interfaces/general-panel';
 import { getPrePostNames } from '@/helpers/yaml-helper';
 import { tags } from '@/constants/hpc-systems';
-import { backendEndpoint } from '@/constants/backend';
+import { jobsEndpoint, circuitEndpoint } from '@/constants/backend';
 
 const axiosInstance = axios.create({
   headers: {
@@ -31,7 +32,7 @@ function convertYamlToInputObj(yamlFile: string) {
 }
 
 function saveInDatabase(unicoreJobId: string, inputs: Array<DataToUpload>, userId: string): Promise<AxiosResponse> {
-  return axiosInstance.post(backendEndpoint, {
+  return axiosInstance.post(jobsEndpoint, {
     id: unicoreJobId,
     files: inputs,
     user: userId,
@@ -68,11 +69,8 @@ function setToken(token: string) {
 }
 
 function getFilesFromBackend(unicoreJobId: string) {
-  return axiosInstance.get(backendEndpoint, {
-    params: {
-      id: unicoreJobId,
-    },
-  }).then((r: AxiosResponse) => r.data);
+  return axiosInstance.get(jobsEndpoint, { params: { id: unicoreJobId } })
+    .then((r: AxiosResponse) => r.data);
 }
 
 async function getValidationsWithFiles(circuitPath: string) {
@@ -96,10 +94,25 @@ async function getValidationsWithFiles(circuitPath: string) {
   return Promise.all(promises);
 }
 
+async function getCircuitList(userId: string): Promise<Array<CircuitInterface>> {
+  const circuitList = await axiosInstance.get(circuitEndpoint, { params: { user: userId } })
+    .then((r: AxiosResponse) => r.data);
+  return circuitList;
+}
+
+function saveCircuitList(userId: string, circuitList: Array<CircuitInterface>) {
+  return axiosInstance.post(circuitEndpoint, {
+    user: userId,
+    circuits: circuitList,
+  });
+}
+
 export default {};
 
 export {
   submitPspJob,
   getValidationsWithFiles,
   setToken,
+  getCircuitList,
+  saveCircuitList,
 };

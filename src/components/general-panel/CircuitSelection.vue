@@ -55,13 +55,8 @@
 import Vue from 'vue';
 import defaultCircuits from '@/default-data/default-circuits';
 import { CircuitInterface } from '@/interfaces/general-panel';
-import {
-  saveCircuitList,
-  saveCircuitSelected,
-  getStoredGeneralPanelCircuitSelected,
-  getStoredGeneralPanelCircuitList,
-  saveCircuitPathSync,
-} from '@/helpers/db';
+import { getCircuitList, saveCircuitList } from '@/helpers/backend-helper';
+import { saveCircuitPathSync } from '@/helpers/db';
 
 const labelSize = 6;
 const contentSize = 14;
@@ -95,6 +90,7 @@ export default Vue.extend({
       const newCircuitSelected = this.findCircuitByName(newCircuitName);
       this.$store.commit('setCurrentCircuitObj', newCircuitSelected);
       this.currentCircuit = newCircuitSelected;
+      this.saveToDB();
     },
     cancelClicked() {
       this.isEditing = false;
@@ -109,6 +105,7 @@ export default Vue.extend({
       this.isEditing = false;
       // reset new circuit fields
       this.newEditingCircuit = this.resetCircuit();
+      this.saveToDB();
     },
     findCircuitByName(circuitName: string): CircuitInterface {
       const foundCircuit = this.circuitList.find((c: CircuitInterface) => c.name === circuitName);
@@ -130,21 +127,34 @@ export default Vue.extend({
       return { name: '', path: '', displayName: '' };
     },
     saveToDB() {
-      saveCircuitList(this.circuitList);
-      saveCircuitSelected(this.currentCircuit);
-      saveCircuitPathSync(this.currentCircuit.path);
+      const { userId } = this.$store.state;
+      saveCircuitList(userId, this.circuitList);
+      saveCircuitPathSync(userId, this.currentCircuit.path);
+    },
+    findCircuitObjByPath(circuitPath: string, circuitList: Array<CircuitInterface>): CircuitInterface | null {
+      if (!circuitPath) return null;
+      const circuitObjFound = circuitList.find((circuitObj: CircuitInterface) => circuitObj.path === circuitPath);
+      if (!circuitObjFound) {
+        throw new Error('Circuit not found by Path');
+      }
+      return circuitObjFound;
     },
     async restoreStoredData() {
-      const { circuitPath } = this.$store.state.generalParamsModule;
-      const storedCircuitList: Array<CircuitInterface> = await getStoredGeneralPanelCircuitList();
-      const storedCircuitSelected: CircuitInterface | void = await getStoredGeneralPanelCircuitSelected();
+      const { userId } = this.$store.state;
+      const { circuitPath } = this.$store.getters;
+
+      const storedCircuitList: Array<CircuitInterface> = await getCircuitList(userId);
+      const storedCircuitSelected: CircuitInterface | null = await this.findCircuitObjByPath(circuitPath, storedCircuitList);
+
       if (storedCircuitSelected && circuitPath !== storedCircuitSelected.path) {
         throw new Error('Circuit saved does not match');
       }
+
       this.circuitList = storedCircuitList || Object.assign([], defaultCircuits);
       this.currentCircuit = storedCircuitSelected || Object.assign([], defaultCircuits[0]);
       this.newEditingCircuit = this.resetCircuit();
       this.$store.commit('setCurrentCircuitObj', this.currentCircuit);
+      this.saveToDB();
     },
   },
 });
