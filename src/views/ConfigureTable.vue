@@ -38,6 +38,7 @@ export default Vue.extend({
       const errorWasFound: boolean = tableComponent.tableHasErrors();
       const yamlFiles: Array<string> = tableComponent.getDataToYamlFiles();
       const { circuitPath } = this.$store.state.generalParamsModule;
+      const { userId } = this.$store.state;
 
       if (errorWasFound) {
         this.$Message.error({
@@ -58,7 +59,7 @@ export default Vue.extend({
         content: message,
         loading: true,
         onOk: () => {
-          submitPspJob(yamlFiles, circuitPath)
+          submitPspJob(yamlFiles, circuitPath, userId)
             .then(() => {
               this.$Modal.remove();
             })

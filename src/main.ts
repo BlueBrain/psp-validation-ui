@@ -8,6 +8,7 @@ import router from '@/router';
 import store from '@/store';
 import auth from '@/helpers/auth';
 import '@/assets/table.css';
+import { TokenAndUser } from '@/interfaces/auth';
 
 
 Vue.use(ViewUI, { locale });
@@ -22,8 +23,9 @@ const app = new Vue({
 
 
 auth.init()
-  .then((token: string) => {
+  .then(({ token, userId }: TokenAndUser) => {
     store.commit('setToken', token);
+    store.commit('setUserId', userId);
     app.$mount('#app');
   })
   .catch((e: Error) => {

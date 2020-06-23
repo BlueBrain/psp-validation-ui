@@ -30,14 +30,15 @@ function convertYamlToInputObj(yamlFile: string) {
   return fileObj;
 }
 
-function saveInDatabase(unicoreJobId: string, inputs: Array<DataToUpload>): Promise<AxiosResponse> {
+function saveInDatabase(unicoreJobId: string, inputs: Array<DataToUpload>, userId: string): Promise<AxiosResponse> {
   return axiosInstance.post(backendEndpoint, {
     id: unicoreJobId,
     files: inputs,
+    user: userId,
   });
 }
 
-async function submitPspJob(yamlFiles: Array<string>, circuitPath: string): Promise<JobProperties> {
+async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, userId: string): Promise<JobProperties> {
   const runConfig = defaultJobConfig;
   if (runConfig.tags) {
     runConfig.tags.push(tags.VALIDATION);
@@ -55,7 +56,7 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string): Prom
 
   const jobInfo = await submitJob(runConfig, inputs);
   try {
-    await saveInDatabase(jobInfo.id, inputs);
+    await saveInDatabase(jobInfo.id, inputs, userId);
   } catch (e) {
     throw new Error(`Error saving in the database: ${e}`);
   }

@@ -2,6 +2,7 @@
 import axios from 'axios';
 import Oidc from 'oidc-client';
 import configBBP from '@/helpers/bbp-config';
+import { TokenAndUser } from '@/interfaces/auth';
 
 let token = '';
 
@@ -26,7 +27,7 @@ function createAuthConfig() {
   return oidcConfig;
 }
 
-async function login(authMgr: Oidc.UserManager): Promise<string> {
+async function login(authMgr: Oidc.UserManager): Promise<TokenAndUser> {
   const user = window.location.hash
     ? await authMgr.signinRedirectCallback()
     : await authMgr.getUser();
@@ -42,14 +43,20 @@ async function login(authMgr: Oidc.UserManager): Promise<string> {
       await authMgr.signinRedirect();
     }
     token = user.access_token;
-    return token;
+    const userId = user.profile.preferred_username;
+    if (!userId) throw new Error('No user was found');
+
+    return {
+      token,
+      userId,
+    };
   }
   await authMgr.removeUser();
   await authMgr.signinRedirect();
-  return '';
+  return {} as TokenAndUser;
 }
 
-function init(): Promise<string> {
+function init(): Promise<TokenAndUser> {
   const oidcConfig = createAuthConfig();
   const authMgr = new Oidc.UserManager(oidcConfig);
   return login(authMgr);

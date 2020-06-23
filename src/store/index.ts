@@ -12,6 +12,7 @@ export default new Vuex.Store({
     title: '',
     packageVersion: process.env.PACKAGE_VERSION || '0',
     token: '',
+    userId: '',
   } as StateInterface,
   mutations: {
     changeTitle(state: StateInterface, newTitle: string) {
@@ -20,6 +21,9 @@ export default new Vuex.Store({
     setToken(state: StateInterface, newToken: string) {
       state.token = newToken;
       setToken(newToken);
+    },
+    setUserId(state: StateInterface, newUserId: string) {
+      state.userId = newUserId;
     },
   },
   actions: {},
