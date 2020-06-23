@@ -26,6 +26,7 @@ const tableEditingModule = {
   mutations: {
     setCurrentCircuitObj(state: StoreStateInterface, newCircuit: CircuitInterface) {
       state.currentCircuit = newCircuit;
+      state.circuitPath = newCircuit.path;
     },
     setGeneralPanelParams(state: StoreStateInterface, newParams: GeneralPanelParamsInterface) {
       state.generalParams = newParams;
@@ -33,7 +34,7 @@ const tableEditingModule = {
   },
   getters: {
     circuitPath: (state: StoreStateInterface, getters: any, rootState: RootStateInterface) => {
-      const storedCircuitPath = getStoredCircuitPathSync(rootState.userId) || '';
+      const storedCircuitPath = state.circuitPath || getStoredCircuitPathSync(rootState.userId);
       return storedCircuitPath;
     },
   },
