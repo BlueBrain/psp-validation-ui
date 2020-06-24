@@ -1,5 +1,6 @@
 
 import axios, { AxiosResponse } from 'axios';
+import template from 'lodash/template';
 import {
   submitJob,
   setAxiosToken,
@@ -7,7 +8,8 @@ import {
   getJobProperties,
   urlToComputerAndId,
 } from '@/helpers/unicore';
-import defaultJobConfig from '@/helpers/job-config';
+import { PspJobExtraParams } from '@/interfaces/backend';
+import defaultJobConfig, { validationScript } from '@/helpers/job-config';
 import { DataToUpload, JobProperties } from '@/interfaces/unicore';
 import { CircuitInterface } from '@/interfaces/general-panel';
 import { getPrePostNames } from '@/helpers/yaml-helper';
@@ -39,25 +41,42 @@ function saveInDatabase(unicoreJobId: string, inputs: Array<DataToUpload>, userI
   });
 }
 
-async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, userId: string): Promise<JobProperties> {
+function getValidationScript(circuitPath: string, extraParams: PspJobExtraParams, yamlFileNames: Array<string>): string {
+  const runScriptTemplate = validationScript.join('\n');
+  const compiled = template(runScriptTemplate);
+  const runScript = compiled({
+    blueConfigPath: circuitPath,
+    pairs: extraParams.generalParams.pairs,
+    trials: extraParams.generalParams.repetitions,
+    yamlFiles: yamlFileNames.join(' '),
+  });
+  return runScript;
+}
+
+async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extraParams: PspJobExtraParams): Promise<JobProperties> {
   const runConfig = defaultJobConfig;
   if (runConfig.tags) {
     runConfig.tags.push(tags.VALIDATION);
     runConfig.tags.push(circuitPath);
   }
-  const inputs: DataToUpload[] = [{
-    Data: 'echo "Hello World"',
-    To: 'input.sh',
-  }];
+
+  const inputs: Array<DataToUpload> = [];
+  const yamlNameList: Array<string> = [];
 
   yamlFiles.forEach((yamlStr: string) => {
     const yamlObj = convertYamlToInputObj(yamlStr);
+    yamlNameList.push(yamlObj.To);
     inputs.push(yamlObj);
+  });
+
+  inputs.push({
+    Data: getValidationScript(circuitPath, extraParams, yamlNameList),
+    To: 'input.sh',
   });
 
   const jobInfo = await submitJob(runConfig, inputs);
   try {
-    await saveInDatabase(jobInfo.id, inputs, userId);
+    await saveInDatabase(jobInfo.id, inputs, extraParams.userId);
   } catch (e) {
     throw new Error(`Error saving in the database: ${e}`);
   }

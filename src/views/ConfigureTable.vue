@@ -38,7 +38,6 @@ export default Vue.extend({
       const errorWasFound: boolean = tableComponent.tableHasErrors();
       const yamlFiles: Array<string> = tableComponent.getDataToYamlFiles();
       const { circuitPath } = this.$store.getters;
-      const { userId } = this.$store.state;
 
       if (errorWasFound) {
         this.$Message.error({
@@ -49,8 +48,10 @@ export default Vue.extend({
         return;
       }
 
-      // TODO save these YAML files and pass the circuit path and
-      // general params from store to the backend
+      const extraParams = {
+        generalParams: this.$store.state.generalParamsModule.generalParams,
+        userId: this.$store.state.userId,
+      };
 
       const message = `This might take a couple of seconds and then the
       job will be queued and processed in the HPC`;
@@ -59,7 +60,7 @@ export default Vue.extend({
         content: message,
         loading: true,
         onOk: () => {
-          submitPspJob(yamlFiles, circuitPath, userId)
+          submitPspJob(yamlFiles, circuitPath, extraParams)
             .then(() => {
               this.$Modal.remove();
             })
