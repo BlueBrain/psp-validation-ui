@@ -103,6 +103,8 @@ async function getValidationsWithFiles(circuitPath: string) {
     if (!jobInfo) throw new Error(`no job info was found for ${id}`);
 
     const files = await getFilesFromBackend(id);
+    if (!files.length) throw new Error(`no files found in database for ${id}`);
+
     return {
       id,
       jobInfo,

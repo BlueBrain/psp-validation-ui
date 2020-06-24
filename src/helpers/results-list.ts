@@ -1,6 +1,6 @@
 
 import { DataToUpload } from '@/interfaces/unicore';
-import jsYaml from 'js-yaml';
+import { transformYamlToObj } from '@/helpers/yaml-helper';
 
 function getUserByLog(log: Array<string>): string {
   console.log(log);
@@ -13,10 +13,6 @@ function getPathways(files: Array<DataToUpload>) {
     f.Data.match('');
   });
   console.log(pathways);
-}
-
-function transformYamlToObj(yaml: string) {
-  return jsYaml.load(yaml);
 }
 
 export default {};

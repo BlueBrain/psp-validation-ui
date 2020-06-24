@@ -1,97 +1,100 @@
 
 <template>
   <div class="results-table-expand">
-    <Divider />
-    <div class="title">Reference</div>
+    <div v-for="(row, index) in data" :key="index">
+      <div class="pre-post">{{ row.pathway.pre }} - {{ row.pathway.post }}</div>
 
-    <Row>
-      <i-col :span="defaultColumSize">
-        <span class="subtitle">- PSP Amplitude</span>
-      </i-col>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">mean: </span>
-        <span class="expand-value">{{ row.reference.pspAmplitude.mean.value }}</span>
-      </i-col>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">std: </span>
-        <span class="expand-value">{{ row.reference.pspAmplitude.std.value }}</span>
-      </i-col>
-      <i-col span="9">
-        <span class="expand-key">link to paper: </span>
-        <span class="expand-value">{{ row.reference.pspAmplitude.link.value }}</span>
-      </i-col>
-    </Row>
+      <div class="title">Reference</div>
+      <Row>
+        <i-col :span="defaultColumSize">
+          <span class="subtitle">- PSP Amplitude</span>
+        </i-col>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">mean: </span>
+          <span class="expand-value">{{ row.reference.psp_amplitude.mean }}</span>
+        </i-col>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">std: </span>
+          <span class="expand-value">{{ row.reference.psp_amplitude.std }}</span>
+        </i-col>
+        <i-col span="9">
+          <span class="expand-key">link to paper: </span>
+          <span class="expand-value">{{ row.reference.psp_amplitude.link }}</span>
+        </i-col>
+      </Row>
 
-    <Row>
-      <i-col :span="defaultColumSize">
-        <span class="subtitle">- Synapse Count</span>
-      </i-col>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">mean: </span>
-        <span class="expand-value">{{ row.reference.synapseCount.mean.value }}</span>
-      </i-col>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">std: </span>
-        <span class="expand-value">{{ row.reference.synapseCount.std.value }}</span>
-      </i-col>
-      <i-col span="9">
-        <span class="expand-key">link to paper: </span>
-        <span class="expand-value">{{ row.reference.synapseCount.link.value }}</span>
-      </i-col>
-    </Row>
+      <Row>
+        <i-col :span="defaultColumSize">
+          <span class="subtitle">- Synapse Count</span>
+        </i-col>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">mean: </span>
+          <span class="expand-value">{{ row.reference.synapse_count.mean }}</span>
+        </i-col>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">std: </span>
+          <span class="expand-value">{{ row.reference.synapse_count.std }}</span>
+        </i-col>
+        <i-col span="9">
+          <span class="expand-key">link to paper: </span>
+          <span class="expand-value">{{ row.reference.synapse_count.link }}</span>
+        </i-col>
+      </Row>
 
-    <Divider />
-    <div class="title">Pathways Constraints</div>
-    <Row>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">min number of synapses: </span>
-        <span class="expand-value">{{ row.pathway.constraints.minNumSyn.value }}</span>
-      </i-col>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">max number of synapses: </span>
-        <span class="expand-value">{{ row.pathway.constraints.maxNumSyn.value }}</span>
-      </i-col>
-    </Row>
-    <Row>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">max distance in x: </span>
-        <span class="expand-value">{{ row.pathway.constraints.maxDistX.value }}</span>
-      </i-col>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">max distance in y: </span>
-        <span class="expand-value">{{ row.pathway.constraints.maxDistY.value }}</span>
-      </i-col>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">max distance in z: </span>
-        <span class="expand-value">{{ row.pathway.constraints.maxDistZ.value }}</span>
-      </i-col>
-    </Row>
+      <Divider />
+      <div class="title">Pathways Constraints</div>
+      <Row>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">min number of synapses: </span>
+          <span class="expand-value">{{ row.pathway.constraints.min_nsyn }}</span>
+        </i-col>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">max number of synapses: </span>
+          <span class="expand-value">{{ row.pathway.constraints.max_nsyn }}</span>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">max distance in x: </span>
+          <span class="expand-value">{{ row.pathway.constraints.max_dist_x }}</span>
+        </i-col>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">max distance in y: </span>
+          <span class="expand-value">{{ row.pathway.constraints.max_dist_y }}</span>
+        </i-col>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">max distance in z: </span>
+          <span class="expand-value">{{ row.pathway.constraints.max_dist_z }}</span>
+        </i-col>
+      </Row>
 
-    <Divider />
-    <div class="title">Prototol</div>
-    <Row>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">steady-state voltage: </span>
-        <span class="expand-value">{{ row.protocol.holdV.value }}</span>
-      </i-col>
-      <i-col :span="defaultColumSize">
-        <span class="expand-key">post ttx: </span>
-        <span class="expand-value">{{ row.protocol.postTtx.value }}</span>
-      </i-col>
-    </Row>
+      <Divider />
+      <div class="title">Prototol</div>
+      <Row>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">steady-state voltage: </span>
+          <span class="expand-value">{{ row.protocol.hold_V }}</span>
+        </i-col>
+        <i-col :span="defaultColumSize">
+          <span class="expand-key">post ttx: </span>
+          <span class="expand-value">{{ row.protocol.post_ttx }}</span>
+        </i-col>
+      </Row>
+    </div>
   </div>
 </template>
 
 
 <script lang="ts">
 import Vue from 'vue';
+import { RowToYamlInterface } from '@/interfaces/table';
 
 const defaultColumSize = 5;
 
 export default Vue.extend({
   name: 'ResultsTableExpand',
   props: {
-    row: Object,
+    data: Array as () => Array<RowToYamlInterface>,
   },
   data() {
     return { defaultColumSize };
@@ -112,6 +115,13 @@ export default Vue.extend({
   }
   span.expand-key {
     font-weight: bold;
+  }
+  .pre-post {
+    margin: 15px 0 5px 0;
+    font-size: 1.5em;
+    color: #0083CB;
+    text-align: center;
+    border-bottom: 2px dashed;
   }
 }
 </style>

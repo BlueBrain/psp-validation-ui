@@ -37,15 +37,17 @@ import {
   ValidationsWithFiles,
   MainTableInterface,
   ResultDataInterface,
-  ExpandedTableInfoInterface,
 } from '@/interfaces/results';
+import { DataToUpload } from '@/interfaces/unicore';
 import { transformYamlToObj } from '@/helpers/results-list';
+import { RowToYamlInterface } from '@/interfaces/table';
 
 export default Vue.extend({
   name: 'ResultsTable',
   props: {
     isLoading: Boolean,
-    validations: Array,
+    validations: Array as () => Array<ValidationsWithFiles>,
+
   },
   data() {
     return {
@@ -67,11 +69,11 @@ export default Vue.extend({
     processData() {
       const dataToRender: Array<ResultDataInterface> = [];
       // TODO fix this any
-      this.validations.forEach((validationResult: any) => {
+      this.validations.forEach((validationResult: ValidationsWithFiles) => {
         const yamlFiles = validationResult.files;
-        const expandedInfoObj: ExpandedTableInfoInterface = yamlFiles
-          .map((yaml: string) => {
-            const pathwayObj = transformYamlToObj(yaml);
+        const expandedInfoObj: Array<RowToYamlInterface> = yamlFiles
+          .map((yaml: DataToUpload): RowToYamlInterface => {
+            const pathwayObj = transformYamlToObj(yaml.Data);
             return pathwayObj;
           });
 

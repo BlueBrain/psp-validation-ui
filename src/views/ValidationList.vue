@@ -13,6 +13,7 @@
 import Vue from 'vue';
 import { getValidationsWithFiles } from '@/helpers/backend-helper';
 import ResultsTable from '@/components/validation-list/ResultsTable.vue';
+import { ValidationsWithFiles } from '@/interfaces/results';
 
 export default Vue.extend({
   name: 'ValidationList',
@@ -45,9 +46,9 @@ export default Vue.extend({
     },
     getValidations() {
       getValidationsWithFiles(this.circuitPath)
-        .then((files: any) => {
+        .then((validationsWithFiles: Array<ValidationsWithFiles>) => {
           this.isLoading = false;
-          this.$set(this, 'validationsWithFiles', files);
+          this.$set(this, 'validationsWithFiles', validationsWithFiles);
         })
         .catch((e: Error) => this.$Message.error(`Error getting jobs ${e}`));
     },

@@ -96,10 +96,15 @@ function exportRowsToZip(rowsData: Array<TableRowInterface>) {
   });
 }
 
+function transformYamlToObj(yaml: string) {
+  return jsYaml.load(yaml);
+}
+
 export default {};
 
 export {
   getYamlFilesFromData,
   getPrePostNames,
   exportRowsToZip,
+  transformYamlToObj,
 };

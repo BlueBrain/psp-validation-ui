@@ -43,6 +43,12 @@ export default Vue.extend({
   components: {
     FooterVersion,
   },
+  created() {
+    this.$Message.config({
+      top: 100,
+      duration: 5,
+    });
+  },
 });
 </script>
 
