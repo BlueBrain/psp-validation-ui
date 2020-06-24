@@ -3,6 +3,7 @@
   <div class="validation-list">
     <ResultsTable
       :is-loading="isLoading"
+      :validations="validationsWithFiles"
     />
   </div>
 </template>
@@ -22,11 +23,15 @@ export default Vue.extend({
     return {
       circuitPath: '',
       isLoading: true,
+      validationsWithFiles: [],
     };
   },
   mounted() {
     this.restoreStoredData();
     this.getValidations();
+  },
+  created() {
+    this.$store.commit('changeTitle', 'Validation List');
   },
   methods: {
     restoreStoredData() {
@@ -41,8 +46,8 @@ export default Vue.extend({
     getValidations() {
       getValidationsWithFiles(this.circuitPath)
         .then((files: any) => {
-          console.log('Files', files);
           this.isLoading = false;
+          this.$set(this, 'validationsWithFiles', files);
         })
         .catch((e: Error) => this.$Message.error(`Error getting jobs ${e}`));
     },

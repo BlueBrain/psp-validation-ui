@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    <span>{{ tableEntryObject.value }}</span>
+    <span>{{ tableEntryObject }}</span>
   </div>
 </template>
 

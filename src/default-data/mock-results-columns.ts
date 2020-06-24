@@ -1,6 +1,5 @@
 
 import ResultsTableExpand from '@/components/validation-list/ResultsTableExpand.vue';
-import { getPathByKey } from '@/default-data/default-columns';
 
 const columns = [
   {
@@ -8,43 +7,32 @@ const columns = [
     width: 50,
     /* eslint-disable-next-line */
     render: (h: any, params: any) => {
-      console.log(params);
+      console.log(params.row.expanded);
+      const expandedRowInfo = params.row.expanded;
       return h(ResultsTableExpand, {
         props: {
-          row: params.row,
+          row: expandedRowInfo,
         },
       });
     },
   },
   {
-    title: 'Pre Synaptic',
+    title: 'Job Name',
     slot: 'results-viewer',
     align: 'center',
-    path: getPathByKey('preSyn'),
-  },
-  {
-    title: 'Post Synaptic',
-    slot: 'results-viewer',
-    align: 'center',
-    path: getPathByKey('postSyn'),
+    path: 'main.name',
   },
   {
     title: 'Launched',
     slot: 'results-viewer',
     align: 'center',
-    path: getPathByKey('launched'),
-  },
-  {
-    title: 'Started By',
-    slot: 'results-viewer',
-    align: 'center',
-    path: getPathByKey('startedBy'),
+    path: 'main.date',
   },
   {
     title: 'Status',
     slot: 'status-slot',
     align: 'center',
-    path: getPathByKey('status'),
+    path: 'main.status',
   },
 ];
 

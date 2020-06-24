@@ -2,7 +2,7 @@
 <template>
   <div class="inline-result-status">
     <router-link :to="{ name: 'DetailsPage', params: { tableEntryObject: tableEntryObject }}">
-      <span>{{ tableEntryObject.value }} </span>
+      <span>{{ tableEntryObject }} </span>
       <Icon type="md-open" />
     </router-link>
   </div>
