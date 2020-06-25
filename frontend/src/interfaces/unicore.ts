@@ -36,7 +36,9 @@ interface UnicoreJobDefinition {
 interface GeneralJobDefinition {
   title: string | null;
   runtime: number;
-  nodes: number;
+  cpus: number;
+  memory: string;
+  project: string;
   executable: string | null;
   tags: Array<string> | null;
   imports: Array<DataToUpload>;

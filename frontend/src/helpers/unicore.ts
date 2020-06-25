@@ -150,13 +150,6 @@ async function getFilesList(jobURL: string): Promise<Array<string>> {
 }
 
 async function generateUnicoreConfig(configParams: GeneralJobDefinition): Promise<UnicoreJobDefinition> {
-  function getNodes() {
-    // avoid setting nodes for test job submission
-    if (configParams.nodes === 0) return null;
-    return configParams.runtime < 200 ? null : configParams.nodes;
-  }
-
-  const nodes = getNodes();
   // generate jobSpecs and remove the nulls
   const unicoreConfig: UnicoreJobDefinition = cleanDeep({
     Name: configParams.title || 'unnamed job',
@@ -164,12 +157,12 @@ async function generateUnicoreConfig(configParams: GeneralJobDefinition): Promis
     Arguments: [],
     haveClientStageIn: 'true',
     Resources: {
-      Nodes: nodes,
-      CPUsPerNode: 32,
+      CPUs: configParams.cpus,
+      Memory: configParams.memory,
       Runtime: configParams.runtime,
       NodeConstraints: 'uc3',
       Queue: 'prod',
-      Project: 'proj42',
+      Project: configParams.project,
     },
     Tags: configParams.tags,
     Imports: configParams.imports,

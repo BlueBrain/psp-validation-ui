@@ -3,8 +3,10 @@ import { GeneralJobDefinition } from '@/interfaces/unicore';
 
 const defaultJobConfig: GeneralJobDefinition = {
   title: '',
-  runtime: 3600,
-  nodes: 1,
+  runtime: 14400, // 4hs
+  cpus: 1,
+  memory: '2G',
+  project: 'proj42',
   executable: '/bin/sh input.sh',
   tags: [],
   imports: [],
