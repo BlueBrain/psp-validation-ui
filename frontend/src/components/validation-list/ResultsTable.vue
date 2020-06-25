@@ -82,6 +82,7 @@ export default Vue.extend({
           name: job.name,
           status: job.status,
           date: new Date(job.submissionTime).toLocaleString(),
+          location: validationResult.physicalLocation,
         };
 
         dataToRender.push({

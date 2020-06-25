@@ -214,6 +214,15 @@ async function submitJob(
   }
 }
 
+function getJobPhysicalLocation(log: Array<string>): string {
+  const regexp = /TSI_USPACE_DIR (.*)/;
+  const matchesStr = log.find((logLine: string) => logLine.match(regexp));
+  if (!matchesStr) return '-';
+  const matched = matchesStr.match(regexp);
+  const location = matched && matched.length ? matched[1] : '-';
+  return location;
+}
+
 export {
   submitJob,
   getFilesList,
@@ -222,6 +231,7 @@ export {
   getJobProperties,
   urlToComputerAndId,
   setAxiosToken,
+  getJobPhysicalLocation,
 };
 
 export default {};

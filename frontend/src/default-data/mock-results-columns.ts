@@ -24,6 +24,12 @@ const columns = [
     path: 'main.name',
   },
   {
+    title: 'Location',
+    slot: 'results-viewer',
+    align: 'center',
+    path: 'main.location',
+  },
+  {
     title: 'Launched',
     slot: 'results-viewer',
     align: 'center',

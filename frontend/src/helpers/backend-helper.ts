@@ -7,6 +7,7 @@ import {
   getValidationJobUrls,
   getJobProperties,
   urlToComputerAndId,
+  getJobPhysicalLocation,
 } from '@/helpers/unicore';
 import { PspJobExtraParams } from '@/interfaces/backend';
 import defaultJobConfig, { validationScript } from '@/helpers/job-config';
@@ -15,6 +16,8 @@ import { CircuitInterface } from '@/interfaces/general-panel';
 import { getPrePostNames } from '@/helpers/yaml-helper';
 import { tags } from '@/constants/hpc-systems';
 import { jobsEndpoint, circuitEndpoint } from '@/constants/backend';
+import { ValidationsWithFiles } from '@/interfaces/results';
+
 
 const axiosInstance = axios.create({
   headers: {
@@ -87,12 +90,12 @@ function setToken(token: string) {
   setAxiosToken(token);
 }
 
-function getFilesFromBackend(unicoreJobId: string) {
+function getFilesFromBackend(unicoreJobId: string): Promise<Array<DataToUpload>> {
   return axiosInstance.get(jobsEndpoint, { params: { id: unicoreJobId } })
     .then((r: AxiosResponse) => r.data);
 }
 
-async function getValidationsWithFiles(circuitPath: string) {
+async function getValidationsWithFiles(circuitPath: string): Promise<Array<ValidationsWithFiles>> {
   const jobUrls = await getValidationJobUrls(circuitPath);
 
   const promises = jobUrls.map(async (url: string) => {
@@ -102,12 +105,14 @@ async function getValidationsWithFiles(circuitPath: string) {
     const jobInfo = await getJobProperties(url);
     if (!jobInfo) throw new Error(`no job info was found for ${id}`);
 
+    const physicalLocation = getJobPhysicalLocation(jobInfo.log);
+
     const files = await getFilesFromBackend(id);
-    if (!files.length) throw new Error(`no files found in database for ${id}`);
 
     return {
       id,
       jobInfo,
+      physicalLocation,
       files,
     };
   });

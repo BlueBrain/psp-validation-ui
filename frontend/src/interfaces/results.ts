@@ -6,12 +6,14 @@ interface ValidationsWithFiles {
   files: Array<DataToUpload>;
   id: string;
   jobInfo: JobProperties;
+  physicalLocation: string;
 }
 
 interface MainTableInterface {
   name: string;
   status: string;
   date: string;
+  location: string;
 }
 
 interface ResultDataInterface {
