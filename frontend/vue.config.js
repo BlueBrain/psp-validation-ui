@@ -2,6 +2,7 @@
 // eslint-disable-next-line
 const fs = require('fs');
 // eslint-disable-next-line
+const path = require('path');
 const webpack = require('webpack');
 
 const packageJson = fs.readFileSync('./package.json');
@@ -19,5 +20,10 @@ module.exports = {
         },
       }),
     ],
+    // resolve: {
+    //   alias: {
+    //     "@": path.resolve(__dirname, './src/')
+    //   }
+    // }
   },
 };

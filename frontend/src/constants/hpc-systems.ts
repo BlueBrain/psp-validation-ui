@@ -7,6 +7,11 @@ const hpc: HPCDefinition = {
     id: 'bb5',
     url: 'https://bbpunicore.epfl.ch:8080/BB5-CSCS/rest/core',
   },
+  PIZ_DAINT: {
+    name: 'MOOC Piz Daint Service Account',
+    id: 'service_account',
+    url: 'https://bspsa.cineca.it/advanced/pizdaint/rest/core',
+  },
 };
 
 const tags = {
