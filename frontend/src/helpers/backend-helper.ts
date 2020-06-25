@@ -13,10 +13,11 @@ import { PspJobExtraParams } from '@/interfaces/backend';
 import defaultJobConfig, { validationScript } from '@/helpers/job-config';
 import { DataToUpload, JobProperties } from '@/interfaces/unicore';
 import { CircuitInterface } from '@/interfaces/general-panel';
-import { getPrePostNames } from '@/helpers/yaml-helper';
+import { getPrePostNames, transformYamlToObj } from '@/helpers/yaml-helper';
 import { tags } from '@/constants/hpc-systems';
 import { jobsEndpoint, circuitEndpoint } from '@/constants/backend';
-import { ValidationsWithFiles } from '@/interfaces/results';
+import { ValidationsExpanded } from '@/interfaces/results';
+import { RowToYamlInterface } from '@/interfaces/table';
 
 
 const axiosInstance = axios.create({
@@ -93,12 +94,18 @@ function setToken(token: string) {
   setAxiosToken(token);
 }
 
-function getFilesFromBackend(unicoreJobId: string): Promise<Array<DataToUpload>> {
-  return axiosInstance.get(jobsEndpoint, { params: { id: unicoreJobId } })
+async function getFilesFromBackend(unicoreJobId: string): Promise<Array<RowToYamlInterface>> {
+  const files = await axiosInstance.get(jobsEndpoint, { params: { id: unicoreJobId } })
     .then((r: AxiosResponse) => r.data);
+  const expandedInfoObj: Array<RowToYamlInterface> = files
+    .map((yaml: DataToUpload): RowToYamlInterface => {
+      const pathwayObj = transformYamlToObj(yaml.Data);
+      return pathwayObj;
+    });
+  return expandedInfoObj;
 }
 
-async function getValidationsWithFiles(circuitPath: string): Promise<Array<ValidationsWithFiles>> {
+async function getValidationsExpanded(circuitPath: string): Promise<Array<ValidationsExpanded>> {
   const jobUrls = await getValidationJobUrls(circuitPath);
 
   const promises = jobUrls.map(async (url: string) => {
@@ -110,13 +117,10 @@ async function getValidationsWithFiles(circuitPath: string): Promise<Array<Valid
 
     const physicalLocation = getJobPhysicalLocation(jobInfo.log);
 
-    const files = await getFilesFromBackend(id);
-
     return {
       id,
       jobInfo,
       physicalLocation,
-      files,
     };
   });
 
@@ -140,8 +144,9 @@ export default {};
 
 export {
   submitPspJob,
-  getValidationsWithFiles,
+  getValidationsExpanded,
   setToken,
   getCircuitList,
   saveCircuitList,
+  getFilesFromBackend,
 };

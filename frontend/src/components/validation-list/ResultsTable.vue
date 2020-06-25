@@ -30,24 +30,20 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import defaultColumns from '@/default-data/mock-results-columns';
+import defaultColumns from '@/default-data/results-columns';
 import InlineResultViewer from '@/components/validation-list/InlineResultViewer.vue';
 import InlineResultsStatus from '@/components/validation-list/InlineResultStatus.vue';
 import {
-  ValidationsWithFiles,
+  ValidationsExpanded,
   MainTableInterface,
   ResultDataInterface,
 } from '@/interfaces/results';
-import { DataToUpload } from '@/interfaces/unicore';
-import { transformYamlToObj } from '@/helpers/results-list';
-import { RowToYamlInterface } from '@/interfaces/table';
 
 export default Vue.extend({
   name: 'ResultsTable',
   props: {
     isLoading: Boolean,
-    validations: Array as () => Array<ValidationsWithFiles>,
-
+    validations: Array as () => Array<ValidationsExpanded>,
   },
   data() {
     return {
@@ -60,7 +56,7 @@ export default Vue.extend({
     InlineResultsStatus,
   },
   watch: {
-    validations(newVal: Array<ValidationsWithFiles>) {
+    validations(newVal: Array<ValidationsExpanded>) {
       if (!newVal.length) return;
       this.processData();
     },
@@ -68,26 +64,18 @@ export default Vue.extend({
   methods: {
     processData() {
       const dataToRender: Array<ResultDataInterface> = [];
-      // TODO fix this any
-      this.validations.forEach((validationResult: ValidationsWithFiles) => {
-        const yamlFiles = validationResult.files;
-        const expandedInfoObj: Array<RowToYamlInterface> = yamlFiles
-          .map((yaml: DataToUpload): RowToYamlInterface => {
-            const pathwayObj = transformYamlToObj(yaml.Data);
-            return pathwayObj;
-          });
-
+      this.validations.forEach((validationResult: ValidationsExpanded) => {
         const job = validationResult.jobInfo;
         const mainTableResults: MainTableInterface = {
           name: job.name,
           status: job.status,
           date: new Date(job.submissionTime).toLocaleString(),
           location: validationResult.physicalLocation,
+          id: validationResult.id,
         };
 
         dataToRender.push({
           main: mainTableResults,
-          expanded: expandedInfoObj,
         });
       });
       this.rowData = dataToRender;

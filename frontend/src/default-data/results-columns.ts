@@ -1,6 +1,6 @@
 
 import ResultsTableExpand from '@/components/validation-list/ResultsTableExpand.vue';
-import { RowToYamlInterface } from '@/interfaces/table';
+// import { RowToYamlInterface } from '@/interfaces/table';
 
 const columns = [
   {
@@ -8,11 +8,10 @@ const columns = [
     width: 50,
     /* eslint-disable-next-line */
     render: (h: any, params: any) => {
-      console.log(params.row.expanded);
-      const expandedRowInfo: Array<RowToYamlInterface> = params.row.expanded;
+      const { id }: { id: string } = params.row.main;
       return h(ResultsTableExpand, {
         props: {
-          data: expandedRowInfo,
+          id,
         },
       });
     },

@@ -2,8 +2,7 @@
 import { DataToUpload, JobProperties } from '@/interfaces/unicore';
 import { RowToYamlInterface } from '@/interfaces/table';
 
-interface ValidationsWithFiles {
-  files: Array<DataToUpload>;
+interface ValidationsExpanded {
   id: string;
   jobInfo: JobProperties;
   physicalLocation: string;
@@ -14,11 +13,12 @@ interface MainTableInterface {
   status: string;
   date: string;
   location: string;
+  id: string;
 }
 
 interface ResultDataInterface {
   main: MainTableInterface;
-  expanded: Array<RowToYamlInterface>;
+  // expanded: Array<RowToYamlInterface>;
 }
 
 export default {};
@@ -26,5 +26,5 @@ export default {};
 export {
   MainTableInterface,
   ResultDataInterface,
-  ValidationsWithFiles,
+  ValidationsExpanded,
 };

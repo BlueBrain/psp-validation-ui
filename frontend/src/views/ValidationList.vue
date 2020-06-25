@@ -3,7 +3,7 @@
   <div class="validation-list">
     <ResultsTable
       :is-loading="isLoading"
-      :validations="validationsWithFiles"
+      :validations="validationsExpanded"
     />
   </div>
 </template>
@@ -11,9 +11,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { getValidationsWithFiles } from '@/helpers/backend-helper';
+import { getValidationsExpanded } from '@/helpers/backend-helper';
 import ResultsTable from '@/components/validation-list/ResultsTable.vue';
-import { ValidationsWithFiles } from '@/interfaces/results';
+import { ValidationsExpanded } from '@/interfaces/results';
 
 export default Vue.extend({
   name: 'ValidationList',
@@ -24,7 +24,7 @@ export default Vue.extend({
     return {
       circuitPath: '',
       isLoading: true,
-      validationsWithFiles: [],
+      validationsExpanded: [],
     };
   },
   mounted() {
@@ -45,10 +45,10 @@ export default Vue.extend({
       this.circuitPath = circuitPath;
     },
     getValidations() {
-      getValidationsWithFiles(this.circuitPath)
-        .then((validationsWithFiles: Array<ValidationsWithFiles>) => {
+      getValidationsExpanded(this.circuitPath)
+        .then((validationsExpanded: Array<ValidationsExpanded>) => {
           this.isLoading = false;
-          this.$set(this, 'validationsWithFiles', validationsWithFiles);
+          this.$set(this, 'validationsExpanded', validationsExpanded);
         })
         .catch((e: Error) => this.$Message.error(`Error getting jobs ${e.message}`));
     },
