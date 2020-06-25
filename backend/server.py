@@ -1,18 +1,24 @@
 
 from tornado.web import Application, RequestHandler
+from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.log import enable_pretty_logging
 from pymongo import MongoClient
 import datetime
 import json
 import logging
-
-client = MongoClient('localhost', 27017)
-db = client['psp']
+import os
 
 L = logging.getLogger(__name__)
 L.setLevel(logging.DEBUG)
 
+DB_HOST = os.getenv('DB_HOST')
+DEBUG = os.getenv('DEBUG')
+DB_ENDPOINT = 'mongodb://{}:27017/psp'.format(DB_HOST)
+L.info('Using mongo: {}'.format(DB_ENDPOINT))
+client = MongoClient(DB_ENDPOINT)
+
+db = client.get_default_database()
 
 class StatusHandler(RequestHandler):
   def get(self):
@@ -42,8 +48,11 @@ class JobHandler(RequestHandler):
     if not unicore_job_id:
       return self.write({'message': 'Object not found'})
     
-    document = do_find_validation_by_unicore_id(unicore_job_id)
-    files = document['files']
+    document = get_validation_files_by_unicore_id(unicore_job_id)
+    if not document:
+      files = []
+    else:
+      files = document['files']
     self.write(json.dumps(files))
 
   def post(self):
@@ -99,6 +108,8 @@ class CircuitHandler(RequestHandler):
 
 def get_circuit_list(user_id):
   document = db.circuits.find_one({'userId': user_id})
+  if not document:
+    return []
   return document['circuits']
 
 def insert_circuit_list(data_json):
@@ -114,7 +125,7 @@ def do_find_validation():
   document = db.validation_config.find_one()
   return document
 
-def do_find_validation_by_unicore_id(unicore_id):
+def get_validation_files_by_unicore_id(unicore_id):
   document = db.validation_config.find_one({'id': unicore_id})
   return document
 
@@ -124,11 +135,11 @@ def do_insert(data):
 
 def make_app():
   urls = [
-    ("/", StatusHandler),
+    ("/api/", StatusHandler),
     ("/api/job", JobHandler),
     ("/api/circuits", CircuitHandler),
   ]
-  return Application(urls, db=db, debug=True)
+  return Application(urls, db=db, debug=DEBUG)
 
 if __name__ == '__main__':
     app = make_app()

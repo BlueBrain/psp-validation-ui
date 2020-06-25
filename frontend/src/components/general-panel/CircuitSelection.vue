@@ -19,23 +19,23 @@
       title="Edit Circuit"
       @on-cancel="cancelClicked"
     >
-      <Row>
+      <Row type="flex" justify="center" align="middle">
         <!-- use i-col to avoid linting error -->
+        <i-col :span="labelSize">Display Name</i-col>
+        <i-col :span="contentSize">
+          <Input v-model="newEditingCircuit.displayName"/>
+        </i-col>
+      </Row>
+      <Row type="flex" justify="center" align="middle">
         <i-col :span="labelSize">Name</i-col>
         <i-col :span="contentSize">
           <Input v-model="newEditingCircuit.name"/>
         </i-col>
       </Row>
-      <Row>
+      <Row type="flex" justify="center" align="middle">
         <i-col :span="labelSize">Path</i-col>
         <i-col :span="contentSize">
           <Input v-model="newEditingCircuit.path"/>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col :span="labelSize">Display Name</i-col>
-        <i-col :span="contentSize">
-          <Input v-model="newEditingCircuit.displayName"/>
         </i-col>
       </Row>
       <div slot="footer">
@@ -134,10 +134,7 @@ export default Vue.extend({
     findCircuitObjByPath(circuitPath: string, circuitList: Array<CircuitInterface>): CircuitInterface | null {
       if (!circuitPath) return null;
       const circuitObjFound = circuitList.find((circuitObj: CircuitInterface) => circuitObj.path === circuitPath);
-      if (!circuitObjFound) {
-        throw new Error('Circuit not found by Path');
-      }
-      return circuitObjFound;
+      return circuitObjFound || null;
     },
     async restoreStoredData() {
       const { userId } = this.$store.state;
@@ -150,7 +147,7 @@ export default Vue.extend({
         throw new Error('Circuit saved does not match');
       }
 
-      this.circuitList = storedCircuitList || Object.assign([], defaultCircuits);
+      this.circuitList = storedCircuitList.length ? storedCircuitList : Object.assign([], defaultCircuits);
       this.currentCircuit = storedCircuitSelected || Object.assign([], defaultCircuits[0]);
       this.newEditingCircuit = this.resetCircuit();
       this.$store.commit('setCurrentCircuitObj', this.currentCircuit);

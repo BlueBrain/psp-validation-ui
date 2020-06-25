@@ -65,7 +65,7 @@ export default Vue.extend({
               this.$Modal.remove();
             })
             .catch((e: Error) => {
-              this.$Message.error(`Error submitting psp job: ${e}`);
+              this.$Message.error(`Error submitting psp job: ${e.message}`);
             });
         },
       });

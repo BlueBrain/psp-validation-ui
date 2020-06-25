@@ -78,7 +78,7 @@ function actionJob(actionURL: string) {
 function getInfoByUrl(transferUrl: string): Promise<JobProperties> {
   return axiosInstance.get(transferUrl)
     .then((r: AxiosResponse) => r.data)
-    .catch((e: Error) => { throw new Error(`getInfoByUrl ${e}`); });
+    .catch((e: Error) => { throw new Error(`getInfoByUrl ${e.message}`); });
 }
 
 function urlToComputerAndId(jobURL: string): UrlToComputerAndIdInterface {
@@ -116,7 +116,7 @@ async function getValidationJobUrls(circuitPath: string): Promise<Array<string>>
   const queryStr = `tags=${tags.VALIDATION},${circuitPath}`;
   return axiosInstance(`${unicoreURL}/jobs?${queryStr}`)
     .then((r: AxiosResponse) => get(r, 'data.jobs', []))
-    .catch((e: Error) => { throw new Error(`getting getValidationJobUrls ${e}`); });
+    .catch((e: Error) => { throw new Error(`getting getValidationJobUrls ${e.message}`); });
 }
 
 async function getJobProperties(jobURL: string): Promise<JobProperties | null> {
@@ -128,7 +128,7 @@ async function getJobProperties(jobURL: string): Promise<JobProperties | null> {
     try {
       jobInfo = await getInfoByUrl(jobURL);
     } catch (e) {
-      throw new Error(`getJobProperties ${e}`);
+      throw new Error(`getJobProperties ${e.message}`);
     }
     if (!jobInfo) return null;
     const { id } = urlToComputerAndId(jobInfo._links.self.href);

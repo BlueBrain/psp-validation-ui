@@ -78,7 +78,7 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
   try {
     await saveInDatabase(jobInfo.id, inputs, extraParams.userId);
   } catch (e) {
-    throw new Error(`Error saving in the database: ${e}`);
+    throw new Error(`Error saving in the database: ${e.message}`);
   }
   return jobInfo;
 }

@@ -50,7 +50,7 @@ export default Vue.extend({
           this.isLoading = false;
           this.$set(this, 'validationsWithFiles', validationsWithFiles);
         })
-        .catch((e: Error) => this.$Message.error(`Error getting jobs ${e}`));
+        .catch((e: Error) => this.$Message.error(`Error getting jobs ${e.message}`));
     },
   },
 });
