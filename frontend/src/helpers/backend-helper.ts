@@ -62,14 +62,15 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
     runConfig.tags.push(tags.VALIDATION);
     runConfig.tags.push(circuitPath);
   }
+  runConfig.title = extraParams.title;
 
-  const inputs: Array<DataToUpload> = [];
+  let inputs: Array<DataToUpload> = [];
   const yamlNameList: Array<string> = [];
 
-  yamlFiles.forEach((yamlStr: string) => {
+  const yamlsToInput = yamlFiles.map((yamlStr: string) => {
     const yamlObj = convertYamlToInputObj(yamlStr);
     yamlNameList.push(yamlObj.To);
-    inputs.push(yamlObj);
+    return yamlObj;
   });
 
   inputs.push({
@@ -77,9 +78,11 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
     To: 'input.sh',
   });
 
+  inputs = inputs.concat(yamlsToInput);
+
   const jobInfo = await submitJob(runConfig, inputs);
   try {
-    await saveInDatabase(jobInfo.id, inputs, extraParams.userId);
+    await saveInDatabase(jobInfo.id, yamlsToInput, extraParams.userId);
   } catch (e) {
     throw new Error(`Error saving in the database: ${e.message}`);
   }

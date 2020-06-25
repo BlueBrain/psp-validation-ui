@@ -12,14 +12,27 @@
 
       <Button type="success" @click="runValidation">Run PSP</Button>
     </div>
+
+    <Modal
+      v-model="showModal"
+      @on-ok="submitValidation"
+      :loading="true"
+      title="Submit Job"
+    >
+      <i-input v-model="jobTitle">
+        <span slot="prepend">Job Title:</span>
+      </i-input>
+    </Modal>
   </div>
 </template>
+
 
 <script lang="ts">
 import Vue from 'vue';
 import PSPTable from '@/components/configure-table/PSPTable.vue';
 import { submitPspJob } from '@/helpers/backend-helper';
-
+import { PspJobExtraParams } from '@/interfaces/backend';
+import { JobProperties } from '@/interfaces/unicore';
 
 export default Vue.extend({
   name: 'ConfigureTable',
@@ -29,15 +42,18 @@ export default Vue.extend({
   created() {
     this.$store.commit('changeTitle', 'Configure Validation Pathways');
   },
+  data() {
+    return {
+      showModal: false,
+      jobTitle: '',
+    };
+  },
   methods: {
     runValidation() {
-      this.saveTable();
       // eslint-disable-next-line
       const tableComponent = (this.$refs.pspTableRef as any);
 
       const errorWasFound: boolean = tableComponent.tableHasErrors();
-      const yamlFiles: Array<string> = tableComponent.getDataToYamlFiles();
-      const { circuitPath } = this.$store.getters;
 
       if (errorWasFound) {
         this.$Message.error({
@@ -47,28 +63,32 @@ export default Vue.extend({
         });
         return;
       }
+      this.saveTable();
+      this.showModal = true;
+    },
+    submitValidation() {
+      // eslint-disable-next-line
+      const tableComponent = (this.$refs.pspTableRef as any);
 
-      const extraParams = {
+      const yamlFiles: Array<string> = tableComponent.getDataToYamlFiles();
+      const { circuitPath } = this.$store.getters;
+
+      const extraParams: PspJobExtraParams = {
         generalParams: this.$store.state.generalParamsModule.generalParams,
         userId: this.$store.state.userId,
+        title: this.jobTitle || null,
       };
-
-      const message = `This might take a couple of seconds and then the
-      job will be queued and processed in the HPC`;
-      this.$Modal.warning({
-        title: 'Launch Job',
-        content: message,
-        loading: true,
-        onOk: () => {
-          submitPspJob(yamlFiles, circuitPath, extraParams)
-            .then(() => {
-              this.$Modal.remove();
-            })
-            .catch((e: Error) => {
-              this.$Message.error(`Error submitting psp job: ${e.message}`);
-            });
-        },
-      });
+      submitPspJob(yamlFiles, circuitPath, extraParams)
+        .then((jobInfo: JobProperties) => {
+          this.showModal = false;
+          this.$Message.info({
+            content: `Job Created: ${jobInfo.id}`,
+            duration: 6,
+          });
+        })
+        .catch((e: Error) => {
+          this.$Message.error(`Error submitting psp job: ${e.message}`);
+        });
     },
     saveTable() {
       // TODO check why this is failing without parsing
