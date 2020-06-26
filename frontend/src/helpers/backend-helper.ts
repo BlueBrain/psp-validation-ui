@@ -8,6 +8,7 @@ import {
   getJobProperties,
   urlToComputerAndId,
   getJobPhysicalLocation,
+  getFinalStatus,
 } from '@/helpers/unicore';
 import { PspJobExtraParams } from '@/interfaces/backend';
 import defaultJobConfig, { validationScript } from '@/helpers/job-config';
@@ -151,4 +152,5 @@ export {
   getCircuitList,
   saveCircuitList,
   getFilesFromBackend,
+  getFinalStatus,
 };

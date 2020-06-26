@@ -12,6 +12,7 @@ import {
   DataToUpload,
   HPCComputer,
 } from '@/interfaces/unicore';
+import { jobStatus, jobExitCode } from '@/constants/backend';
 
 /* eslint-disable no-underscore-dangle */
 
@@ -216,6 +217,13 @@ function getJobPhysicalLocation(log: Array<string>): string {
   return location;
 }
 
+
+function getFinalStatus(jobInfo: JobProperties) {
+  return jobStatus.SUCCESSFUL === jobInfo.status
+    ? jobExitCode[jobInfo.exitCode]
+    : jobInfo.status;
+}
+
 export {
   submitJob,
   getFilesList,
@@ -225,6 +233,7 @@ export {
   urlToComputerAndId,
   setAxiosToken,
   getJobPhysicalLocation,
+  getFinalStatus,
 };
 
 export default {};

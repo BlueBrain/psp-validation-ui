@@ -38,6 +38,7 @@ import {
   MainTableInterface,
   ResultDataInterface,
 } from '@/interfaces/results';
+import { getFinalStatus } from '@/helpers/backend-helper';
 
 export default Vue.extend({
   name: 'ResultsTable',
@@ -66,9 +67,10 @@ export default Vue.extend({
       const dataToRender: Array<ResultDataInterface> = [];
       this.validations.forEach((validationResult: ValidationsExpanded) => {
         const job = validationResult.jobInfo;
+
         const mainTableResults: MainTableInterface = {
           name: job.name,
-          status: job.status,
+          status: getFinalStatus(job),
           date: new Date(job.submissionTime).toLocaleString(),
           location: validationResult.physicalLocation,
           id: validationResult.id,

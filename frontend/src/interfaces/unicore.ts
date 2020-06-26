@@ -52,6 +52,7 @@ interface DataToUpload {
 interface JobProperties {
   acl: []
   currentTime: string;
+  exitCode: string;
   id: string;
   log: Array<string>;
   name: string;
