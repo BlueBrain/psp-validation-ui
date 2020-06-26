@@ -53,6 +53,8 @@ function getValidationScript(circuitPath: string, extraParams: PspJobExtraParams
     pairs: extraParams.generalParams.pairs,
     trials: extraParams.generalParams.repetitions,
     yamlFiles: yamlFileNames.join(' '),
+    saveTraces: extraParams.generalParams.saveTraces ? '--dump-traces' : '',
+    saveAmplitudes: extraParams.generalParams.saveAmplitudes ? '--dump-amplitudes' : '',
   });
   return runScript;
 }

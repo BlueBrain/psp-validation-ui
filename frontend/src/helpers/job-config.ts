@@ -22,7 +22,13 @@ const validationScript: Array<string> = [
   'module load psp-validation',
   'export TARGETS="/gpfs/bbp.cscs.ch/project/proj42/home/ecker/psp-validation/usecases/hippocampus/targets.yaml"',
   '# psp --version',
-  'psp -vv run -c <%= blueConfigPath %> -o . -t $TARGETS -j 0 -n <%= pairs %> -r <%= trials %> <%= yamlFiles %>',
+  'psp -vv run -c <%= blueConfigPath %> -o . -t $TARGETS -n <%= pairs %> '
+    + '-r <%= trials %> <%= saveTraces %> <%= saveAmplitudes %> <%= yamlFiles %>',
+  `if [ $? -eq 0 ]; then
+    psp -vv plot -o . ./*.traces.h5
+  else
+    echo 'PSP FAIL'
+  fi`,
 ];
 
 export default defaultJobConfig;

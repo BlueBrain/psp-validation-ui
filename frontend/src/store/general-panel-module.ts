@@ -18,7 +18,7 @@ const stateValues: StoreStateInterface = {
     clamp: 'Current',
     saveTraces: true,
     saveAmplitudes: false,
-  },
+  } as GeneralPanelParamsInterface,
 };
 
 const tableEditingModule = {
