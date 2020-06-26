@@ -8,6 +8,7 @@ import {
   getJobProperties,
   urlToComputerAndId,
   getJobPhysicalLocation,
+  getJobExpandedById,
   getFinalStatus,
 } from '@/helpers/unicore';
 import { PspJobExtraParams } from '@/interfaces/backend';
@@ -153,4 +154,6 @@ export {
   saveCircuitList,
   getFilesFromBackend,
   getFinalStatus,
+  getJobPhysicalLocation,
+  getJobExpandedById,
 };

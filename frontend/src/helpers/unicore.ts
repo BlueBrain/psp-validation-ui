@@ -217,6 +217,11 @@ function getJobPhysicalLocation(log: Array<string>): string {
   return location;
 }
 
+function getJobExpandedById(jobId: string): Promise<JobProperties | null> {
+  const computer = getComputerUrl();
+  const url = `${computer}/jobs/${jobId}`;
+  return getJobProperties(url);
+}
 
 function getFinalStatus(jobInfo: JobProperties) {
   return jobStatus.SUCCESSFUL === jobInfo.status
@@ -233,6 +238,7 @@ export {
   urlToComputerAndId,
   setAxiosToken,
   getJobPhysicalLocation,
+  getJobExpandedById,
   getFinalStatus,
 };
 
