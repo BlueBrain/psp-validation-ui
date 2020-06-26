@@ -21,7 +21,7 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "list" */ '@/views/ValidationList.vue'),
   },
   {
-    path: '/details',
+    path: '/details/:id',
     name: 'DetailsPage',
     component: () => import(/* webpackChunkName: "details" */ '@/views/DetailsPage.vue'),
     props: true,
