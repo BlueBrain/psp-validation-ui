@@ -3,7 +3,7 @@
   <div class="details-page">
     <DetailsHeader :job-info="resultData.jobInfo"/>
     <PlotComponent :plot-list="resultData.plotList"/>
-    <DetailsFiles :result-data="resultData"/>
+    <DetailsFiles :id="id"/>
   </div>
 </template>
 

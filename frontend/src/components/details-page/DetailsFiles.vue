@@ -1,14 +1,14 @@
 
 <template>
   <div class="details-files">
-    <Collapse>
-      <Panel name="1">
-        BlueConfig
-        <p slot="content">{{ resultData.blueConfig }}</p>
-      </Panel>
-      <Panel name="2">
+    <Collapse @on-change="openFile">
+      <Panel name="pathways">
         Pathways
-        <p slot="content">{{ resultData.pathways }}</p>
+        <div slot="content">
+          <div v-if="expanded('pathways')">
+            <ResultsTableExpand :id="id"/>
+          </div>
+        </div>
       </Panel>
     </Collapse>
   </div>
@@ -17,11 +17,28 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import ResultsTableExpand from '@/components/validation-list/ResultsTableExpand.vue';
 
 export default Vue.extend({
   name: 'DetailsFiles',
   props: {
-    resultData: Object, // TODO add complex result type
+    id: String,
+  },
+  data() {
+    return {
+      openedFiles: [] as Array<string>,
+    };
+  },
+  components: {
+    ResultsTableExpand,
+  },
+  methods: {
+    openFile(fileList: Array<string>) {
+      this.openedFiles = fileList;
+    },
+    expanded(fileName: string): boolean {
+      return this.openedFiles.includes(fileName);
+    },
   },
 });
 </script>
