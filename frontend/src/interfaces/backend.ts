@@ -7,8 +7,18 @@ interface PspJobExtraParams {
   title: string | null;
 }
 
+interface PlotsPathsObj {
+  plotPathArray: Array<string>;
+  pathwayName: string;
+  pairsArray: Array<{
+    plotData: string;
+    name: string;
+  }>
+}
+
 export default {};
 
 export {
   PspJobExtraParams,
+  PlotsPathsObj,
 };

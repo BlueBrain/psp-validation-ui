@@ -1,4 +1,5 @@
 
+/* eslint-disable no-underscore-dangle */
 import axios, { AxiosResponse } from 'axios';
 import template from 'lodash/template';
 import {
@@ -10,10 +11,12 @@ import {
   getJobPhysicalLocation,
   getJobExpandedById,
   getFinalStatus,
+  getFilesList,
+  getImage,
 } from '@/helpers/unicore';
-import { PspJobExtraParams } from '@/interfaces/backend';
+import { PspJobExtraParams, PlotsPathsObj } from '@/interfaces/backend';
 import defaultJobConfig, { validationScript } from '@/helpers/job-config';
-import { DataToUpload, JobProperties } from '@/interfaces/unicore';
+import { DataToUpload, JobProperties, FileObjInterface } from '@/interfaces/unicore';
 import { CircuitInterface } from '@/interfaces/general-panel';
 import { getPrePostNames, transformYamlToObj } from '@/helpers/yaml-helper';
 import { tags } from '@/constants/hpc-systems';
@@ -144,6 +147,43 @@ function saveCircuitList(userId: string, circuitList: Array<CircuitInterface>) {
   });
 }
 
+async function getValidationPlots(jobInfo: JobProperties): Promise<Array<PlotsPathsObj>> {
+  const url = `${jobInfo._links.workingDirectory.href}/files/`;
+  const returnRawObject = true;
+  const filesObj = (await getFilesList(url, returnRawObject) as Array<FileObjInterface>);
+  const folders = Object.keys(filesObj).filter((file: string) => file.endsWith('/'));
+
+  const plotObjectsPromises = folders.map(async (pathwayName: string) => {
+    const folderURL = url + pathwayName;
+    const plotPathArray = await getFilesList(folderURL) as Array<string>;
+    // fetch images for each path
+    const plots = plotPathArray.map((imgPath: string) => getImage(url + imgPath));
+    // TODO remove this
+    const plotsDataResolved = await Promise.all(plots);
+
+    const pairsArray = plotPathArray.map((pairPath: string, index: number) => {
+      const pairNameMatch = pairPath.match(/\/(\w+-\w+)\.\w+$/);
+      const name = (!pairNameMatch || pairNameMatch.length < 2)
+        ? 'Unknown Pair'
+        : pairNameMatch[1];
+      return {
+        plotData: plotsDataResolved[index],
+        name,
+      };
+    });
+
+    const plotPathObj: PlotsPathsObj = {
+      pathwayName: pathwayName.replace(/\//g, ''),
+      plotPathArray,
+      pairsArray,
+    };
+    return plotPathObj;
+  });
+
+  const plotObjArray = await Promise.all(plotObjectsPromises);
+  return plotObjArray;
+}
+
 export default {};
 
 export {
@@ -156,4 +196,5 @@ export {
   getFinalStatus,
   getJobPhysicalLocation,
   getJobExpandedById,
+  getValidationPlots,
 };

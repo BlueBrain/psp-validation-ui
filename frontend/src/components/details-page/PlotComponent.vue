@@ -1,20 +1,37 @@
 
 <template>
   <div class="plot-component">
-    <img src="@/assets/mock-psp-plot.png" alt="psp result plot">
-    <img src="@/assets/mock-psp-plot.png" alt="psp result plot">
-    <img src="@/assets/mock-psp-plot.png" alt="psp result plot">
+    <Spin v-if="!plotList || !plotList.length"></Spin>
+    <div
+      class="patways"
+      v-for="pathway in plotList"
+      :key="pathway.pathwayName"
+    >
+      <span class="pathway-title">
+        {{ pathway.pathwayName }}
+      </span>
+
+      <div class="img-container">
+        <div
+          v-for="pair in pathway.pairsArray"
+          :key="pair.name"
+        >
+          <img :src="pair.plotData">
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 
 <script lang="ts">
 import Vue from 'vue';
+import { PlotsPathsObj } from '@/interfaces/backend';
 
 export default Vue.extend({
   name: 'PlotComponent',
   props: {
-    resultData: Object, // TODO add complex result type
+    plotList: Array as () => Array<PlotsPathsObj>,
   },
 });
 </script>
@@ -26,7 +43,13 @@ export default Vue.extend({
   justify-content: space-around;
 
   img {
-    max-width: 30%;
+    max-width: 80%;
+  }
+
+  .pathway-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #0083CB;
   }
 }
 </style>

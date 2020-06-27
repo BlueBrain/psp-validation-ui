@@ -78,6 +78,37 @@ interface JobProperties {
   }
 }
 
+interface FileObjInterface {
+  [key: string]: {
+    owner: string;
+    size: number;
+    lastAccessed: Date;
+    isDirectory: boolean;
+    group: string;
+  }
+}
+
+interface UnicoreJobFiles {
+  owner: string;
+  size: number;
+  children: Array<string>;
+  _links:{
+    next:{
+      href: string;
+    }
+    self:{
+      href: string;
+    }
+    parentStorage:{
+      description: string;
+      href: string;  
+    }
+  }
+  lastAccessed: Date;
+  isDirectory: string;
+  content: Array<FileObjInterface>
+}
+
 export default {};
 
 export {
@@ -88,4 +119,6 @@ export {
   JobProperties,
   HPCComputer,
   HPCDefinition,
+  UnicoreJobFiles,
+  FileObjInterface,
 };

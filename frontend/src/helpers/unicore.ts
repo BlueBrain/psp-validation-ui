@@ -11,6 +11,8 @@ import {
   JobProperties,
   DataToUpload,
   HPCComputer,
+  UnicoreJobFiles,
+  FileObjInterface,
 } from '@/interfaces/unicore';
 import { jobStatus, jobExitCode } from '@/constants/backend';
 
@@ -40,10 +42,9 @@ function init() {
 
     if (
       newConfig.url.includes('/core/storages/')
-      && !newConfig.url.endsWith('/files')
-      && !newConfig.url.endsWith('/files/')
-      && !newConfig.url.endsWith('uspace')
+      && /\/.+\.[0-9a-z]+$/.test(newConfig.url)
     ) {
+      // is a file, download fetch data
       newConfig.headers.Accept = 'application/octet-stream';
     }
 
@@ -140,14 +141,12 @@ async function getJobProperties(jobURL: string): Promise<JobProperties | null> {
   return jobInfo;
 }
 
-async function getFilesList(jobURL: string): Promise<Array<string>> {
-  try {
-    const response = await getInfoByUrl(jobURL);
-    const filesObj = get(response, 'data.content', {});
-    return Object.keys(filesObj);
-  } catch (e) {
-    return [];
-  }
+async function getFilesList(jobURL: string, rawObject: boolean = false): Promise<Array<string | FileObjInterface>> {
+  const response: AxiosResponse = await axiosInstance.get(jobURL)
+    .catch((e: Error) => { throw new Error(`getFilesByUrl ${e.message}`); });
+  const filesObj: UnicoreJobFiles = response.data;
+  if (rawObject) return filesObj.content;
+  return Object.keys(filesObj.content);
 }
 
 async function generateUnicoreConfig(configParams: GeneralJobDefinition): Promise<UnicoreJobDefinition> {
@@ -229,6 +228,24 @@ function getFinalStatus(jobInfo: JobProperties) {
     : jobInfo.status;
 }
 
+async function getImage(imageURL: string): Promise<string> {
+  const response = await axiosInstance({
+    url: imageURL,
+    method: 'get',
+    responseType: 'blob',
+  });
+  // convert blob to Image
+  const imgPromise: Promise<string> = new Promise((resolve: any) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      resolve(reader.result);
+    }, false);
+    reader.readAsDataURL(response.data);
+  });
+  const imgData = await imgPromise;
+  return imgData;
+}
+
 export {
   submitJob,
   getFilesList,
@@ -240,6 +257,7 @@ export {
   getJobPhysicalLocation,
   getJobExpandedById,
   getFinalStatus,
+  getImage,
 };
 
 export default {};
