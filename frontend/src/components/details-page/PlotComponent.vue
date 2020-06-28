@@ -1,7 +1,11 @@
 
 <template>
   <div class="plot-component">
-    <Spin v-if="!plotList || !plotList.length"></Spin>
+    <Spin v-if="isLoading"></Spin>
+    <Alert
+      v-if="!isLoading && plotList && !plotList.length"
+      type="warning"
+    >No plots were found</Alert>
     <div
       class="patways"
       v-for="pathway in plotList"
@@ -32,6 +36,16 @@ export default Vue.extend({
   name: 'PlotComponent',
   props: {
     plotList: Array as () => Array<PlotsPathsObj>,
+  },
+  data() {
+    return {
+      isLoading: true,
+    };
+  },
+  watch: {
+    plotList(newVal: Array<PlotsPathsObj>) {
+      this.isLoading = false;
+    },
   },
 });
 </script>

@@ -55,7 +55,7 @@ export default Vue.extend({
 <style lang="scss">
 .details-header {
   .custom-tag-group {
-    margin: 10px;
+    margin-left: 10px;
     color: red;
     .ivu-tag {
       margin-right: 0;

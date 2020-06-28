@@ -12,7 +12,10 @@ function getActualAuthProvider() {
 
 function createAuthConfig() {
   const actualAuthProvider = getActualAuthProvider();
-  const redirect = `${window.location.origin}${process.env.BASE_URL}`;
+  const redirect = window.location.origin
+    + process.env.BASE_URL
+    + window.location.pathname
+    + window.location.search;
 
   const oidcConfig = {
     /* eslint-disable @typescript-eslint/camelcase */

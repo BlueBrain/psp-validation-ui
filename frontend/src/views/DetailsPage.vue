@@ -55,7 +55,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .details-page {
-  margin-top: 15vh;
+  margin-top: 5vh;
 
   .details-header {
     margin-bottom: 10vh;

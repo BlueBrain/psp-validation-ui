@@ -33,7 +33,7 @@
         </i-col>
       </Row>
       <Row type="flex" justify="center" align="middle">
-        <i-col :span="labelSize">Path</i-col>
+        <i-col :span="labelSize">CircuitConfig Path</i-col>
         <i-col :span="contentSize">
           <Input v-model="newEditingCircuit.path"/>
         </i-col>

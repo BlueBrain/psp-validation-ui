@@ -66,7 +66,7 @@ export default Vue.extend({
   font-size: 20px;
 }
 .app-content {
-  min-height: calc(100vh - 64px - 50px);
+  min-height: calc(100vh - 70px - 65px);
 }
 .app-header {
   display: flex;
