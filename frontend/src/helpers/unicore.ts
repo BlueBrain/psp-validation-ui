@@ -1,5 +1,5 @@
 
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosPromise } from 'axios';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import cleanDeep from 'clean-deep';
@@ -46,11 +46,6 @@ function init() {
     ) {
       // is a file, download fetch data
       newConfig.headers.Accept = 'application/octet-stream';
-    }
-
-    // avoid sending param when ask for the user projects
-    if (newConfig.url.endsWith('/rest/core')) {
-      delete newConfig.headers['X-UNICORE-User-Preferences'];
     }
 
     return newConfig;
@@ -245,6 +240,12 @@ async function getImage(imageURL: string): Promise<string> {
   const imgData = await imgPromise;
   return imgData;
 }
+function deleteJob(url: string): AxiosPromise {
+  return axiosInstance({
+    url,
+    method: 'delete',
+  });
+}
 
 export {
   submitJob,
@@ -258,6 +259,7 @@ export {
   getJobExpandedById,
   getFinalStatus,
   getImage,
+  deleteJob,
 };
 
 export default {};

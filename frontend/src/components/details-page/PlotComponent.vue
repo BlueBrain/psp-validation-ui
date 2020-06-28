@@ -43,7 +43,7 @@ export default Vue.extend({
     };
   },
   watch: {
-    plotList(newVal: Array<PlotsPathsObj>) {
+    plotList() {
       this.isLoading = false;
     },
   },

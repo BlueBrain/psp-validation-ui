@@ -13,6 +13,7 @@ import {
   getFinalStatus,
   getFilesList,
   getImage,
+  deleteJob,
 } from '@/helpers/unicore';
 import { PspJobExtraParams, PlotsPathsObj } from '@/interfaces/backend';
 import defaultJobConfig, { validationScript } from '@/helpers/job-config';
@@ -197,4 +198,5 @@ export {
   getJobPhysicalLocation,
   getJobExpandedById,
   getValidationPlots,
+  deleteJob,
 };
