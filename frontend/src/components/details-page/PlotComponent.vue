@@ -21,6 +21,18 @@
           :key="pair.name"
         >
           <img :src="pair.plotData">
+          <a
+            :download="pair.name + '.png'"
+            :href="pair.plotData"
+            class="download-button"
+          >
+            <Button
+              size="small"
+              ghost
+              icon="ios-download-outline"
+              type="primary"
+            >Download</Button>
+          </a>
         </div>
       </div>
     </div>
@@ -58,6 +70,10 @@ export default Vue.extend({
 
   img {
     max-width: 80%;
+  }
+
+  .download-button {
+    display: block;
   }
 
   .pathway-title {
