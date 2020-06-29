@@ -16,9 +16,18 @@ interface PlotsPathsObj {
   }>
 }
 
+interface FilesTreeInterface {
+  title?: string;
+  expand?: boolean;
+  selected?: boolean;
+  checked? : boolean;
+  children?: Array<FilesTreeInterface>;
+}
+
 export default {};
 
 export {
   PspJobExtraParams,
+  FilesTreeInterface,
   PlotsPathsObj,
 };

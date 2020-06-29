@@ -2,8 +2,8 @@
 <template>
   <div class="details-page">
     <DetailsHeader :job-info="resultData.jobInfo"/>
-    <PlotComponent :plot-list="resultData.plotList"/>
     <DetailsFiles :id="id"/>
+    <PlotComponent :plot-list="resultData.plotList"/>
   </div>
 </template>
 

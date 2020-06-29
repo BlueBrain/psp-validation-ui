@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import axios, { AxiosResponse } from 'axios';
 import template from 'lodash/template';
+import difference from 'lodash/difference';
 import {
   submitJob,
   setAxiosToken,
@@ -14,8 +15,13 @@ import {
   getFilesList,
   getImage,
   deleteJob,
+  getFile,
 } from '@/helpers/unicore';
-import { PspJobExtraParams, PlotsPathsObj } from '@/interfaces/backend';
+import {
+  PspJobExtraParams,
+  PlotsPathsObj,
+  FilesTreeInterface,
+} from '@/interfaces/backend';
 import defaultJobConfig, { validationScript } from '@/helpers/job-config';
 import { DataToUpload, JobProperties, FileObjInterface } from '@/interfaces/unicore';
 import { CircuitInterface } from '@/interfaces/general-panel';
@@ -185,6 +191,66 @@ async function getValidationPlots(jobInfo: JobProperties): Promise<Array<PlotsPa
   return plotObjArray;
 }
 
+async function getValidationResultFiles(jobId: string): Promise<Array<FilesTreeInterface>> {
+  const jobInfo = await getJobExpandedById(jobId);
+  if (!jobInfo) throw new Error('error fetching jobInfo for files tree');
+
+  const url = `${jobInfo._links.workingDirectory.href}/files/`;
+  const returnRawObject = true;
+  const filesObj = (await getFilesList(url, returnRawObject) as Array<FileObjInterface>);
+
+  const files = Object.keys(filesObj);
+  const folders = files.filter((fileName: string) => (fileName.endsWith('/')));
+  let filesProcessed: Array<string> = [];
+  const result: Array<FilesTreeInterface> = folders.map((folderName: any) => {
+    const pathwayName = folderName.replace(/\//g, '');
+    const regexp = new RegExp(`${pathwayName}..+`);
+    const filesToDownload = files
+      .filter((fileName: string) => {
+        const matched = regexp.test(fileName);
+        return matched;
+      })
+      .map((fileName: string) => {
+        filesProcessed.push(fileName);
+        return { title: fileName };
+      });
+
+    return {
+      title: folderName,
+      expand: true,
+      children: filesToDownload,
+    };
+  });
+
+  filesProcessed = filesProcessed.concat(folders);
+  const otherFiles = difference(files, filesProcessed);
+
+  result.push({
+    title: 'Others',
+    expand: true,
+    children: otherFiles.map((fileName: string) => ({ title: fileName })),
+  });
+
+  return [{
+    title: 'Select all',
+    expand: true,
+    children: result,
+  }];
+}
+
+async function getBulkFilesById(jobId: string, filePathList: Array<string>): Promise<Array<Blob>> {
+  const jobInfo = await getJobExpandedById(jobId);
+  if (!jobInfo) throw new Error('error fetching jobInfo for files tree');
+
+  const url = `${jobInfo._links.workingDirectory.href}/files/`;
+  const promiseArray = filePathList.map(async (filePath: string) => {
+    const file = await getFile(url + filePath);
+    return file;
+  });
+  const fileContentList = await Promise.all(promiseArray);
+  return fileContentList;
+}
+
 export default {};
 
 export {
@@ -199,4 +265,6 @@ export {
   getJobExpandedById,
   getValidationPlots,
   deleteJob,
+  getValidationResultFiles,
+  getBulkFilesById,
 };

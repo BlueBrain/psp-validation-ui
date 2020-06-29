@@ -247,6 +247,14 @@ function deleteJob(url: string): AxiosPromise {
   });
 }
 
+function getFile(jobURL: string): Promise<Blob> {
+  return axiosInstance.get(jobURL, {
+    responseType: 'blob',
+  })
+    .then((r: AxiosResponse) => (r.data))
+    .catch((e: Error) => { throw new Error(`getFile ${e.message}`); });
+}
+
 export {
   submitJob,
   getFilesList,
@@ -260,6 +268,7 @@ export {
   getFinalStatus,
   getImage,
   deleteJob,
+  getFile,
 };
 
 export default {};
