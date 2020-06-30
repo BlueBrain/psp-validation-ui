@@ -77,9 +77,9 @@ export default Vue.extend({
     },
     targetChanged({ path, newTarget }: ChangeTableCellEventInterface) {
       const modifyingCell = get(this.rowsData, path);
-      this.$set(modifyingCell, 'value', newTarget.value);
-      this.$set(modifyingCell, 'name', newTarget.name);
-      this.$set(modifyingCell, 'query', newTarget.query);
+      this.$set(modifyingCell, 'propertyValue', newTarget.propertyValue);
+      this.$set(modifyingCell, 'targetName', newTarget.targetName);
+      this.$set(modifyingCell, 'propertyDef', newTarget.propertyDef);
     },
     setEditing({ path, newValue }: ChangeTableCellEventInterface) {
       this.$set(get(this.rowsData, path), 'isEditing', newValue);

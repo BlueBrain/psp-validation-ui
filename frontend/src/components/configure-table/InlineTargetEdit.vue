@@ -8,24 +8,21 @@
     >
       <Row>
         <!-- use i-col to avoid linting error -->
-        <i-col :span="columnSize">Name</i-col>
-        <i-col :span="columnSize">Query Definition</i-col>
+        <i-col :span="columnSize">Property definition</i-col>
         <i-col :span="columnSize">Value</i-col>
+        <i-col :span="columnSize">Name</i-col>
       </Row>
       <Row>
         <i-col :span="columnSize">
-          <Input v-model="localTarget.name" />
-        </i-col>
-        <i-col :span="columnSize">
-          <Select v-model="localTarget.query">
+          <Select v-model="localPropDef">
             <Option :value="targetQuery.M_TYPE">MType</Option>
             <Option :value="targetQuery.SYNAPSE_CLASS">SynapseClass</Option>
           </Select>
         </i-col>
         <i-col :span="columnSize">
           <Select
-            v-if="localTarget.query === targetQuery.M_TYPE"
-            v-model="localTarget.value"
+            v-if="localPropDef === targetQuery.M_TYPE"
+            v-model="localPropValue"
           >
             <Option
               v-for="mType in circuitMTypes"
@@ -35,12 +32,15 @@
           </Select>
 
           <Select
-            v-if="localTarget.query === targetQuery.SYNAPSE_CLASS"
-            v-model="localTarget.value"
+            v-if="localPropDef === targetQuery.SYNAPSE_CLASS"
+            v-model="localPropValue"
           >
             <Option value="INH">INH</Option>
             <Option value="EXC">EXC</Option>
           </Select>
+        </i-col>
+        <i-col :span="columnSize">
+          <Input v-model="localTargetName" />
         </i-col>
       </Row>
       <div slot="footer">
@@ -57,9 +57,7 @@
       v-show="!tableEntryObject.isEditing"
       @click="openTargetEditModal"
     >
-      <span
-        :class="{'entry-with-errors': tableEntryObject.hasError}"
-      >{{ tableEntryObject.name }}</span>
+      <span>{{ tableEntryObject.targetName }}</span>
     </div>
   </div>
 </template>
@@ -68,6 +66,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue';
 import get from 'lodash/get';
+import snakeCase from 'lodash/snakeCase';
 import isNil from 'lodash/isNil';
 import {
   Target,
@@ -88,9 +87,23 @@ export default Vue.extend({
     column: Object as PropType<TableColumnInterface>,
     index: Number,
   },
+  watch: {
+    localPropDef() {
+      this.localTargetName = '';
+    },
+    localPropValue() {
+      if (this.localPropValue && this.localPropDef) {
+        let newName = snakeCase(this.localPropDef).toUpperCase();
+        newName = `${newName}:${this.localPropValue}`;
+        this.localTargetName = newName;
+      }
+    },
+  },
   data() {
     return {
-      localTarget: {} as Target, // will be filled on created
+      localPropDef: '',
+      localPropValue: '',
+      localTargetName: '',
       circuitMTypes,
       targetQuery,
       columnSize,
@@ -101,18 +114,23 @@ export default Vue.extend({
       return get(this.row, this.column.path);
     },
     areFieldsComplete(): boolean {
-      return !!(this.localTarget.name && this.localTarget.value && this.localTarget.query);
+      return !!(this.localTargetName && this.localPropValue && this.localPropDef);
     },
     storedElem(): StoreStateInterface {
       return this.$store.state.tableEditingModule;
     },
   },
   created() {
-    this.localTarget = this.resetTarget();
+    this.resetTarget();
   },
   methods: {
     saveTargetChanges() {
-      this.doneChanging(this.localTarget);
+      const targetObj = {
+        propertyDef: this.localPropDef,
+        propertyValue: this.localPropValue,
+        targetName: this.localTargetName,
+      };
+      this.doneChanging(targetObj);
     },
     openTargetEditModal() {
       if (this.storedElem.currentlyEditingPath) {
@@ -120,10 +138,16 @@ export default Vue.extend({
         this.doneChanging(this.storedElem.currentlyEditingTarget);
       }
 
+      const targetObj = {
+        propertyDef: this.localPropDef,
+        propertyValue: this.localPropValue,
+        targetName: this.localTargetName,
+      };
+
       this.$store.commit('setCurrentEditObj', {
         rowIndex: this.index,
         path: this.column.path,
-        target: this.localTarget,
+        target: targetObj,
       } as EditingObject);
 
       this.$emit('set-editing', {
@@ -154,12 +178,13 @@ export default Vue.extend({
     },
     cancelClicked() {
       this.endEditing();
-      this.localTarget = this.resetTarget();
+      this.resetTarget();
     },
-    resetTarget(): Target {
-      const { name, query, value } = this.tableEntryObject;
-      const localTarget = { name, query, value };
-      return localTarget;
+    resetTarget() {
+      const { targetName, propertyDef, propertyValue } = this.tableEntryObject;
+      this.localPropDef = propertyDef;
+      this.localPropValue = propertyValue;
+      this.localTargetName = targetName;
     },
   },
 });

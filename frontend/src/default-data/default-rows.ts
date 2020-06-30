@@ -8,14 +8,14 @@ const row1: TableRowInterface = {
   id: uuidv4(),
   pathway: {
     preSyn: {
-      name: 'SP_PC',
-      query: targetQuery.M_TYPE,
-      value: 'SP_PC',
+      targetName: 'M_TYPE:SP_PC',
+      propertyDef: targetQuery.M_TYPE,
+      propertyValue: 'SP_PC',
     },
     postSyn: {
-      name: 'SP_PC',
-      query: targetQuery.M_TYPE,
-      value: 'SP_PC',
+      targetName: 'M_TYPE:SP_PC',
+      propertyDef: targetQuery.M_TYPE,
+      propertyValue: 'SP_PC',
     },
     constraints: {
       uniqueGids: {
@@ -88,14 +88,14 @@ const row2: TableRowInterface = {
   id: uuidv4(),
   pathway: {
     preSyn: {
-      name: 'SP_PVBC',
-      query: targetQuery.M_TYPE,
-      value: 'SP_PVBC',
+      targetName: 'M_TYPE:SP_PVBC',
+      propertyDef: targetQuery.M_TYPE,
+      propertyValue: 'SP_PVBC',
     },
     postSyn: {
-      name: 'SP_PC',
-      query: targetQuery.M_TYPE,
-      value: 'SP_PC',
+      targetName: 'M_TYPE:SP_PC',
+      propertyDef: targetQuery.M_TYPE,
+      propertyValue: 'SP_PC',
     },
     constraints: {
       uniqueGids: {
@@ -168,14 +168,14 @@ const row3: TableRowInterface = {
   id: uuidv4(),
   pathway: {
     preSyn: {
-      name: 'SP_PC',
-      query: targetQuery.M_TYPE,
-      value: 'SP_PC',
+      targetName: 'M_TYPE:SP_PC',
+      propertyDef: targetQuery.M_TYPE,
+      propertyValue: 'SP_PC',
     },
     postSyn: {
-      name: 'SO_OLM',
-      query: targetQuery.M_TYPE,
-      value: 'SO_OLM',
+      targetName: 'M_TYPE:SO_OLM',
+      propertyDef: targetQuery.M_TYPE,
+      propertyValue: 'SO_OLM',
     },
     constraints: {
       uniqueGids: {

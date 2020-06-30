@@ -108,9 +108,11 @@ interface RowToYamlInterface {
   };
 }
 
-interface Target extends TableEntryObjectInterface {
-  name: string;
-  query: string;
+interface Target {
+  targetName: string;
+  propertyDef: string;
+  propertyValue: string;
+  isEditing?: boolean;
 }
 
 interface MTypeConstantsInterface {

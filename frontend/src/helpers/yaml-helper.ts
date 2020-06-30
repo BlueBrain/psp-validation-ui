@@ -19,8 +19,8 @@ function convertObjToYaml(obj: TableRowInterface): string {
   const objToTransform: RowToYamlInterface = {
     /* eslint-disable @typescript-eslint/camelcase */
     pathway: {
-      pre: obj.pathway.preSyn.value,
-      post: obj.pathway.postSyn.value,
+      pre: obj.pathway.preSyn.propertyValue,
+      post: obj.pathway.postSyn.propertyValue,
       constraints: {
         unique_gids: true,
         min_nsyn: getNumberOrFalseFromObj(obj.pathway.constraints.minNumSyn),
@@ -81,14 +81,15 @@ function getPrePostNames(str: string): { pre: string; post: string } {
 }
 
 function exportRowsToZip(rowsData: Array<TableRowInterface>) {
+  const fileNames = rowsData.map((row: TableRowInterface) => (
+    `${row.pathway.preSyn.targetName}-${row.pathway.postSyn.targetName}.yaml`
+  ));
   const files = getYamlFilesFromData(rowsData);
 
   const zip = new JSZip();
 
-  files.forEach((yamlFile: string) => {
-    const preAndPost = getPrePostNames(yamlFile);
-    const fileName = `${preAndPost.pre}-${preAndPost.post}.yaml`;
-    zip.file(fileName, yamlFile);
+  files.forEach((yamlFile: string, index: number) => {
+    zip.file(fileNames[index], yamlFile);
   });
 
   zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
