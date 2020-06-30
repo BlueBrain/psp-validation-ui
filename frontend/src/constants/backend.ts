@@ -6,6 +6,8 @@ const circuitEndpoint = `${BACKEND_BASE}/circuits`;
 
 const jobStatus = {
   SUCCESSFUL: 'SUCCESSFUL',
+  ERROR: 'ERROR',
+  FAILED: 'FAILED',
 };
 
 const jobExitCode: {[key: string]: string} = {
