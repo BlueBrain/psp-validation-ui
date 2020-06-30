@@ -64,6 +64,7 @@ export default Vue.extend({
         return;
       }
       this.saveTable();
+      this.jobTitle = `${this.$store.getters.circuitName} - ${(new Date()).toDateString()}`;
       this.showModal = true;
     },
     submitValidation() {

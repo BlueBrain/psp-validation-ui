@@ -9,8 +9,7 @@ import { getStoredCircuitPathSync } from '@/helpers/db';
 
 const stateValues: StoreStateInterface = {
   currentCircuit: {} as CircuitInterface,
-  // as we need to save some params like table data or find jobs
-  // using a circuit identifier, we will use circuitPath with this purpose
+  // circuitPath will be used to identify the config for table data or jobs
   circuitPath: '',
   generalParams: {
     pairs: 4,
@@ -37,6 +36,7 @@ const tableEditingModule = {
       const storedCircuitPath = state.circuitPath || getStoredCircuitPathSync(rootState.userId);
       return storedCircuitPath;
     },
+    circuitName: (state: StoreStateInterface) => (state.currentCircuit.displayName || 'job'),
   },
 };
 
