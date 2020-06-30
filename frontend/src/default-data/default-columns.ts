@@ -186,6 +186,12 @@ const columns = [
       },
     ],
   },
+  {
+    title: 'Actions',
+    width: tableConstants.WIDTH_CHILDREN,
+    slot: 'actions',
+    align: 'center',
+  },
 ];
 
 export default columns;

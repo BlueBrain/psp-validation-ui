@@ -33,6 +33,12 @@
           @set-error="setError"
         />
       </template>
+      <template slot-scope="{ row }" slot="actions">
+        <Button
+          type="warning"
+          @click="removePathway(row.id)"
+        >Delete</Button>
+      </template>
     </Table>
   </div>
 </template>
@@ -109,6 +115,14 @@ export default Vue.extend({
     },
     tableHasErrors() {
       return hasErrors(this.rowsData);
+    },
+    removePathway(pathwayId: string) {
+      if (this.rowsData.length === 1) {
+        this.$Message.error('At least one pathway should be configured');
+        return;
+      }
+      const newPathways = this.rowsData.filter((pathway: TableRowInterface) => (pathway.id !== pathwayId));
+      this.rowsData = newPathways;
     },
   },
 });
