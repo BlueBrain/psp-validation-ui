@@ -5,20 +5,17 @@ import { RowToYamlInterface } from '@/interfaces/table';
 interface ValidationsExpanded {
   id: string;
   jobInfo: JobProperties;
-  physicalLocation: string;
 }
 
 interface MainTableInterface {
   name: string;
   status: string;
   date: string;
-  location: string;
   id: string;
 }
 
 interface ResultDataInterface {
   main: MainTableInterface;
-  // expanded: Array<RowToYamlInterface>;
 }
 
 export default {};

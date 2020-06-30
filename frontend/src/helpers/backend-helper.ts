@@ -129,12 +129,9 @@ async function getValidationsExpanded(circuitPath: string): Promise<Array<Valida
     const jobInfo = await getJobProperties(url);
     if (!jobInfo) throw new Error(`no job info was found for ${id}`);
 
-    const physicalLocation = getJobPhysicalLocation(jobInfo.log);
-
     return {
       id,
       jobInfo,
-      physicalLocation,
     };
   });
 

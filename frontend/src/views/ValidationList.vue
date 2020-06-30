@@ -57,8 +57,12 @@ export default Vue.extend({
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="scss">
 .validation-list {
   margin-top: 5vh;
+
+  .ivu-table-body {
+    cursor: pointer;
+  }
 }
 </style>

@@ -5,6 +5,7 @@
       :columns="columns"
       :data="rowData"
       :loading="isLoading"
+      @on-row-click="showDetails"
       ref="table"
       border
     >
@@ -72,7 +73,6 @@ export default Vue.extend({
           name: job.name,
           status: getFinalStatus(job),
           date: new Date(job.submissionTime).toLocaleString(),
-          location: validationResult.physicalLocation,
           id: validationResult.id,
         };
 
@@ -81,6 +81,12 @@ export default Vue.extend({
         });
       });
       this.rowData = dataToRender;
+    },
+    showDetails(row: ResultDataInterface) {
+      this.$router.push({
+        name: 'DetailsPage',
+        params: { id: row.main.id },
+      });
     },
   },
 });
