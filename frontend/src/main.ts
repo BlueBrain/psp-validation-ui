@@ -6,7 +6,7 @@ import App from '@/App.vue';
 import '@/registerServiceWorker';
 import router from '@/router';
 import store from '@/store';
-import auth from '@/helpers/auth';
+import { init as authInit } from '@/helpers/auth';
 import '@/assets/table.css';
 import { TokenAndUser } from '@/interfaces/auth';
 
@@ -22,7 +22,7 @@ const app = new Vue({
 });
 
 
-auth.init()
+authInit()
   .then(({ token, userId }: TokenAndUser) => {
     store.commit('setToken', token);
     store.commit('setUserId', userId);

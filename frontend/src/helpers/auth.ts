@@ -96,7 +96,9 @@ async function getUserProjects() {
   return projects;
 }
 
-export default {
+export default init;
+
+export {
   init,
   getUserProjects,
 };

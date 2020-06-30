@@ -11,10 +11,10 @@ const jobStatus = {
 };
 
 const jobExitCode: {[key: string]: string} = {
-  0: 'SUCCESSFUL',
-  1: 'ERROR',
-  127: 'ERROR',
-  137: 'ERROR',
+  0: jobStatus.SUCCESSFUL,
+  1: jobStatus.ERROR,
+  127: jobStatus.ERROR,
+  137: jobStatus.ERROR,
 };
 
 export default {};
