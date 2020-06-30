@@ -1,7 +1,7 @@
 
 <template>
   <div class="plot-component">
-    <Spin v-if="isLoading"></Spin>
+    <Spin v-if="isLoading" size="large"></Spin>
     <Alert
       v-if="!isLoading && plotList && !plotList.length"
       type="warning"

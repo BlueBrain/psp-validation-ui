@@ -18,7 +18,7 @@
             shape="circle"
             icon="md-list"
             size="large"
-          >List</Button>
+          >Result List</Button>
         </router-link>
       </Header>
 
