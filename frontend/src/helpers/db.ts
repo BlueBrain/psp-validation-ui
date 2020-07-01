@@ -2,6 +2,8 @@
 import localForage from 'localforage';
 import { GeneralPanelParamsInterface } from '@/interfaces/general-panel';
 import { TableRowInterface } from '@/interfaces/table';
+import { JobProperties } from '@/interfaces/unicore';
+import { jobStatus } from '@/constants/backend';
 
 const constants = {
   CIRCUIT_LIST: 'circuitList',
@@ -36,6 +38,16 @@ function getStoredTableRowData(circuitPath: string): Promise<Array<TableRowInter
   return localForage.getItem(generatePairStr(constants.ROWS_DATA, circuitPath));
 }
 
+function saveEndedJob(jobInfo: JobProperties) {
+  if ([jobStatus.FAILED, jobStatus.SUCCESSFUL].includes(jobInfo.status)) {
+    const url = jobInfo._links.self.href;
+    localForage.setItem(url, jobInfo);
+  }
+}
+async function getEndedJob(jobUrl: string) {
+  const job: JobProperties | null = await localForage.getItem(jobUrl);
+  return job;
+}
 
 export default {};
 
@@ -46,4 +58,6 @@ export {
   saveCircuitPathSync,
   saveTableRowData,
   getStoredTableRowData,
+  saveEndedJob,
+  getEndedJob,
 };

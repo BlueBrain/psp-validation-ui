@@ -14,6 +14,7 @@ import {
   UnicoreJobFiles,
   FileObjInterface,
 } from '@/interfaces/unicore';
+import { saveEndedJob, getEndedJob } from '@/helpers/db';
 import { jobStatus, jobExitCode } from '@/constants/backend';
 
 /* eslint-disable no-underscore-dangle */
@@ -117,22 +118,20 @@ async function getValidationJobUrls(circuitPath: string): Promise<Array<string>>
 }
 
 async function getJobProperties(jobURL: string): Promise<JobProperties | null> {
-  // TODO rework here the nulls
-  // let result = await db.getJobByUrl(jobURL);
-  const result = null;
-  let jobInfo = null;
-  if (!result) {
-    try {
-      jobInfo = await getInfoByUrl(jobURL);
-    } catch (e) {
-      throw new Error(`getJobProperties ${e.message}`);
-    }
-    if (!jobInfo) return null;
-    const { id } = urlToComputerAndId(jobInfo._links.self.href);
-    if (!id) return null;
-    jobInfo.id = id;
-    // db.add(jobInfo);
+  const result = await getEndedJob(jobURL);
+  if (result) return result; // found in localStorage
+
+  let jobInfo = null; // fetch from network
+  try {
+    jobInfo = await getInfoByUrl(jobURL);
+  } catch (e) {
+    throw new Error(`getJobProperties ${e.message}`);
   }
+  if (!jobInfo) return null;
+  const { id } = urlToComputerAndId(jobInfo._links.self.href);
+  if (!id) return null;
+  jobInfo.id = id;
+  saveEndedJob(jobInfo);
   return jobInfo;
 }
 
