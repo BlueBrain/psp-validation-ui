@@ -77,7 +77,8 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
     runConfig.tags.push(tags.VALIDATION);
     runConfig.tags.push(circuitPath);
   }
-  runConfig.title = extraParams.title;
+  runConfig.title = extraParams.name;
+  runConfig.project = extraParams.project;
 
   let inputs: Array<DataToUpload> = [];
   const yamlNameList: Array<string> = [];

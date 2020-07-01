@@ -19,10 +19,16 @@ interface StoreStateInterface {
   generalParams: GeneralPanelParamsInterface;
 }
 
+interface JobUserSelectedParams {
+  name: string;
+  project: string;
+}
+
 export default {};
 
 export {
   CircuitInterface,
   GeneralPanelParamsInterface,
   StoreStateInterface,
+  JobUserSelectedParams,
 };

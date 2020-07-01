@@ -13,16 +13,11 @@
       <Button type="success" @click="runValidation">Run PSP</Button>
     </div>
 
-    <Modal
-      v-model="showModal"
-      @on-ok="submitValidation"
-      :loading="true"
-      title="Submit Job"
-    >
-      <i-input v-model="jobTitle">
-        <span slot="prepend">Job Title:</span>
-      </i-input>
-    </Modal>
+    <JobConfigModal
+      :show-modal="showModal"
+      @hide-modal="hideConfigModal"
+      @run="submitValidation"
+    />
   </div>
 </template>
 
@@ -33,11 +28,14 @@ import PSPTable from '@/components/configure-table/PSPTable.vue';
 import { submitPspJob } from '@/helpers/backend-helper';
 import { PspJobExtraParams } from '@/interfaces/backend';
 import { JobProperties } from '@/interfaces/unicore';
+import JobConfigModal from '@/components/configure-table/JobConfigModal.vue';
+import { JobUserSelectedParams } from '@/interfaces/general-panel';
 
 export default Vue.extend({
   name: 'ConfigureTable',
   components: {
     PSPTable,
+    JobConfigModal,
   },
   created() {
     this.$store.commit('changeTitle', 'Configure Validation Pathways');
@@ -45,7 +43,6 @@ export default Vue.extend({
   data() {
     return {
       showModal: false,
-      jobTitle: '',
     };
   },
   methods: {
@@ -64,10 +61,9 @@ export default Vue.extend({
         return;
       }
       this.saveTable();
-      this.jobTitle = `${this.$store.getters.circuitName} - ${(new Date()).toDateString()}`;
       this.showModal = true;
     },
-    submitValidation() {
+    submitValidation(userSelectedParams: JobUserSelectedParams) {
       // eslint-disable-next-line
       const tableComponent = (this.$refs.pspTableRef as any);
 
@@ -77,7 +73,8 @@ export default Vue.extend({
       const extraParams: PspJobExtraParams = {
         generalParams: this.$store.state.generalParamsModule.generalParams,
         userId: this.$store.state.userId,
-        title: this.jobTitle || null,
+        name: userSelectedParams.name,
+        project: userSelectedParams.project,
       };
       submitPspJob(yamlFiles, circuitPath, extraParams)
         .then((jobInfo: JobProperties) => {
@@ -95,6 +92,9 @@ export default Vue.extend({
       // TODO check why this is failing without parsing
       // eslint-disable-next-line
       (this.$refs.pspTableRef as any).saveToDB();
+    },
+    hideConfigModal() {
+      this.showModal = false;
     },
   },
   /* eslint-disable-next-line */

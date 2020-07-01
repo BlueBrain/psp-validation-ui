@@ -1,10 +1,12 @@
 
-import { GeneralPanelParamsInterface } from '@/interfaces/general-panel';
+import {
+  GeneralPanelParamsInterface,
+  JobUserSelectedParams,
+} from '@/interfaces/general-panel';
 
-interface PspJobExtraParams {
+interface PspJobExtraParams extends JobUserSelectedParams {
   userId: string;
   generalParams: GeneralPanelParamsInterface;
-  title: string | null;
 }
 
 interface PlotsPathsObj {
