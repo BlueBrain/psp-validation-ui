@@ -9,20 +9,12 @@
       ref="table"
       border
     >
-      <template slot-scope="{ row, column, index }" slot="results-viewer">
-        <InlineResultViewer
-          :row="row"
-          :column="column"
-          :index="index"
-        />
+      <template slot-scope="{ row }" slot="date-viewer">
+        {{ displayDate(row.date) }}
       </template>
 
-      <template slot-scope="{ row, column, index }" slot="status-slot">
-        <InlineResultsStatus
-          :row="row"
-          :column="column"
-          :index="index"
-        />
+      <template slot-scope="{ row }" slot="status-slot">
+        <InlineResultsStatus :row="row" />
       </template>
     </Table>
   </div>
@@ -31,13 +23,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import upperFirst from 'lodash/upperFirst';
 import defaultColumns from '@/default-data/results-columns';
-import InlineResultViewer from '@/components/validation-list/InlineResultViewer.vue';
 import InlineResultsStatus from '@/components/validation-list/InlineResultStatus.vue';
 import {
   ValidationsExpanded,
   MainTableInterface,
-  ResultDataInterface,
 } from '@/interfaces/results';
 import { getFinalStatus } from '@/helpers/backend-helper';
 
@@ -50,11 +41,10 @@ export default Vue.extend({
   data() {
     return {
       columns: defaultColumns,
-      rowData: [] as Array<ResultDataInterface>,
+      rowData: [] as Array<MainTableInterface>,
     };
   },
   components: {
-    InlineResultViewer,
     InlineResultsStatus,
   },
   watch: {
@@ -65,28 +55,29 @@ export default Vue.extend({
   },
   methods: {
     processData() {
-      const dataToRender: Array<ResultDataInterface> = [];
+      const dataToRender: Array<MainTableInterface> = [];
       this.validations.forEach((validationResult: ValidationsExpanded) => {
         const job = validationResult.jobInfo;
 
         const mainTableResults: MainTableInterface = {
-          name: job.name,
+          name: upperFirst(job.name),
           status: getFinalStatus(job),
-          date: new Date(job.submissionTime).toLocaleString(),
+          date: job.submissionTime,
           id: validationResult.id,
         };
 
-        dataToRender.push({
-          main: mainTableResults,
-        });
+        dataToRender.push(mainTableResults);
       });
       this.rowData = dataToRender;
     },
-    showDetails(row: ResultDataInterface) {
+    showDetails(row: MainTableInterface) {
       this.$router.push({
         name: 'DetailsPage',
-        params: { id: row.main.id },
+        params: { id: row.id },
       });
+    },
+    displayDate(dateStr: string): string {
+      return (new Date(dateStr)).toLocaleString();
     },
   },
 });

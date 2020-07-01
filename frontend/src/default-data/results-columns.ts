@@ -1,22 +1,24 @@
 
 const columns = [
   {
-    title: 'Job Name',
-    slot: 'results-viewer',
+    title: 'Name',
     align: 'center',
-    path: 'main.name',
+    key: 'name',
+    sortable: true,
   },
   {
     title: 'Launched',
-    slot: 'results-viewer',
+    slot: 'date-viewer',
     align: 'center',
-    path: 'main.date',
+    key: 'date',
+    sortable: true,
   },
   {
     title: 'Status',
     slot: 'status-slot',
     align: 'center',
-    path: 'main.status',
+    key: 'status',
+    sortable: true,
   },
 ];
 

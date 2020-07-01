@@ -12,20 +12,17 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { ResultDataInterface } from '@/interfaces/results';
+import { MainTableInterface } from '@/interfaces/results';
 import { jobStatus } from '@/constants/backend';
-import get from 'lodash/get';
 
 export default Vue.extend({
   name: 'InlineResultStatus',
   props: {
-    row: Object as () => ResultDataInterface,
-    column: Object,
-    index: Number,
+    row: Object as () => MainTableInterface,
   },
   computed: {
     tableEntryObject(): string {
-      return get(this.row, this.column.path);
+      return this.row.status;
     },
     isOk(): boolean {
       return this.tableEntryObject === jobStatus.SUCCESSFUL;

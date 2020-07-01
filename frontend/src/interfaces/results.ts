@@ -1,6 +1,5 @@
 
-import { DataToUpload, JobProperties } from '@/interfaces/unicore';
-import { RowToYamlInterface } from '@/interfaces/table';
+import { JobProperties } from '@/interfaces/unicore';
 
 interface ValidationsExpanded {
   id: string;
@@ -14,14 +13,9 @@ interface MainTableInterface {
   id: string;
 }
 
-interface ResultDataInterface {
-  main: MainTableInterface;
-}
-
 export default {};
 
 export {
   MainTableInterface,
-  ResultDataInterface,
   ValidationsExpanded,
 };
