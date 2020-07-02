@@ -93,7 +93,10 @@ async function getUserProjects() {
       return `proj${match[1]}`;
     })
     .filter((group: string) => group);
-  return projects;
+  // to sort with string and numbers
+  const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+  const projectsSorted = projects.sort(collator.compare);
+  return projectsSorted;
 }
 
 export default init;

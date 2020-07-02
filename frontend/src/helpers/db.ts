@@ -11,6 +11,7 @@ const constants = {
   GENERAL_PANEL_PARAMS: 'generalPanelParams',
   ROWS_DATA: 'rowsData',
   CIRCUIT_PATH: 'circuitPath',
+  PROJECT_SELECTED: 'projectSelected',
 };
 
 function generatePairStr(str1: string, str2: string) {
@@ -49,6 +50,13 @@ async function getEndedJob(jobUrl: string) {
   return job;
 }
 
+function getSavedProjectSelected() {
+  return localStorage.getItem(constants.PROJECT_SELECTED);
+}
+function setProjectSelected(newProject: string) {
+  localStorage.setItem(constants.PROJECT_SELECTED, newProject);
+}
+
 export default {};
 
 export {
@@ -60,4 +68,6 @@ export {
   getStoredTableRowData,
   saveEndedJob,
   getEndedJob,
+  getSavedProjectSelected,
+  setProjectSelected,
 };
