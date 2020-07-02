@@ -14,6 +14,10 @@
     <span class="custom-tag-group">
       <Tag color="primary">Location</Tag>
       <Tag>{{ location }}</Tag>
+      <CopyToClipboardBtn
+        :text="location"
+        class="clipboard-copy-button"
+      />
     </span>
 
     <span class="actions">
@@ -32,6 +36,7 @@
 import Vue from 'vue';
 import { JobProperties } from '@/interfaces/unicore';
 import { getFinalStatus, getJobPhysicalLocation, deleteJob } from '@/helpers/backend-helper';
+import CopyToClipboardBtn from '@/components/details-page/CopyToClipboardBtn.vue';
 
 const loadingMessage = 'loading...';
 
@@ -55,6 +60,9 @@ export default Vue.extend({
       const location = getJobPhysicalLocation(this.jobInfo.log);
       return location;
     },
+  },
+  components: {
+    CopyToClipboardBtn,
   },
   methods: {
     deleteValidation() {
@@ -93,6 +101,9 @@ export default Vue.extend({
     color: red;
     .ivu-tag {
       margin-right: 0;
+    }
+    .clipboard-copy-button {
+      height: 22px;
     }
   }
 }
