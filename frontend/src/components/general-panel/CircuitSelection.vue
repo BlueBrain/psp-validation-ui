@@ -114,12 +114,12 @@ export default Vue.extend({
     },
     updateOrAddToCircuitList(newCircuit: CircuitInterface): CircuitInterface {
       const circuitOnList = this.circuitList
-        .find((c: CircuitInterface) => c.name === newCircuit.name);
+        .find((c: CircuitInterface) => c.path === newCircuit.path);
       if (!circuitOnList) { // add it as a new one
         this.circuitList.push(newCircuit);
         return newCircuit;
       }
-      circuitOnList.path = newCircuit.path;
+      circuitOnList.name = newCircuit.name;
       circuitOnList.displayName = newCircuit.displayName;
       return circuitOnList;
     },

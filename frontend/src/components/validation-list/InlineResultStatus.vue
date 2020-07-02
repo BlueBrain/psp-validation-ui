@@ -4,7 +4,11 @@
     class="inline-result-status"
     :style="{ 'color': color }"
   >
-    <Icon class="status-icon" :type="statusIcon" />
+    <Icon
+      class="status-icon"
+      :type="statusIcon"
+      :class="{ 'rotate': rotate }"
+    />
     <span class="status-text">{{ tableEntryObject }}</span>
   </div>
 </template>
@@ -41,6 +45,10 @@ export default Vue.extend({
       if (this.isNotOk) return '#ff6601';
       return '#515a6e';
     },
+    rotate(): boolean {
+      // is running / queued
+      return !this.isOk && !this.isNotOk;
+    },
   },
 
 });
@@ -57,9 +65,17 @@ export default Vue.extend({
     margin-right: 5px;
     font-size: 25px;
     vertical-align: middle;
+
+    &.rotate {
+      animation: rotate 1.5s linear infinite;
+    }
   }
   .status-text {
     vertical-align: middle;
+  }
+
+  @keyframes rotate {
+    to{ transform: rotate(360deg); }
   }
 }
 </style>
