@@ -15,20 +15,9 @@ function validURL(str: string) {
 }
 
 const mapRuleFunction = {
-  [ruleNames.POSITIVE]: (value: string): boolean => {
-    const numb = parseFloat(value);
-    return numb >= 0;
-  },
-  [ruleNames.FLOAT]: (value: string): boolean => {
-    const numb = toNumber(value);
-    /* use this instead of parseFloat due
-    parseFloat(0.tttt) => 0 instead of NaN */
-    return !isNaN(numb);
-  },
-  [ruleNames.URL]: (value: string): boolean => {
-    const isValid = validURL(value);
-    return isValid;
-  },
+  [ruleNames.POSITIVE]: (value: string): boolean => (toNumber(value) >= 0),
+  [ruleNames.FLOAT]: (value: string): boolean => (!isNaN(toNumber(value))),
+  [ruleNames.URL]: (value: string): boolean => (validURL(value)),
 };
 
 function getRuleFunctionByName(ruleName: string) {

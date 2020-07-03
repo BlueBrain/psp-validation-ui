@@ -182,7 +182,7 @@ const columns = [
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
         path: getPathByKey('postTtx'),
-        rules: [ruleNames.FLOAT],
+        rules: [],
       },
     ],
   },
