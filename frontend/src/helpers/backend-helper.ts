@@ -122,8 +122,9 @@ async function getFilesFromBackend(unicoreJobId: string): Promise<Array<RowToYam
 
 async function getValidationsExpanded(circuitPath: string): Promise<Array<ValidationsExpanded>> {
   const jobUrls = await getValidationJobUrls(circuitPath);
+  const jobUrlsSorted = jobUrls.reverse();
 
-  const promises = jobUrls.map(async (url: string) => {
+  const promises = jobUrlsSorted.map(async (url: string) => {
     const { id } = urlToComputerAndId(url);
     if (!id) throw new Error(`no job id was found for ${url}`);
 
