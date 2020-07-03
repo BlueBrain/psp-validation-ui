@@ -57,6 +57,13 @@ function setProjectSelected(newProject: string) {
   localStorage.setItem(constants.PROJECT_SELECTED, newProject);
 }
 
+function saveImageByUrl(imageUrl: string, data: string) {
+  localForage.setItem(imageUrl, data);
+}
+function getStoredImageByUrl(imageUrl: string): Promise<string> {
+  return localForage.getItem(imageUrl);
+}
+
 export default {};
 
 export {
@@ -70,4 +77,6 @@ export {
   getEndedJob,
   getSavedProjectSelected,
   setProjectSelected,
+  saveImageByUrl,
+  getStoredImageByUrl,
 };

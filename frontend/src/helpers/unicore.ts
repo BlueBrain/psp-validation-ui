@@ -14,7 +14,12 @@ import {
   UnicoreJobFiles,
   FileObjInterface,
 } from '@/interfaces/unicore';
-import { saveEndedJob, getEndedJob } from '@/helpers/db';
+import {
+  saveEndedJob,
+  getEndedJob,
+  saveImageByUrl,
+  getStoredImageByUrl,
+} from '@/helpers/db';
 import { jobStatus, jobExitCode } from '@/constants/backend';
 
 /* eslint-disable no-underscore-dangle */
@@ -223,6 +228,9 @@ function getFinalStatus(jobInfo: JobProperties) {
 }
 
 async function getImage(imageURL: string): Promise<string> {
+  const storedImg = await getStoredImageByUrl(imageURL);
+  if (storedImg) return storedImg;
+
   const response = await axiosInstance({
     url: imageURL,
     method: 'get',
@@ -232,6 +240,7 @@ async function getImage(imageURL: string): Promise<string> {
   const imgPromise: Promise<string> = new Promise((resolve: any) => {
     const reader = new FileReader();
     reader.addEventListener('load', () => {
+      saveImageByUrl(imageURL, reader.result as string);
       resolve(reader.result);
     }, false);
     reader.readAsDataURL(response.data);
