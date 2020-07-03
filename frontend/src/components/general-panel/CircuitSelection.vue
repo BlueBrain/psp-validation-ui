@@ -1,7 +1,10 @@
 
 <template>
   <div class="circuit-selection">
-    <Select :value="currentCircuit.name" @on-change="newCircuitNameSelected">
+    <Select
+      :value="currentCircuit.name"
+      @on-change="newCircuitNameSelected"
+    >
       <Option
         v-for="circuit in circuitList"
         :key="circuit.name"
@@ -10,6 +13,15 @@
       >
         <span>{{ circuit.name }}</span>
         <span class="circuit-path-in-option">({{ circuit.path }})</span>
+        <Button
+          @click="removeCircuit(circuit.name, $event)"
+          class="remove-circuit"
+          type="error"
+          size="small"
+          ghost
+        >
+          <Icon type="md-trash" />
+        </Button>
       </Option>
     </Select>
     <Button @click="addNewCircuit" icon="md-add">New</Button>
@@ -87,7 +99,7 @@ export default Vue.extend({
       this.isEditing = true;
     },
     newCircuitNameSelected(newCircuitName: string) {
-      const newCircuitSelected = this.findCircuitByName(newCircuitName);
+      const newCircuitSelected = this.findCircuitByName(newCircuitName) || this.circuitList[0];
       this.$store.commit('setCurrentCircuitObj', newCircuitSelected);
       this.currentCircuit = newCircuitSelected;
       this.saveToDB();
@@ -107,10 +119,8 @@ export default Vue.extend({
       this.newEditingCircuit = this.resetCircuit();
       this.saveToDB();
     },
-    findCircuitByName(circuitName: string): CircuitInterface {
-      const foundCircuit = this.circuitList.find((c: CircuitInterface) => c.name === circuitName);
-      if (foundCircuit === undefined) throw new TypeError('Element not found in circuit list!');
-      return foundCircuit;
+    findCircuitByName(circuitName: string): CircuitInterface | undefined {
+      return this.circuitList.find((c: CircuitInterface) => c.name === circuitName);
     },
     updateOrAddToCircuitList(newCircuit: CircuitInterface): CircuitInterface {
       const circuitOnList = this.circuitList
@@ -141,7 +151,7 @@ export default Vue.extend({
       const { circuitPath } = this.$store.getters;
 
       const storedCircuitList: Array<CircuitInterface> = await getCircuitList(userId);
-      const storedCircuitSelected: CircuitInterface | null = await this.findCircuitObjByPath(circuitPath, storedCircuitList);
+      const storedCircuitSelected: CircuitInterface | null = this.findCircuitObjByPath(circuitPath, storedCircuitList);
 
       if (storedCircuitSelected && circuitPath !== storedCircuitSelected.path) {
         throw new Error('Circuit saved does not match');
@@ -152,15 +162,38 @@ export default Vue.extend({
       this.newEditingCircuit = this.resetCircuit();
       this.$store.commit('setCurrentCircuitObj', this.currentCircuit);
     },
+    removeCircuit(circuitName: string, event: Event): boolean {
+      if (!circuitName) return false;
+
+      const newCircuitList = this.circuitList.filter((circuitObj: CircuitInterface) => (
+        circuitObj.name !== circuitName
+      ));
+      this.circuitList = newCircuitList;
+
+      event.stopPropagation();
+      if (circuitName !== this.currentCircuit.name) {
+        // as the trigger newCircuitNameSelected won't be called, save params
+        this.saveToDB();
+      }
+      return true;
+    },
   },
 });
 </script>
 
 
 <style lang="scss">
-.circuit-selection .circuit-path-in-option {
-  margin-left: 20px;
-  color: #ccc;
-  font-size: 12px;
+.circuit-selection {
+  .circuit-path-in-option {
+    margin-left: 10px;
+    color: #ccc;
+    font-size: 12px;
+  }
+  .remove-circuit {
+    margin-left: 10px;
+  }
+  li.ivu-select-item {
+    text-align: left;
+  }
 }
 </style>
