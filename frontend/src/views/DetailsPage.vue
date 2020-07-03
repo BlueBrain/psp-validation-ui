@@ -16,10 +16,12 @@ import PlotComponent from '@/components/details-page/PlotComponent.vue';
 import { getJobExpandedById, getValidationPlots } from '@/helpers/backend-helper';
 import { JobProperties } from '@/interfaces/unicore';
 import { FullResultsInfo } from '@/interfaces/details';
+import { PlotsPathsObj } from '@/interfaces/backend';
 
-const emptyResults: FullResultsInfo = {
+const clearResults = (): FullResultsInfo => ({
   jobInfo: {} as JobProperties,
-};
+  plotList: [] as Array<PlotsPathsObj>,
+});
 
 export default Vue.extend({
   name: 'DetailsPage',
@@ -28,11 +30,13 @@ export default Vue.extend({
   },
   data() {
     return {
-      resultData: emptyResults as FullResultsInfo,
+      resultData: clearResults() as FullResultsInfo,
     };
   },
   created() {
     this.fillData();
+    this.resultData = clearResults();
+    this.$nextTick(() => this.fillData());
   },
   methods: {
     async fillData() {
