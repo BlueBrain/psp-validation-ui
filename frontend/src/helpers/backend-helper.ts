@@ -205,6 +205,7 @@ async function getValidationResultFiles(jobId: string): Promise<Array<FilesTreeI
     const pathwayName = folderName.replace(/\//g, '');
     const regexp = new RegExp(`${pathwayName}..+`);
     const filesToDownload = files
+      .sort()
       .filter((fileName: string) => {
         const matched = regexp.test(fileName);
         return matched;
