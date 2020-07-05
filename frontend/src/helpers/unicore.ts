@@ -28,12 +28,6 @@ const axiosInstance = axios.create({
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    post: {
-      'Content-Type': 'application/json',
-    },
-    put: {
-      'Content-Type': 'application/octet-stream',
-    },
   },
 });
 
@@ -43,13 +37,9 @@ function init() {
     // Do something before request is sent
     const newConfig = config;
 
-    // Download a file
     if (!newConfig || !newConfig.url) return {};
 
-    if (
-      newConfig.url.includes('/core/storages/')
-      && /\/.+\.[0-9a-z]+$/.test(newConfig.url)
-    ) {
+    if (newConfig.responseType === 'blob') {
       // is a file, download fetch data
       newConfig.headers.Accept = 'application/octet-stream';
     }
@@ -109,6 +99,9 @@ function uploadData(dataToUpload: DataToUpload, uploadURL: string): Promise<Axio
   return axiosInstance({
     url: `${uploadURL}/${target}`,
     method: 'put',
+    headers: {
+      'Content-Type': 'application/octet-stream',
+    },
     data,
   });
 }
