@@ -54,8 +54,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { JobUserSelectedParams } from '@/interfaces/general-panel';
-import { getUserProjects } from '@/helpers/auth';
-import { getSavedProjectSelected, setProjectSelected } from '@/helpers/db';
 
 export default Vue.extend({
   name: 'JobConfigModal',
@@ -65,17 +63,13 @@ export default Vue.extend({
   data() {
     return {
       jobName: '',
-      projectSelected: '',
-      projectList: [] as Array<string>,
+      projectSelected: 'Service Account (Piz-Daint)',
+      projectList: ['Service Account (Piz-Daint)'] as Array<string>,
       isSubmitting: false,
     };
   },
   mounted() {
     this.jobName = `${this.$store.getters.circuitName} - ${(new Date()).toDateString()}`;
-    getUserProjects().then((projectList: Array<string>) => {
-      this.projectList = projectList;
-      this.projectSelected = getSavedProjectSelected() || projectList[0];
-    });
   },
   computed: {
     fieldsComplete(): boolean {
@@ -85,7 +79,6 @@ export default Vue.extend({
   methods: {
     submitValidation() {
       this.isSubmitting = true;
-      setProjectSelected(this.projectSelected);
       this.$emit('run', {
         name: this.jobName || null,
         project: this.projectSelected,

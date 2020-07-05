@@ -1,5 +1,5 @@
 
-const BACKEND_BASE = 'http://psp-validation-bbp-ou-nse.ocp.bbp.epfl.ch/api';
+const BACKEND_BASE = 'https://psp-validation-svc-dev-psp.apps.hbp.eu/api';
 // const BACKEND_BASE = 'http://localhost:3000/api';
 const JOBS_ENDPOINT = `${BACKEND_BASE}/job`;
 const CIRCUIT_ENDPOINT = `${BACKEND_BASE}/circuits`;

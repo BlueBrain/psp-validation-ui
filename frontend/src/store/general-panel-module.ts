@@ -5,16 +5,16 @@ import {
   StoreStateInterface,
   StoredCircuitAndList,
 } from '@/interfaces/general-panel';
-import { StateInterface as RootStateInterface } from '@/interfaces/store';
-import { getStoredCircuitPathSync } from '@/helpers/db';
 import defaultCircuits from '@/default-data/default-circuits';
 import { getAsyncStoredCircuitAndList } from '@/helpers/backend-helper';
 
+const moocCircuit: CircuitInterface = defaultCircuits[0];
+
 const stateValues: StoreStateInterface = {
-  currentCircuit: {} as CircuitInterface,
-  circuitList: [] as Array<CircuitInterface>,
+  currentCircuit: moocCircuit,
+  circuitList: defaultCircuits as Array<CircuitInterface>,
   // circuitPath will be used to identify the config for table data or jobs
-  circuitPath: '',
+  circuitPath: moocCircuit.path,
   generalParams: {
     pairs: 4,
     repetitions: 3,
@@ -39,8 +39,8 @@ const tableEditingModule = {
     },
   },
   getters: {
-    circuitPath: (state: StoreStateInterface, getters: any, rootState: RootStateInterface): string => {
-      const storedCircuitPath = state.circuitPath || getStoredCircuitPathSync(rootState.userId);
+    circuitPath: (state: StoreStateInterface): string => {
+      const storedCircuitPath = state.circuitPath || moocCircuit.path;
       return storedCircuitPath;
     },
     circuitName: (state: StoreStateInterface): string => (state.currentCircuit.displayName || 'job'),

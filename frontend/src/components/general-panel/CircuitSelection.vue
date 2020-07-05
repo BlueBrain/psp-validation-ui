@@ -11,20 +11,9 @@
         :value="circuit.name"
         :label="circuit.displayName"
       >
-        <span>{{ circuit.name }}</span>
         <span class="circuit-path-in-option">({{ circuit.path }})</span>
-        <Button
-          @click="removeCircuit(circuit.name, $event)"
-          class="remove-circuit"
-          type="error"
-          size="small"
-          ghost
-        >
-          <Icon type="md-trash" />
-        </Button>
       </Option>
     </Select>
-    <Button @click="addNewCircuit" icon="md-add">New</Button>
 
     <Modal
       v-model="isEditing"

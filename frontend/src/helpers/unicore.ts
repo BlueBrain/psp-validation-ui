@@ -55,8 +55,7 @@ function setAxiosToken(token: string) {
 }
 
 function getComputerUrl(): string {
-  return hpc.BB5.url;
-  // return hpc.PIZ_DAINT.url;
+  return hpc.PIZ_DAINT.url;
 }
 
 function actionJob(actionURL: string) {
@@ -160,9 +159,7 @@ async function generateUnicoreConfig(configParams: GeneralJobDefinition): Promis
       CPUs: configParams.cpus,
       Memory: configParams.memory,
       Runtime: configParams.runtime,
-      NodeConstraints: 'uc3',
-      Queue: 'prod',
-      Project: configParams.project,
+      NodeConstraints: configParams.nodeType,
     },
     Tags: configParams.tags,
     Imports: configParams.imports,

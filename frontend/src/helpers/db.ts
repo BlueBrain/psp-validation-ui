@@ -49,10 +49,7 @@ async function getEndedJob(jobUrl: string): Promise<JobProperties | null> {
   return localForage.getItem(jobUrl);
 }
 
-function getSavedProjectSelected() {
-  return localStorage.getItem(constants.PROJECT_SELECTED);
-}
-function setProjectSelected(newProject: string) {
+function setProjectSelected(newProject: string): void {
   localStorage.setItem(constants.PROJECT_SELECTED, newProject);
 }
 
@@ -74,7 +71,6 @@ export {
   getStoredTableRowData,
   saveEndedJob,
   getEndedJob,
-  getSavedProjectSelected,
   setProjectSelected,
   saveImageByUrl,
   getStoredImageByUrl,
