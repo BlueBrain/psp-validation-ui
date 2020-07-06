@@ -18,8 +18,11 @@ const tags = {
   VALIDATION: 'validation',
 };
 
+const RUN_SCRIPT_NAME = 'input.sh';
+
 export default hpc;
 
 export {
   tags,
+  RUN_SCRIPT_NAME,
 };

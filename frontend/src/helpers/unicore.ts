@@ -145,7 +145,7 @@ async function generateUnicoreConfig(configParams: GeneralJobDefinition): Promis
   // generate jobSpecs and remove the nulls
   const unicoreConfig: UnicoreJobDefinition = cleanDeep({
     Name: configParams.title || 'unnamed job',
-    Executable: configParams.executable || '/bin/bash input.sh',
+    Executable: configParams.executable,
     Arguments: [],
     haveClientStageIn: 'true',
     Resources: {

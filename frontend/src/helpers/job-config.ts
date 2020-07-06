@@ -1,5 +1,6 @@
 
 import { GeneralJobDefinition } from '@/interfaces/unicore';
+import { RUN_SCRIPT_NAME } from '@/constants/hpc-systems';
 
 const defaultJobConfig: GeneralJobDefinition = {
   title: '',
@@ -7,7 +8,7 @@ const defaultJobConfig: GeneralJobDefinition = {
   cpus: 1,
   memory: '2G',
   project: 'proj42',
-  executable: '/bin/sh input.sh',
+  executable: `/bin/sh ${RUN_SCRIPT_NAME}`,
   tags: [],
   imports: [],
 };

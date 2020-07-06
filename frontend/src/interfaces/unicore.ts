@@ -39,7 +39,7 @@ interface GeneralJobDefinition {
   cpus: number;
   memory: string;
   project: string;
-  executable: string | null;
+  executable: string;
   tags: Array<string> | null;
   imports: Array<DataToUpload>;
 }

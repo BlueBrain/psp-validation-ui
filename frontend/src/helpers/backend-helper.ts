@@ -26,7 +26,7 @@ import defaultJobConfig, { validationScript } from '@/helpers/job-config';
 import { DataToUpload, JobProperties, FileObjInterface } from '@/interfaces/unicore';
 import { CircuitInterface } from '@/interfaces/general-panel';
 import { getPrePostNames, transformYamlToObj } from '@/helpers/yaml-helper';
-import { tags } from '@/constants/hpc-systems';
+import { tags, RUN_SCRIPT_NAME } from '@/constants/hpc-systems';
 import { jobsEndpoint, circuitEndpoint } from '@/constants/backend';
 import { ValidationsExpanded } from '@/interfaces/results';
 import { RowToYamlInterface } from '@/interfaces/table';
@@ -91,7 +91,7 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
 
   inputs.push({
     Data: getValidationScript(circuitPath, extraParams, yamlNameList),
-    To: 'input.sh',
+    To: RUN_SCRIPT_NAME,
   });
 
   inputs = inputs.concat(yamlsToInput);
