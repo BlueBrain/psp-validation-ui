@@ -251,6 +251,17 @@ async function getBulkFilesById(jobId: string, filePathList: Array<string>): Pro
   return fileContentList;
 }
 
+async function getRepetitionsParam(workingDirectory: string): Promise<string> {
+  const url = `${workingDirectory}/files/${RUN_SCRIPT_NAME}`;
+  const file = await getFile(url);
+  if (!file) throw new Error('No run script found');
+
+  const regexp = new RegExp('-r (\\d+)');
+  const match = (await file.text()).match(regexp);
+  if (!match || !match.length) return 'Unknown';
+  return match[1];
+}
+
 export default {};
 
 export {
@@ -267,4 +278,5 @@ export {
   deleteJob,
   getValidationResultFiles,
   getBulkFilesById,
+  getRepetitionsParam,
 };

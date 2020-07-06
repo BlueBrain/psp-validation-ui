@@ -12,6 +12,11 @@
     </span>
 
     <span class="custom-tag-group">
+      <Tag color="primary">Repetitions</Tag>
+      <Tag>{{ repetitions }}</Tag>
+    </span>
+
+    <span class="custom-tag-group">
       <Tag color="primary">Location</Tag>
       <Tag>{{ location }}</Tag>
       <CopyToClipboardBtn
@@ -35,7 +40,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import { JobProperties } from '@/interfaces/unicore';
-import { getFinalStatus, getJobPhysicalLocation, deleteJob } from '@/helpers/backend-helper';
+import {
+  getFinalStatus,
+  getJobPhysicalLocation,
+  deleteJob,
+  getRepetitionsParam,
+} from '@/helpers/backend-helper';
 import CopyToClipboardBtn from '@/components/details-page/CopyToClipboardBtn.vue';
 
 const loadingMessage = 'loading...';
@@ -64,6 +74,17 @@ export default Vue.extend({
   components: {
     CopyToClipboardBtn,
   },
+  data() {
+    return {
+      repetitions: loadingMessage,
+    };
+  },
+  watch: {
+    jobInfo() {
+      if (!this.jobInfo) return;
+      this.fillRepetitions();
+    },
+  },
   methods: {
     deleteValidation() {
       const jobUrl = this.jobInfo._links.self.href;
@@ -83,6 +104,12 @@ export default Vue.extend({
             });
         },
       });
+    },
+    fillRepetitions() {
+      getRepetitionsParam(this.jobInfo._links.workingDirectory.href)
+        .then((repetitions: string) => {
+          this.repetitions = repetitions;
+        });
     },
   },
 });

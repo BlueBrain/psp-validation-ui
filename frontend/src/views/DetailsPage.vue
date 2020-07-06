@@ -34,7 +34,6 @@ export default Vue.extend({
     };
   },
   created() {
-    this.fillData();
     this.resultData = clearResults();
     this.$nextTick(() => this.fillData());
   },
