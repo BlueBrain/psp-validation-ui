@@ -3,6 +3,8 @@ interface CircuitInterface {
   name: string;
   path: string;
   displayName: string;
+  mTypes: Array<string>;
+  synapseClasses: Array<string>;
 }
 
 interface GeneralPanelParamsInterface {
@@ -24,6 +26,11 @@ interface JobUserSelectedParams {
   project: string;
 }
 
+interface CircuitInfoResponse {
+  m_types: Array<string>;
+  synapse_classes: Array<string>;
+}
+
 export default {};
 
 export {
@@ -31,4 +38,5 @@ export {
   GeneralPanelParamsInterface,
   StoreStateInterface,
   JobUserSelectedParams,
+  CircuitInfoResponse,
 };

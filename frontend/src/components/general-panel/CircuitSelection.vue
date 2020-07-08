@@ -55,6 +55,7 @@
         <Button
           type="info"
           :disabled="!areFieldsComplete"
+          :loading="circuitIsBeingChecked"
           @click="saveNewCircuit"
         >Save</Button>
       </div>
@@ -67,7 +68,11 @@
 import Vue from 'vue';
 import defaultCircuits from '@/default-data/default-circuits';
 import { CircuitInterface } from '@/interfaces/general-panel';
-import { getCircuitList, saveCircuitList } from '@/helpers/backend-helper';
+import {
+  getCircuitList,
+  saveCircuitList,
+  getCircuitInfo,
+} from '@/helpers/backend-helper';
 import { saveCircuitPathSync } from '@/helpers/db';
 
 const labelSize = 6;
@@ -83,6 +88,7 @@ export default Vue.extend({
       circuitList: [] as Array<CircuitInterface>,
       labelSize,
       contentSize,
+      circuitIsBeingChecked: false,
     };
   },
   computed: {
@@ -107,14 +113,27 @@ export default Vue.extend({
     cancelClicked() {
       this.isEditing = false;
       // reset new circuit fields
-      this.newEditingCircuit = { name: '', path: '', displayName: '' };
+      this.newEditingCircuit = this.resetCircuit();
     },
-    saveNewCircuit() {
-      const circuitCopy: CircuitInterface = { ...this.newEditingCircuit };
+    async saveNewCircuit() {
+      this.circuitIsBeingChecked = true;
+      const circuitInfo = await getCircuitInfo(this.newEditingCircuit.path).catch((e: Error) => {
+        this.circuitIsBeingChecked = false;
+        this.$Message.error(e.message);
+      });
+      if (!circuitInfo) return;
+
+      const circuitCopy: CircuitInterface = {
+        ...this.newEditingCircuit,
+        mTypes: circuitInfo.m_types,
+        synapseClasses: circuitInfo.synapse_classes,
+      };
+
       this.$store.commit('setCurrentCircuitObj', circuitCopy);
       this.currentCircuit = circuitCopy;
       this.updateOrAddToCircuitList(circuitCopy);
       this.isEditing = false;
+      this.circuitIsBeingChecked = false;
       // reset new circuit fields
       this.newEditingCircuit = this.resetCircuit();
       this.saveToDB();
@@ -123,18 +142,28 @@ export default Vue.extend({
       return this.circuitList.find((c: CircuitInterface) => c.name === circuitName);
     },
     updateOrAddToCircuitList(newCircuit: CircuitInterface): CircuitInterface {
-      const circuitOnList = this.circuitList
-        .find((c: CircuitInterface) => c.path === newCircuit.path);
+      const circuitOnList = this.circuitList.find(
+        (c: CircuitInterface) => c.path === newCircuit.path,
+      );
       if (!circuitOnList) { // add it as a new one
         this.circuitList.push(newCircuit);
         return newCircuit;
       }
+      // update the info of the already existing one
       circuitOnList.name = newCircuit.name;
       circuitOnList.displayName = newCircuit.displayName;
+      circuitOnList.mTypes = newCircuit.mTypes;
+      circuitOnList.synapseClasses = newCircuit.synapseClasses;
       return circuitOnList;
     },
     resetCircuit(): CircuitInterface {
-      return { name: '', path: '', displayName: '' };
+      return {
+        name: '',
+        path: '',
+        displayName: '',
+        mTypes: [],
+        synapseClasses: [],
+      };
     },
     saveToDB() {
       const { userId } = this.$store.state;

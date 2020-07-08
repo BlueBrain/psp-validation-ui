@@ -24,10 +24,14 @@ import {
 } from '@/interfaces/backend';
 import defaultJobConfig, { validationScript } from '@/helpers/job-config';
 import { DataToUpload, JobProperties, FileObjInterface } from '@/interfaces/unicore';
-import { CircuitInterface } from '@/interfaces/general-panel';
+import { CircuitInterface, CircuitInfoResponse } from '@/interfaces/general-panel';
 import { getPrePostNames, transformYamlToObj } from '@/helpers/yaml-helper';
 import { tags, RUN_SCRIPT_NAME } from '@/constants/hpc-systems';
-import { jobsEndpoint, circuitEndpoint } from '@/constants/backend';
+import {
+  JOBS_ENDPOINT,
+  CIRCUIT_ENDPOINT,
+  CIRCUIT_INFO_ENDPOINT,
+} from '@/constants/backend';
 import { ValidationsExpanded } from '@/interfaces/results';
 import { RowToYamlInterface } from '@/interfaces/table';
 
@@ -50,7 +54,7 @@ function convertYamlToInputObj(yamlFile: string) {
 }
 
 function saveInDatabase(unicoreJobId: string, inputs: Array<DataToUpload>, userId: string): Promise<AxiosResponse> {
-  return axiosInstance.post(jobsEndpoint, {
+  return axiosInstance.post(JOBS_ENDPOINT, {
     id: unicoreJobId,
     files: inputs,
     user: userId,
@@ -110,7 +114,7 @@ function setToken(token: string) {
 }
 
 async function getFilesFromBackend(unicoreJobId: string): Promise<Array<RowToYamlInterface>> {
-  const files = await axiosInstance.get(jobsEndpoint, { params: { id: unicoreJobId } })
+  const files = await axiosInstance.get(JOBS_ENDPOINT, { params: { id: unicoreJobId } })
     .then((r: AxiosResponse) => r.data);
   const expandedInfoObj: Array<RowToYamlInterface> = files
     .map((yaml: DataToUpload): RowToYamlInterface => {
@@ -141,13 +145,13 @@ async function getValidationsExpanded(circuitPath: string): Promise<Array<Valida
 }
 
 async function getCircuitList(userId: string): Promise<Array<CircuitInterface>> {
-  const circuitList = await axiosInstance.get(circuitEndpoint, { params: { user: userId } })
+  const circuitList = await axiosInstance.get(CIRCUIT_ENDPOINT, { params: { user: userId } })
     .then((r: AxiosResponse) => r.data);
   return circuitList;
 }
 
 function saveCircuitList(userId: string, circuitList: Array<CircuitInterface>) {
-  return axiosInstance.post(circuitEndpoint, {
+  return axiosInstance.post(CIRCUIT_ENDPOINT, {
     user: userId,
     circuits: circuitList,
   });
@@ -262,6 +266,18 @@ async function getRepetitionsParam(workingDirectory: string): Promise<string> {
   return match[1];
 }
 
+function getCircuitInfo(circuitPath: string): Promise<CircuitInfoResponse> {
+  return axiosInstance.get(CIRCUIT_INFO_ENDPOINT, { params: { path: circuitPath } })
+    .then((r: AxiosResponse) => {
+      const response = r.data;
+      if (response.error) throw new Error(response.error);
+      return response.results;
+    })
+    .catch((e: Error) => {
+      throw new Error(`Error fetching Circuit Information: ${e.message}`);
+    });
+}
+
 export default {};
 
 export {
@@ -279,4 +295,5 @@ export {
   getValidationResultFiles,
   getBulkFilesById,
   getRepetitionsParam,
+  getCircuitInfo,
 };
