@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import sortBy from 'lodash/sortBy';
 import DetailsFiles from '@/components/details-page/DetailsFiles.vue';
 import DetailsHeader from '@/components/details-page/DetailsHeader.vue';
 import PlotComponent from '@/components/details-page/PlotComponent.vue';
@@ -43,7 +44,8 @@ export default Vue.extend({
       if (!jobInfo) throw new Error(`Job not found: ${this.id}`);
       this.$set(this.resultData, 'jobInfo', jobInfo);
 
-      const plotList = await getValidationPlots(jobInfo);
+      let plotList = await getValidationPlots(jobInfo);
+      plotList = sortBy(plotList, 'pathwayName');
       this.$set(this.resultData, 'plotList', plotList);
     },
   },
@@ -61,14 +63,14 @@ export default Vue.extend({
   margin-top: 5vh;
 
   .details-header {
-    margin-bottom: 10vh;
+    margin-bottom: 5vh;
   }
   .plot-component {
-    margin-bottom: 10vh;
+    margin-bottom: 5vh;
   }
   .details-files {
-    margin-bottom: 10vh;
     text-align: left;
+    margin-bottom: 5vh;
   }
 }
 </style>

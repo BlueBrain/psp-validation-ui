@@ -19,7 +19,7 @@ interface PlotsPathsObj {
 }
 
 interface FilesTreeInterface {
-  title?: string;
+  title: string;
   expand?: boolean;
   selected?: boolean;
   checked? : boolean;
