@@ -24,6 +24,7 @@ RUN pip install \
     -r ./requirements.txt
 
 COPY server.py .
+COPY circuit_helper.py .
 
 EXPOSE 3000
 

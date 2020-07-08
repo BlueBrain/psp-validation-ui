@@ -1,13 +1,11 @@
 
-from tornado.web import Application, RequestHandler
-from tornado.httpserver import HTTPServer
-from tornado.ioloop import IOLoop
-from tornado.log import enable_pretty_logging
-from pymongo import MongoClient
-import datetime
 import json
 import logging
 import os
+from tornado.web import Application, RequestHandler
+from tornado.ioloop import IOLoop
+from pymongo import MongoClient
+from circuit_helper import CircuitHelper
 
 L = logging.getLogger(__name__)
 L.setLevel(logging.DEBUG)
@@ -15,23 +13,16 @@ L.setLevel(logging.DEBUG)
 DB_HOST = os.getenv('DB_HOST')
 DEBUG = os.getenv('DEBUG')
 DB_ENDPOINT = 'mongodb://{}:27017/psp'.format(DB_HOST)
-L.info('Using mongo: {}'.format(DB_ENDPOINT))
+L.info('Using mongo: %s', DB_ENDPOINT)
 client = MongoClient(DB_ENDPOINT)
 
 db = client.get_default_database()
 
-class StatusHandler(RequestHandler):
-  def get(self):
-    L.debug('Showing status. Check DB conenction')
-    do_find_validation() # to check the connection with the DB
-    L.debug('DB connection correct')
-    self.write({'status': 'OK'})
-
-
-class JobHandler(RequestHandler):
+class BaseHandler(RequestHandler):
   def set_default_headers(self):
     self.set_header("Access-Control-Allow-Origin", "*")
-    self.set_header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+    self.set_header("Access-Control-Allow-Headers",
+                    "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
     self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
     self.set_header("Content-Type", 'application/json')
 
@@ -40,20 +31,35 @@ class JobHandler(RequestHandler):
     self.set_status(204)
     self.finish()
 
+
+class StatusHandler(BaseHandler):
+  def get(self):
+    L.debug('Showing status. Check DB conenction')
+    do_find_validation() # to check the connection with the DB
+    L.debug('DB connection correct')
+    self.write({'status': 'OK'})
+
+
+class LandingHandler(BaseHandler):
+  def get(self):
+    self.write({'To check status use': '/api/status'})
+
+
+class JobHandler(BaseHandler):
   def get(self):
     L.debug('[Get] job')
     unicore_job_id = self.get_argument("id")
     L.debug('ID: %s', unicore_job_id)
-    
+
     if not unicore_job_id:
       return self.write({'message': 'Object not found'})
-    
+
     document = get_validation_files_by_unicore_id(unicore_job_id)
     if not document:
       files = []
     else:
       files = document['files']
-    self.write(json.dumps(files))
+    return self.write(json.dumps(files))
 
   def post(self):
     L.debug('[Post] job')
@@ -69,28 +75,17 @@ class JobHandler(RequestHandler):
     self.write({'message': message})
 
 
-class CircuitHandler(RequestHandler):
-  def set_default_headers(self):
-    self.set_header("Access-Control-Allow-Origin", "*")
-    self.set_header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
-    self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-    self.set_header("Content-Type", 'application/json')
-
-  def options(self):
-    # no body
-    self.set_status(204)
-    self.finish()
-
+class CircuitHandler(BaseHandler):
   def get(self):
     L.debug('[Get] circuits')
     user_id = self.get_argument("user")
-    
+
     if not user_id:
       return self.write({'message': 'User not found'})
 
     circuits = get_circuit_list(user_id)
     json_list = json.dumps(circuits)
-    self.write(json_list)
+    return self.write(json_list)
 
   def post(self):
     L.debug('[Post] circuits')
@@ -135,13 +130,17 @@ def do_insert(data):
 
 def make_app():
   urls = [
-    ("/api/", StatusHandler),
+    ("/api", LandingHandler),
+    ("/", LandingHandler),
+    ("/api/", LandingHandler),
+    ("/api/status", StatusHandler),
     ("/api/job", JobHandler),
     ("/api/circuits", CircuitHandler),
+    ("/api/snap", CircuitHelper),
   ]
   return Application(urls, db=db, debug=DEBUG)
 
 if __name__ == '__main__':
-    app = make_app()
-    app.listen(3000)
-    IOLoop.instance().start()
+  app = make_app()
+  app.listen(3000)
+  IOLoop.instance().start()
