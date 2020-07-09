@@ -26,17 +26,20 @@
           >
             <Option
               v-for="mType in circuitMTypes"
-              :key="mType.name"
-              :value="mType.name"
-            >{{mType.displayName || mType.name}}</Option>
+              :key="mType"
+              :value="mType"
+            >{{ mType }}</Option>
           </Select>
 
           <Select
             v-if="localPropDef === targetQuery.SYNAPSE_CLASS"
             v-model="localPropValue"
           >
-            <Option value="INH">INH</Option>
-            <Option value="EXC">EXC</Option>
+            <Option
+              v-for="synapse in synapseClasses"
+              :key="synapse"
+              :value="synapse"
+            >{{ synapse }}</Option>
           </Select>
         </i-col>
         <i-col :span="columnSize">
@@ -76,7 +79,7 @@ import {
   EditingObject,
   StoreStateInterface,
 } from '@/interfaces/table';
-import { circuitMTypes, targetQuery } from '@/constants/target-types';
+import { targetQuery } from '@/constants/target-types';
 
 const columnSize = 8;
 
@@ -104,7 +107,6 @@ export default Vue.extend({
       localPropDef: '',
       localPropValue: '',
       localTargetName: '',
-      circuitMTypes,
       targetQuery,
       columnSize,
     };
@@ -118,6 +120,12 @@ export default Vue.extend({
     },
     storedElem(): StoreStateInterface {
       return this.$store.state.tableEditingModule;
+    },
+    circuitMTypes(): Array<string> {
+      return this.$store.getters.currentCircuit.mTypes;
+    },
+    synapseClasses(): Array<string> {
+      return this.$store.getters.currentCircuit.synapseClasses;
     },
   },
   created() {
