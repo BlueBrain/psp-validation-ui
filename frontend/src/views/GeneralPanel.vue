@@ -20,11 +20,13 @@
 </template>
 
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import GeneralParams from '@/components/general-panel/GeneralParams.vue'; // use another name?
 import CircuitSelection from '@/components/general-panel/CircuitSelection.vue';
 
-export default {
+
+export default Vue.extend({
   name: 'GeneralPanel',
   components: {
     GeneralParams,
@@ -35,11 +37,11 @@ export default {
   },
   /* eslint-disable @typescript-eslint/typedef */
   beforeRouteLeave(to, from, next) {
-    this.$refs.circuitSelectionRef.saveToDB();
-    this.$refs.generalParamsRef.saveToDB();
+    (this.$refs.circuitSelectionRef as any).saveToDB();
+    (this.$refs.generalParamsRef as any).saveToDB();
     next();
   },
-};
+});
 </script>
 
 
