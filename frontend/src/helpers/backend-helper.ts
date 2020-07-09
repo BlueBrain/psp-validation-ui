@@ -24,7 +24,11 @@ import {
 } from '@/interfaces/backend';
 import defaultJobConfig, { validationScript } from '@/helpers/job-config';
 import { DataToUpload, JobProperties, FileObjInterface } from '@/interfaces/unicore';
-import { CircuitInterface, CircuitInfoResponse } from '@/interfaces/general-panel';
+import {
+  CircuitInterface,
+  CircuitInfoResponse,
+  StoredCircuitAndList,
+} from '@/interfaces/general-panel';
 import { getPrePostNames, transformYamlToObj } from '@/helpers/yaml-helper';
 import { tags, RUN_SCRIPT_NAME } from '@/constants/hpc-systems';
 import {
@@ -34,6 +38,7 @@ import {
 } from '@/constants/backend';
 import { ValidationsExpanded } from '@/interfaces/results';
 import { RowToYamlInterface } from '@/interfaces/table';
+import { getStoredCircuitPathSync } from '@/helpers/db';
 
 
 const axiosInstance = axios.create({
@@ -278,6 +283,26 @@ function getCircuitInfo(circuitPath: string): Promise<CircuitInfoResponse> {
     });
 }
 
+async function getAsyncStoredCircuitAndList(userId: string, defaultList: Array<CircuitInterface>): Promise<StoredCircuitAndList> {
+  const circuitPath = getStoredCircuitPathSync(userId);
+
+  const storedCircuitList: Array<CircuitInterface> = await getCircuitList(userId);
+  // if no stored use default and obj defaul[0]
+  const circuitObjFound = storedCircuitList.find((circuitObj: CircuitInterface) => (
+    circuitObj.path === circuitPath
+  ));
+
+  if (circuitObjFound && circuitPath !== circuitObjFound.path) {
+    throw new Error('Circuit saved does not match');
+  }
+
+  const circuitAndList: StoredCircuitAndList = {
+    circuit: circuitObjFound || Object.assign([], defaultList[0]),
+    list: storedCircuitList.length ? storedCircuitList : Object.assign([], defaultList),
+  };
+  return circuitAndList;
+}
+
 export default {};
 
 export {
@@ -296,4 +321,5 @@ export {
   getBulkFilesById,
   getRepetitionsParam,
   getCircuitInfo,
+  getAsyncStoredCircuitAndList,
 };

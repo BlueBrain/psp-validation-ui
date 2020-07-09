@@ -48,6 +48,7 @@ export default Vue.extend({
       top: 100,
       duration: 5,
     });
+    this.$store.dispatch('fetchCurrentCircuit');
   },
 });
 </script>

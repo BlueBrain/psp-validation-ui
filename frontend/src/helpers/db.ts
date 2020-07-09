@@ -32,8 +32,8 @@ function saveTableRowData(rowsData: Array<TableRowInterface>, circuitPath: strin
 function getStoredGeneralPanelParams(circuitPath: string): Promise<GeneralPanelParamsInterface> {
   return localForage.getItem(generatePairStr(constants.GENERAL_PANEL_PARAMS, circuitPath));
 }
-function getStoredCircuitPathSync(userId: string): string | null {
-  return localStorage.getItem(generatePairStr(userId, constants.CIRCUIT_PATH));
+function getStoredCircuitPathSync(userId: string): string {
+  return localStorage.getItem(generatePairStr(userId, constants.CIRCUIT_PATH)) || '/';
 }
 function getStoredTableRowData(circuitPath: string): Promise<Array<TableRowInterface>> {
   return localForage.getItem(generatePairStr(constants.ROWS_DATA, circuitPath));

@@ -66,10 +66,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import defaultCircuits from '@/default-data/default-circuits';
 import { CircuitInterface } from '@/interfaces/general-panel';
 import {
-  getCircuitList,
   saveCircuitList,
   getCircuitInfo,
 } from '@/helpers/backend-helper';
@@ -82,10 +80,8 @@ export default Vue.extend({
   name: 'CircuitSelection',
   data() {
     return {
-      currentCircuit: {} as CircuitInterface,
       isEditing: false,
       newEditingCircuit: {} as CircuitInterface,
-      circuitList: [] as Array<CircuitInterface>,
       labelSize,
       contentSize,
       circuitIsBeingChecked: false,
@@ -95,6 +91,12 @@ export default Vue.extend({
     areFieldsComplete(): boolean {
       const editing = this.newEditingCircuit;
       return !!(editing.name && editing.path && editing.displayName);
+    },
+    circuitList(): Array<CircuitInterface> {
+      return this.$store.getters.currentCircuitList;
+    },
+    currentCircuit(): CircuitInterface {
+      return this.$store.getters.currentCircuit;
     },
   },
   created() {
@@ -107,7 +109,6 @@ export default Vue.extend({
     newCircuitNameSelected(newCircuitName: string) {
       const newCircuitSelected = this.findCircuitByName(newCircuitName) || this.circuitList[0];
       this.$store.commit('setCurrentCircuitObj', newCircuitSelected);
-      this.currentCircuit = newCircuitSelected;
       this.saveToDB();
     },
     cancelClicked() {
@@ -130,7 +131,6 @@ export default Vue.extend({
       };
 
       this.$store.commit('setCurrentCircuitObj', circuitCopy);
-      this.currentCircuit = circuitCopy;
       this.updateOrAddToCircuitList(circuitCopy);
       this.isEditing = false;
       this.circuitIsBeingChecked = false;
@@ -170,26 +170,8 @@ export default Vue.extend({
       saveCircuitList(userId, this.circuitList);
       saveCircuitPathSync(userId, this.currentCircuit.path);
     },
-    findCircuitObjByPath(circuitPath: string, circuitList: Array<CircuitInterface>): CircuitInterface | null {
-      if (!circuitPath) return null;
-      const circuitObjFound = circuitList.find((circuitObj: CircuitInterface) => circuitObj.path === circuitPath);
-      return circuitObjFound || null;
-    },
     async restoreStoredData() {
-      const { userId } = this.$store.state;
-      const { circuitPath } = this.$store.getters;
-
-      const storedCircuitList: Array<CircuitInterface> = await getCircuitList(userId);
-      const storedCircuitSelected: CircuitInterface | null = this.findCircuitObjByPath(circuitPath, storedCircuitList);
-
-      if (storedCircuitSelected && circuitPath !== storedCircuitSelected.path) {
-        throw new Error('Circuit saved does not match');
-      }
-
-      this.circuitList = storedCircuitList.length ? storedCircuitList : Object.assign([], defaultCircuits);
-      this.currentCircuit = storedCircuitSelected || Object.assign([], defaultCircuits[0]);
       this.newEditingCircuit = this.resetCircuit();
-      this.$store.commit('setCurrentCircuitObj', this.currentCircuit);
     },
     removeCircuit(circuitName: string, event: Event): boolean {
       if (!circuitName) return false;
@@ -197,7 +179,8 @@ export default Vue.extend({
       const newCircuitList = this.circuitList.filter((circuitObj: CircuitInterface) => (
         circuitObj.name !== circuitName
       ));
-      this.circuitList = newCircuitList;
+
+      this.$store.commit('setCircuitList', newCircuitList);
 
       event.stopPropagation();
       if (circuitName !== this.currentCircuit.name) {

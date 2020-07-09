@@ -17,6 +17,7 @@ interface GeneralPanelParamsInterface {
 
 interface StoreStateInterface {
   currentCircuit: CircuitInterface;
+  circuitList: Array<CircuitInterface>;
   circuitPath: string;
   generalParams: GeneralPanelParamsInterface;
 }
@@ -31,6 +32,11 @@ interface CircuitInfoResponse {
   synapse_classes: Array<string>;
 }
 
+interface StoredCircuitAndList {
+  circuit: CircuitInterface;
+  list: Array<CircuitInterface>;
+}
+
 export default {};
 
 export {
@@ -39,4 +45,5 @@ export {
   StoreStateInterface,
   JobUserSelectedParams,
   CircuitInfoResponse,
+  StoredCircuitAndList,
 };
