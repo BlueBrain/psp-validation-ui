@@ -84,16 +84,29 @@ def get_mtype_and_synapse_sonata(circuit_path):
   if not circuit.nodes:
     raise ValueError('No Circuit Nodes')
 
-  node_population = circuit.nodes["hippocampus_neurons"]
+  node_population = circuit.nodes[get_neuron_node(circuit)]
   L.debug("Population size: %s", node_population.size)
 
   mtypes = node_population.property_values('mtype')
   synapse_classes = node_population.property_values('synapse_class')
-
   return {
     'm_types': list(mtypes),
     'synapse_classes': list(synapse_classes),
   }
+
+def get_neuron_node(circuit):
+  nodes = circuit.nodes.items()
+  if len(nodes) > 1:
+    populations = list(circuit.nodes.keys())
+    L.debug('Has multiple nodes %s', populations)
+    neuron_populations = [p for p in populations if 'neurons' in p]
+    if not neuron_populations:
+      raise ValueError('no Neuron population in nodes')
+    population = neuron_populations[0]
+  else:
+    population = list(circuit.nodes.keys())[0]
+    L.debug('Selecting the only %s', population)
+  return population
 
 def get_mtype_and_synapse_legacy(circuit_path):
   from bluepy.v2 import Circuit
@@ -101,7 +114,6 @@ def get_mtype_and_synapse_legacy(circuit_path):
   mtypes = circuit.cells.mtypes
   # as circuit.cells.synapse_class fails
   synapse_classes = set(['INH', 'EXC'])
-
   return {
     'm_types': list(mtypes),
     'synapse_classes': list(synapse_classes),
