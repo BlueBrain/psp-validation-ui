@@ -32,13 +32,22 @@ class CircuitHelper(BaseHandler):
     if not checks_result['is_ok']:
       return self.write({'error': checks_result['message']})
 
+    result_dict = {}
     if checks_result['is_sonata']:
       L.debug('Is Sonata Circuit')
-      result_dict = get_mtype_and_synapse_sonata(circuit_path)
+      try:
+        result_dict = get_mtype_and_synapse_sonata(circuit_path)
+      except Exception as e:
+        L.error(e, exc_info=True)
+        return self.write({'error': str(e)})
       L.debug(result_dict)
     else:
       L.debug('Is Legacy Circuit')
-      result_dict = get_mtype_and_synapse_legacy(circuit_path)
+      try:
+        result_dict = get_mtype_and_synapse_legacy(circuit_path)
+      except Exception as e:
+        L.error(e, exc_info=True)
+        return self.write({'error': str(e)})
       L.debug(result_dict)
 
     return self.write({'results': result_dict})
