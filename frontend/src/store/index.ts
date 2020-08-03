@@ -10,7 +10,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     title: '',
-    packageVersion: process.env.PACKAGE_VERSION || '0',
+    packageVersion: process.env.VUE_APP_VERSION || '0',
     token: '',
     userId: '',
   } as StateInterface,
