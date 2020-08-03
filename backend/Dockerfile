@@ -1,31 +1,30 @@
 
-FROM python:3.7-slim-stretch as builder
+FROM python:3.7-slim-buster as base
 
-LABEL maintainer="BlueBrain NSE(Neuroscientific Software Engineering)"
-ENV DEBIAN_FRONTEND=noninteractive
+FROM base as builder
 
-RUN pip install --upgrade pip setuptools virtualenv
-
-# Install system dependencies
-RUN apt-get update && apt-get install -yq \
-    build-essential \
-    libreadline-dev \
-    jq \
-    libz-dev
-
-WORKDIR /opt/psp-validation
+ARG INSTALL_DIR=/install
+RUN mkdir $INSTALL_DIR
+WORKDIR $INSTALL_DIR
 
 COPY requirements.txt ./
 
-RUN pip install \
-    --no-cache-dir \
-    # -i https://bbpteam.epfl.ch/repository/devpi/simple \
-    # -i https://pypi.python.org/simple \
-    -r ./requirements.txt
+RUN pip3 install \
+    --prefix=$INSTALL_DIR \
+    --no-warn-script-location \
+     -i https://bbpteam.epfl.ch/repository/devpi/simple \
+    -r requirements.txt
 
-COPY server.py .
-COPY circuit_helper.py .
+
+FROM base
+
+WORKDIR /opt/psp-validation
+
+LABEL maintainer="BlueBrain NSE(Neuroscientific Software Engineering)"
+
+COPY --from=builder /install /usr/local
+COPY server.py circuit_helper.py ./
 
 EXPOSE 3000
 
-ENTRYPOINT ["python", "server.py"]
+ENTRYPOINT ["python3", "server.py"]
