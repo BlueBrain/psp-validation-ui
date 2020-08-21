@@ -14,18 +14,20 @@ const defaultJobConfig: GeneralJobDefinition = {
 };
 
 const validationScript: Array<string> = [
-  '#!/bin/bash - l',
+  '#!/bin/bash -l',
   '. /etc/profile',
   'env | grep SLURM_NPROCS',
   'module load archive/2020-05',
   'module load py-bglibpy',
-  'module load neurodamus-hippocampus',
+  'module load neurodamus-hippocampus/0.4',
   'module load psp-validation',
   'export TARGETS="/gpfs/bbp.cscs.ch/project/proj42/home/ecker/psp-validation/usecases/hippocampus/targets.yaml"',
+  'export HDF5_USE_FILE_LOCKING=FALSE',
   '# psp --version',
   'psp -vv run -c <%= blueConfigPath %> -o . -t $TARGETS -n <%= pairs %> '
-    + '-r <%= trials %> <%= saveTraces %> <%= saveAmplitudes %> <%= yamlFiles %>',
-  'psp -vv plot -o . ./*.traces.h5',
+    + '-r <%= trials %> <%= saveTraces %> <%= saveAmplitudes %> '
+    + '-j <%= workers %> <%= yamlFiles %>',
+  'if [ $? -eq 0 ]; then psp -vv plot -o . ./*.traces.h5; else echo "PSP FAIL"; fi',
 ];
 
 export default defaultJobConfig;

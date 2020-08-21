@@ -76,6 +76,7 @@ function getValidationScript(circuitPath: string, extraParams: PspJobExtraParams
     yamlFiles: yamlFileNames.join(' '),
     saveTraces: extraParams.generalParams.saveTraces ? '--dump-traces' : '',
     saveAmplitudes: extraParams.generalParams.saveAmplitudes ? '--dump-amplitudes' : '',
+    workers: yamlFileNames.length,
   });
   return runScript;
 }
