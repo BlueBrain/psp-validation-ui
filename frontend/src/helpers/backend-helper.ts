@@ -164,8 +164,8 @@ function saveCircuitList(userId: string, circuitList: Array<CircuitInterface>) {
 
 async function getValidationPlots(jobInfo: JobProperties): Promise<Array<PlotsPathsObj>> {
   const url = `${jobInfo._links.workingDirectory.href}/files/`;
-  const returnRawObject = true;
-  const filesObj = (await getFilesList(url, returnRawObject) as Array<FileObjInterface>);
+  const returnFullObject = true;
+  const filesObj = (await getFilesList(url, returnFullObject) as FileObjInterface);
   const folders = Object.keys(filesObj).filter((file: string) => file.endsWith('/'));
 
   const plotObjectsPromises = folders.map(async (pathwayName: string) => {
@@ -204,8 +204,8 @@ async function getValidationResultFiles(jobId: string): Promise<Array<FilesTreeI
   if (!jobInfo) throw new Error('error fetching jobInfo for files tree');
 
   const url = `${jobInfo._links.workingDirectory.href}/files/`;
-  const returnRawObject = true;
-  const filesObj = (await getFilesList(url, returnRawObject) as Array<FileObjInterface>);
+  const returnFullObject = true;
+  const filesObj = (await getFilesList(url, returnFullObject) as FileObjInterface);
 
   const files = Object.keys(filesObj);
   const folders = files.filter((fileName: string) => (fileName.endsWith('/')));

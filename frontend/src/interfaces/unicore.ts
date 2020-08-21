@@ -106,7 +106,7 @@ interface UnicoreJobFiles {
   }
   lastAccessed: Date;
   isDirectory: string;
-  content: Array<FileObjInterface>
+  content: FileObjInterface
 }
 
 export default {};

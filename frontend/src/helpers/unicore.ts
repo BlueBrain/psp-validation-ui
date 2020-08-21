@@ -133,11 +133,14 @@ async function getJobProperties(jobURL: string): Promise<JobProperties | null> {
   return jobInfo;
 }
 
-async function getFilesList(jobURL: string, rawObject: boolean = false): Promise<Array<string | FileObjInterface>> {
+async function getFilesList(jobURL: string, fullObject: boolean = false): Promise<Array<string> | FileObjInterface> {
   const response: AxiosResponse = await axiosInstance.get(jobURL)
     .catch((e: Error) => { throw new Error(`getFilesByUrl ${e.message}`); });
   const filesObj: UnicoreJobFiles = response.data;
-  if (rawObject) return filesObj.content;
+
+  if (filesObj.content['/*/']) delete filesObj.content['/*/'];
+
+  if (fullObject) return filesObj.content;
   return Object.keys(filesObj.content);
 }
 
