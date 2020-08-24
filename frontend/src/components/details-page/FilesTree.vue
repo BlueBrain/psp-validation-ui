@@ -79,6 +79,9 @@ export default Vue.extend({
 
 <style lang="scss">
 .files-tree {
+  overflow-x: scroll;
+  padding-bottom: 10px; // to avoid overlap with scrollbar
+
   .ivu-tree {
     > .ivu-tree-children:first-child {
       > li {

@@ -137,6 +137,7 @@ export default Vue.extend({
   .plots-container {
     display: flex;
     overflow-x: scroll;
+    padding-bottom: 10px;
 
     img {
       max-width: 90%;

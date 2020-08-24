@@ -27,7 +27,7 @@ const validationScript: Array<string> = [
   'psp -vv run -c <%= blueConfigPath %> -o . -t $TARGETS -n <%= pairs %> '
     + '-r <%= trials %> <%= saveTraces %> <%= saveAmplitudes %> '
     + '-j <%= workers %> <%= yamlFiles %>',
-  'if [ $? -eq 0 ]; then psp -vv plot -o . ./*.traces.h5; else echo "PSP FAIL"; fi',
+  'if [ $? -eq 0 ]; then psp -vv plot -o . ./*.traces.h5; else echo "PSP FAIL" && false; fi',
 ];
 
 export default defaultJobConfig;

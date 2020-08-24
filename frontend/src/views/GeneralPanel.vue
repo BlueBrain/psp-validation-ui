@@ -62,7 +62,7 @@ export default Vue.extend({
     .circuit-selection {
       display: flex;
       justify-content: space-around;
-      width: 600px;
+      width: 440px;
 
       .ivu-select {
         max-width: 400px;

@@ -15,7 +15,7 @@ const hpc: HPCDefinition = {
 };
 
 const tags = {
-  VALIDATION: 'validation',
+  VALIDATION: 'psp-validation',
 };
 
 const RUN_SCRIPT_NAME = 'input.sh';
