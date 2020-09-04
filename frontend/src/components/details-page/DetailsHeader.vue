@@ -1,6 +1,9 @@
 
 <template>
   <div class="details-header">
+
+    <h2 class="job-name">{{ jobInfo.name }}</h2>
+
     <span class="custom-tag-group">
       <Tag color="primary">Status</Tag>
       <Tag>{{ status }}</Tag>
@@ -15,6 +18,8 @@
       <Tag color="primary">Repetitions</Tag>
       <Tag>{{ repetitions }}</Tag>
     </span>
+
+    <br/>
 
     <span class="custom-tag-group">
       <Tag color="primary">Location</Tag>
@@ -121,6 +126,9 @@ export default Vue.extend({
   .actions {
     float: right;
     margin-right: 10px;
+  }
+  .job-name {
+    margin-bottom: 10px;
   }
 
   .custom-tag-group {
