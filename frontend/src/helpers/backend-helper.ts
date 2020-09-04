@@ -106,6 +106,15 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
 
   inputs = inputs.concat(yamlsToInput);
 
+  // make runtime depends on the config selected
+  runConfig.runtime = extraParams.generalParams.pairs
+    * (extraParams.generalParams.repetitions * 0.5)
+    * yamlNameList.length
+    * 10 // to seconds
+    + 1800; // + 30 mins
+
+  runConfig.cpus = yamlNameList.length;
+
   const jobInfo = await submitJob(runConfig, inputs);
   try {
     await saveInDatabase(jobInfo.id, yamlsToInput, extraParams.userId);
