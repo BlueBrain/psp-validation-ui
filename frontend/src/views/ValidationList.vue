@@ -25,11 +25,14 @@ export default Vue.extend({
       circuitPath: '',
       isLoading: true,
       validationsExpanded: [] as Array<ValidationsExpanded>,
+      inactiveStartTime: 0,
     };
   },
   mounted() {
     this.restoreStoredData();
     this.getValidations();
+    // refresh validations after 5 mins of inactivity if the page is not visible
+    document.addEventListener('visibilitychange', this.handleVisibilityChange, false);
   },
   created() {
     this.$store.commit('changeTitle', 'Validation List');
@@ -52,6 +55,19 @@ export default Vue.extend({
         })
         .catch((e: Error) => this.$Message.error(`Error getting jobs ${e.message}`));
     },
+    handleVisibilityChange() {
+      if (document.hidden) {
+        this.inactiveStartTime = new Date().getTime();
+      } else {
+        const endTime = new Date().getTime();
+        const duration = (endTime - this.inactiveStartTime) / 1000 / 60; // mins
+        if (duration > 5) this.getValidations();
+      }
+    },
+  },
+  beforeDestroy() {
+    console.log('beforeDestroy');
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange, false);
   },
 });
 </script>

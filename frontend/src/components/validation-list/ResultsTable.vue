@@ -49,6 +49,7 @@ export default Vue.extend({
   },
   watch: {
     validations(newVal: Array<ValidationsExpanded>) {
+      this.rowData = [];
       if (!newVal.length) return;
       this.processData();
     },
