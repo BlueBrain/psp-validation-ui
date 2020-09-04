@@ -33,6 +33,14 @@
           @set-error="setError"
         />
       </template>
+      <template slot-scope="{ row, column, index }" slot="link-editor">
+        <InlineLinkEdit
+          :row="row"
+          :column="column"
+          :index="index"
+          @changed="dataChanged"
+        />
+      </template>
       <template slot-scope="{ row }" slot="actions">
         <Button
           type="warning"
@@ -49,6 +57,7 @@ import Vue from 'vue';
 import get from 'lodash/get';
 import InlineStringEdit from '@/components/configure-table/InlineStringEdit.vue';
 import InlineTargetEdit from '@/components/configure-table/InlineTargetEdit.vue';
+import InlineLinkEdit from '@/components/configure-table/InlineLinkEdit.vue';
 import defaultColumns from '@/default-data/default-columns';
 import defaultRows from '@/default-data/default-rows';
 import { ChangeTableCellEventInterface, TableRowInterface, TableColumnInterface } from '@/interfaces/table';
@@ -70,6 +79,7 @@ export default Vue.extend({
     InlineStringEdit,
     InlineTargetEdit,
     ConfigTableActionButtons,
+    InlineLinkEdit,
   },
   created() {
     this.restoreStoredData();
