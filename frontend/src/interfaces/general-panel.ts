@@ -27,10 +27,12 @@ interface JobUserSelectedParams {
   project: string;
 }
 
+/* eslint-disable camelcase */
 interface CircuitInfoResponse {
   m_types: Array<string>;
   synapse_classes: Array<string>;
 }
+/* eslint-enable camelcase */
 
 interface StoredCircuitAndList {
   circuit: CircuitInterface;

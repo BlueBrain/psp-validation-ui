@@ -17,7 +17,7 @@ function getNumberOrFalseFromObj(obj: TableEntryObjectInterface) {
 
 function convertObjToYaml(obj: TableRowInterface): string {
   const objToTransform: RowToYamlInterface = {
-    /* eslint-disable @typescript-eslint/camelcase */
+    /* eslint-disable camelcase */
     pathway: {
       pre: obj.pathway.preSyn.propertyValue,
       post: obj.pathway.postSyn.propertyValue,
@@ -50,7 +50,7 @@ function convertObjToYaml(obj: TableRowInterface): string {
       t_stop: getNumberOrFalseFromObj(obj.protocol.tStop),
       post_ttx: getNumberOrFalseFromObj(obj.protocol.postTtx),
     },
-  /* eslint-enable @typescript-eslint/camelcase */
+  /* eslint-enable camelcase */
   };
   const converted = jsYaml.dump(objToTransform);
   return converted;

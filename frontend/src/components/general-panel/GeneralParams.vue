@@ -60,7 +60,7 @@ export default Vue.extend({
     },
     async restoreStoredData() {
       const { circuitPath } = this.$store.getters;
-      const storedParams: GeneralPanelParamsInterface = await getStoredGeneralPanelParams(circuitPath);
+      const storedParams: GeneralPanelParamsInterface | null = await getStoredGeneralPanelParams(circuitPath);
       this.generalParams = storedParams || this.$store.state.generalParamsModule.generalParams;
     },
   },

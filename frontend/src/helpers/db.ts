@@ -29,13 +29,13 @@ function saveTableRowData(rowsData: Array<TableRowInterface>, circuitPath: strin
 }
 
 
-function getStoredGeneralPanelParams(circuitPath: string): Promise<GeneralPanelParamsInterface> {
+function getStoredGeneralPanelParams(circuitPath: string): Promise<GeneralPanelParamsInterface | null> {
   return localForage.getItem(generatePairStr(constants.GENERAL_PANEL_PARAMS, circuitPath));
 }
 function getStoredCircuitPathSync(userId: string): string {
   return localStorage.getItem(generatePairStr(userId, constants.CIRCUIT_PATH)) || '/';
 }
-function getStoredTableRowData(circuitPath: string): Promise<Array<TableRowInterface>> {
+function getStoredTableRowData(circuitPath: string): Promise<Array<TableRowInterface> | null> {
   return localForage.getItem(generatePairStr(constants.ROWS_DATA, circuitPath));
 }
 
@@ -45,9 +45,8 @@ function saveEndedJob(jobInfo: JobProperties) {
     localForage.setItem(url, jobInfo);
   }
 }
-async function getEndedJob(jobUrl: string) {
-  const job: JobProperties | null = await localForage.getItem(jobUrl);
-  return job;
+async function getEndedJob(jobUrl: string): Promise<JobProperties | null> {
+  return localForage.getItem(jobUrl);
 }
 
 function getSavedProjectSelected() {
@@ -60,7 +59,7 @@ function setProjectSelected(newProject: string) {
 function saveImageByUrl(imageUrl: string, data: string) {
   localForage.setItem(imageUrl, data);
 }
-function getStoredImageByUrl(imageUrl: string): Promise<string> {
+function getStoredImageByUrl(imageUrl: string): Promise<string | null> {
   return localForage.getItem(imageUrl);
 }
 

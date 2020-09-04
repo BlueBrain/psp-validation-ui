@@ -18,14 +18,14 @@ function createAuthConfig() {
     + window.location.search;
 
   const oidcConfig = {
-    /* eslint-disable @typescript-eslint/camelcase */
+    /* eslint-disable camelcase */
     authority: actualAuthProvider.auth.authUrl,
     client_id: actualAuthProvider.auth.clientId,
     redirect_uri: redirect,
     response_type: 'id_token token',
     automaticSilentRenew: true,
     loadUserInfo: true,
-    /* eslint-enable @typescript-eslint/camelcase */
+    /* eslint-enable camelcase */
   };
   return oidcConfig;
 }

@@ -14,12 +14,16 @@ interface HPCDefinition {
   [key: string]: HPCComputer;
 }
 
+interface DataToUpload {
+  Data: string;
+  To: string;
+}
+
 interface UnicoreJobDefinition {
   // TODO be less flexible here
   Name?: string;
   Executable?: string;
   Arguments?: never[];
-  Parameters?: {};
   haveClientStageIn?: string;
   Resources?: {
     Nodes?: number | null;
@@ -42,11 +46,6 @@ interface GeneralJobDefinition {
   executable: string;
   tags: Array<string> | null;
   imports: Array<DataToUpload>;
-}
-
-interface DataToUpload {
-  Data: string;
-  To: string;
 }
 
 interface JobProperties {
@@ -101,7 +100,7 @@ interface UnicoreJobFiles {
     }
     parentStorage:{
       description: string;
-      href: string;  
+      href: string;
     }
   }
   lastAccessed: Date;

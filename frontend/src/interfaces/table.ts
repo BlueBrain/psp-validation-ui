@@ -35,6 +35,12 @@ interface ColumnIndexToPathMappingInterface {
   postTtx: string;
 }
 
+interface Target {
+  targetName: string;
+  propertyDef: string;
+  propertyValue: string;
+  isEditing?: boolean;
+}
 
 interface TableRowInterface {
   id: string;
@@ -72,6 +78,7 @@ interface TableRowInterface {
   };
 }
 
+/* eslint-disable camelcase */
 interface RowToYamlInterface {
   pathway: {
     pre: string;
@@ -107,13 +114,8 @@ interface RowToYamlInterface {
     post_ttx: number | boolean;
   };
 }
+/* eslint-enable camelcase */
 
-interface Target {
-  targetName: string;
-  propertyDef: string;
-  propertyValue: string;
-  isEditing?: boolean;
-}
 
 interface MTypeConstantsInterface {
   name: string;
