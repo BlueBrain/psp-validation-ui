@@ -17,6 +17,7 @@ function validURL(str: string) {
 const mapRuleFunction = {
   [ruleNames.POSITIVE]: (value: string): boolean => (toNumber(value) >= 0),
   [ruleNames.FLOAT]: (value: string): boolean => (!isNaN(toNumber(value))),
+  [ruleNames.INT]: (value: string): boolean => (!isNaN(parseInt(value, 10))),
   [ruleNames.URL]: (value: string): boolean => (validURL(value)),
 };
 
@@ -57,12 +58,11 @@ function hasErrors(dataObjArray: Array<TableRowInterface>) {
       }
       /* eslint-enable @typescript-eslint/no-explicit-any */
     });
-    return obj;
+    return errorWasFound;
   };
 
   function hasSomeError(element: TableRowInterface) {
-    iterate(element);
-    return errorWasFound;
+    return iterate(element);
   }
 
   dataObjArray.some(hasSomeError);

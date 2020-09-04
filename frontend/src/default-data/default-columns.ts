@@ -124,7 +124,7 @@ const columns = [
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
         path: getPathByKey('minNumSyn'),
-        rules: [ruleNames.POSITIVE],
+        rules: [ruleNames.POSITIVE, ruleNames.INT],
       },
       {
         title: 'max number of synapses',
@@ -132,7 +132,7 @@ const columns = [
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
         path: getPathByKey('maxNumSyn'),
-        rules: [ruleNames.POSITIVE],
+        rules: [ruleNames.POSITIVE, ruleNames.INT],
       },
       {
         title: 'max distance in x',

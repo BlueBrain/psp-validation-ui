@@ -123,7 +123,29 @@ export default Vue.extend({
     getDataToYamlFiles(): Array<string> {
       return getYamlFilesFromData(this.rowsData);
     },
+    checkMaxNumberSynapses(rowArray: Array<TableRowInterface>) {
+      rowArray.forEach((row: TableRowInterface, index: number) => {
+        const { constraints } = row.pathway;
+        const maxSynStr = constraints.maxNumSyn.value;
+        const minSynStr = constraints.minNumSyn.value;
+
+        // avoid checking if None. Psp backend will take care
+        if (minSynStr === 'None' || maxSynStr === 'None') return;
+
+        const maxSyn = parseInt(constraints.maxNumSyn.value, 10);
+        const minSyn = parseInt(constraints.minNumSyn.value, 10);
+
+        if (maxSyn > minSyn) return;
+
+        this.setError({
+          path: `[${index}].pathway.constraints.maxNumSyn`,
+          newValue: row.pathway.constraints.maxNumSyn.value,
+          message: 'Max number of synapse lower than min number of synapse',
+        } as ChangeTableCellEventInterface);
+      });
+    },
     tableHasErrors() {
+      this.checkMaxNumberSynapses(this.rowsData);
       return hasErrors(this.rowsData);
     },
     removePathway(pathwayId: string) {
