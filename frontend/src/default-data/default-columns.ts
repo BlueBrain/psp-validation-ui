@@ -57,7 +57,7 @@ const columns = [
         align: 'center',
         children: [
           {
-            title: 'mean',
+            title: 'mean [mV]',
             align: 'center',
             width: tableConstants.WIDTH_CHILDREN,
             slot: 'string-editor',
@@ -65,7 +65,7 @@ const columns = [
             rules: [ruleNames.FLOAT],
           },
           {
-            title: 'std',
+            title: 'std [mV]',
             align: 'center',
             width: tableConstants.WIDTH_CHILDREN,
             slot: 'string-editor',
@@ -135,7 +135,7 @@ const columns = [
         rules: [ruleNames.POSITIVE, ruleNames.INT],
       },
       {
-        title: 'max distance in x',
+        title: 'max distance in x [μm]',
         align: 'center',
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
@@ -143,7 +143,7 @@ const columns = [
         rules: [ruleNames.POSITIVE],
       },
       {
-        title: 'max distance in y',
+        title: 'max distance in y [μm]',
         align: 'center',
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
@@ -151,7 +151,7 @@ const columns = [
         rules: [ruleNames.POSITIVE],
       },
       {
-        title: 'max distance in z',
+        title: 'max distance in z [μm]',
         align: 'center',
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
@@ -165,7 +165,7 @@ const columns = [
     align: 'center',
     children: [
       {
-        title: 'steady-state voltage',
+        title: 'steady-state voltage [mV]',
         align: 'center',
         width: tableConstants.WIDTH_CHILDREN,
         slot: 'string-editor',
