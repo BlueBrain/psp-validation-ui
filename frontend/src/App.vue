@@ -18,7 +18,7 @@
             shape="circle"
             icon="md-list"
             size="large"
-          >Result List</Button>
+          >Validation List</Button>
         </router-link>
       </Header>
 
