@@ -5,14 +5,22 @@
       <i-col :span="columnSize">
         <span class="label">Pairs:</span>
         <span class="content">
-          <InputNumber :min="1" v-model="generalParams.pairs"/>
+          <InputNumber
+            :min="minNumber"
+            :max="maxNumber"
+            v-model="generalParams.pairs"
+          />
         </span>
       </i-col>
 
       <i-col :span="columnSize">
         <span class="label">Repetitions:</span>
         <span class="content">
-          <InputNumber :min="1" v-model="generalParams.repetitions"/>
+          <InputNumber
+            :min="minNumber"
+            :max="maxNumber"
+            v-model="generalParams.repetitions"
+          />
         </span>
       </i-col>
 
@@ -33,12 +41,16 @@ import { GeneralPanelParamsInterface } from '@/interfaces/general-panel';
 import { saveGeneralParams, getStoredGeneralPanelParams } from '@/helpers/db';
 
 const columnSize = 8;
+const minNumber = 1;
+const maxNumber = 50;
 
 export default Vue.extend({
   name: 'GeneralParams',
   data() {
     return {
       columnSize,
+      minNumber,
+      maxNumber,
       generalParams: {} as GeneralPanelParamsInterface,
     };
   },
