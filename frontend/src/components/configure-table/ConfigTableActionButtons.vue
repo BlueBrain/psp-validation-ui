@@ -3,6 +3,14 @@
   <div class="config-table-acction-buttons">
     <div class="action-table-buttons-container">
       <Button
+        @click="resetPathways"
+        type="primary"
+        ghost
+      >
+        <Icon type="md-undo"/>
+        Reset Patways
+      </Button>
+      <Button
         @click="exportRowsData"
         type="primary"
         ghost
@@ -47,6 +55,9 @@ export default Vue.extend({
       const newRow = cloneDeep(lastEntry);
       newRow.id = uuidv4();
       this.$emit('add-row', newRow);
+    },
+    resetPathways() {
+      this.$emit('reset-pathways');
     },
   },
 });

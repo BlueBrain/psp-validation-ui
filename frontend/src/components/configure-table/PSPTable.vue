@@ -5,6 +5,7 @@
       <ConfigTableActionButtons
         :table-data="rowsData"
         @add-row="addRow"
+        @reset-pathways="resetPathways"
       />
     </div>
     <Table
@@ -165,6 +166,14 @@ export default Vue.extend({
       }
       const newPathways = this.rowsData.filter((pathway: TableRowInterface) => (pathway.id !== pathwayId));
       this.rowsData = newPathways;
+    },
+    resetPathways() {
+      this.isLoading = true;
+      this.rowsData = [];
+      this.$nextTick(() => {
+        this.rowsData = defaultRows;
+        this.isLoading = false;
+      });
     },
   },
 });
