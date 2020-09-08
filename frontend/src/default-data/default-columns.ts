@@ -173,10 +173,10 @@ const columns = [
         rules: [ruleNames.FLOAT],
       },
       {
-        title: 'post ttx',
+        title: 'post ttx (blocks sodium channels)',
         align: 'center',
         width: tableConstants.WIDTH_CHILDREN,
-        slot: 'string-editor',
+        slot: 'boolean-editor',
         path: getPathByKey('postTtx'),
         rules: [],
       },
