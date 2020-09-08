@@ -4,6 +4,7 @@ const ruleNames = {
   URL: 'url',
   FLOAT: 'float',
   INT: 'int',
+  REQUIRED: 'required',
 };
 
 export default ruleNames;

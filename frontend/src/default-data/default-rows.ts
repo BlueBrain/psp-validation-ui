@@ -3,6 +3,8 @@ import { TableRowInterface } from '@/interfaces/table';
 import cloneDeep from 'lodash/cloneDeep';
 import { v4 as uuidv4 } from 'uuid';
 import { targetQuery } from '@/constants/target-types';
+import { emptyCharacter } from '@/helpers/inline-table-helper';
+
 
 const row1: TableRowInterface = {
   id: uuidv4(),
@@ -22,7 +24,7 @@ const row1: TableRowInterface = {
         value: 'true',
       },
       minNumSyn: {
-        value: 'None',
+        value: emptyCharacter,
       },
       maxNumSyn: {
         value: '2',
@@ -61,7 +63,7 @@ const row1: TableRowInterface = {
         value: '0.0',
       },
       link: {
-        value: 'None',
+        value: emptyCharacter,
       },
     },
   },

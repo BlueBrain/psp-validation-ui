@@ -15,7 +15,7 @@
       <span
         :class="{'entry-with-errors': tableEntryObject.hasError}"
         :title="tableEntryObject.message"
-      >{{ tableEntryObject.value || 'None' }}</span>
+      >{{ tableEntryObject.value || emptyCharacter }}</span>
     </div>
   </div>
 </template>
@@ -34,7 +34,7 @@ import {
   EditingObject,
   StoreStateInterface,
 } from '@/interfaces/table';
-import { checkStringByRule } from '@/helpers/inline-table-helper';
+import { checkStringByRule, emptyCharacter } from '@/helpers/inline-table-helper';
 
 
 export default Vue.extend({
@@ -53,6 +53,7 @@ export default Vue.extend({
   data() {
     return {
       localValue: get(this.row, this.column.path).value,
+      emptyCharacter,
     };
   },
   computed: {
@@ -89,7 +90,7 @@ export default Vue.extend({
       const rulesToCheck = isNil(this.storedElem.currentlyEditingPath) ? this.column.rules : this.storedElem.currentlyEditingRules;
       const fullPathWithRowIndex = `[${indexToChange}].${pathToChange}`;
 
-      const valueToCommit = (newValue === '') ? 'None' : newValue;
+      const valueToCommit = (newValue === '') ? emptyCharacter : newValue;
 
       this.$emit('changed', {
         path: fullPathWithRowIndex,

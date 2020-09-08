@@ -64,7 +64,7 @@ import { ChangeTableCellEventInterface, TableRowInterface, TableColumnInterface 
 import ConfigTableActionButtons from '@/components/configure-table/ConfigTableActionButtons.vue';
 import { saveTableRowData, getStoredTableRowData } from '@/helpers/db';
 import { getYamlFilesFromData } from '@/helpers/yaml-helper';
-import { hasErrors } from '@/helpers/inline-table-helper';
+import { hasErrors, emptyCharacter } from '@/helpers/inline-table-helper';
 
 export default Vue.extend({
   name: 'PSPTable',
@@ -129,8 +129,8 @@ export default Vue.extend({
         const maxSynStr = constraints.maxNumSyn.value;
         const minSynStr = constraints.minNumSyn.value;
 
-        // avoid checking if None. Psp backend will take care
-        if (minSynStr === 'None' || maxSynStr === 'None') return;
+        // avoid checking if not defined. Psp backend will take care
+        if (minSynStr === emptyCharacter || maxSynStr === emptyCharacter) return;
 
         const maxSyn = parseInt(constraints.maxNumSyn.value, 10);
         const minSyn = parseInt(constraints.minNumSyn.value, 10);

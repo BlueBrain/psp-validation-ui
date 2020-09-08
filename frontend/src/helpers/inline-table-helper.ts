@@ -14,11 +14,14 @@ function validURL(str: string) {
   return !!pattern.test(str);
 }
 
+const emptyCharacter = '───';
+
 const mapRuleFunction = {
   [ruleNames.POSITIVE]: (value: string): boolean => (toNumber(value) >= 0),
   [ruleNames.FLOAT]: (value: string): boolean => (!isNaN(toNumber(value))),
   [ruleNames.INT]: (value: string): boolean => (!isNaN(parseInt(value, 10))),
   [ruleNames.URL]: (value: string): boolean => (validURL(value)),
+  [ruleNames.REQUIRED]: (value: string): boolean => (value !== emptyCharacter),
 };
 
 function getRuleFunctionByName(ruleName: string) {
@@ -26,9 +29,11 @@ function getRuleFunctionByName(ruleName: string) {
 }
 
 function checkStringByRule(value: string, rules: Array<string>): CheckResultInterface {
-  // allow None parameters
-  if (value === 'None') return { message: '', hasError: false };
   let message = '';
+
+  if (value === emptyCharacter && !rules.includes(ruleNames.REQUIRED)) {
+    return { message: '', hasError: false };
+  }
 
   const rulesPassed = rules.every((rule: string) => {
     const ruleFn = getRuleFunctionByName(rule);
@@ -75,4 +80,5 @@ export {
   checkStringByRule,
   getRuleFunctionByName,
   hasErrors,
+  emptyCharacter,
 };
