@@ -65,6 +65,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import get from 'lodash/get';
+import cloneDeep from 'lodash/cloneDeep';
 import InlineStringEdit from '@/components/configure-table/InlineStringEdit.vue';
 import InlineTargetEdit from '@/components/configure-table/InlineTargetEdit.vue';
 import InlineLinkEdit from '@/components/configure-table/InlineLinkEdit.vue';
@@ -97,6 +98,9 @@ export default Vue.extend({
     this.restoreStoredData();
   },
   methods: {
+    getDefaultRows() {
+      return cloneDeep(defaultRows);
+    },
     addRow(newRow: TableRowInterface) {
       this.rowsData.push(newRow);
     },
@@ -129,7 +133,7 @@ export default Vue.extend({
         throw new Error(msg);
       }
       const storedRowData = await getStoredTableRowData(storedCircuitPath);
-      this.rowsData = storedRowData && storedRowData.length ? storedRowData : defaultRows;
+      this.rowsData = storedRowData && storedRowData.length ? storedRowData : this.getDefaultRows();
       this.isLoading = false;
     },
     getDataToYamlFiles(): Array<string> {
@@ -150,7 +154,7 @@ export default Vue.extend({
       this.isLoading = true;
       this.rowsData = [];
       this.$nextTick(() => {
-        this.rowsData = defaultRows;
+        this.rowsData = this.getDefaultRows();
         this.isLoading = false;
       });
     },
