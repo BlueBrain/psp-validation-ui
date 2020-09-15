@@ -35,6 +35,7 @@ import {
   StoreStateInterface,
 } from '@/interfaces/table';
 import { checkStringByRule, emptyCharacter } from '@/helpers/inline-table-helper';
+import { getPathByKey } from '@/default-data/default-columns';
 
 
 export default Vue.extend({
@@ -43,6 +44,7 @@ export default Vue.extend({
     row: Object as PropType<TableRowInterface>,
     column: Object as PropType<TableColumnInterface>,
     index: Number,
+    rowsData: Array as PropType<Array<TableRowInterface>>,
   },
   watch: {
     localValue(newValue: string) {
@@ -103,14 +105,55 @@ export default Vue.extend({
       } as ChangeTableCellEventInterface);
 
       const result: CheckResultInterface = checkStringByRule(valueToCommit, rulesToCheck);
-      this.$emit('set-error', {
-        path: fullPathWithRowIndex,
-        newValue: result.hasError,
-        message: result.message,
-      } as ChangeTableCellEventInterface);
+      this.emitError(fullPathWithRowIndex, result.hasError, result.message);
 
       // reset the editing element in store
       this.$store.commit('setCurrentEditObj', {});
+
+      this.checkNumberSynapses(fullPathWithRowIndex);
+    },
+    checkNumberSynapses(path: string) {
+      // TODO: use constants instead of string
+      if (!path.includes('minNumSyn') && !path.includes('maxNumSyn')) return;
+
+      // path contains the index that was modified e.g. "[1].pathway.constraints.maxNumSyn"
+      if (!path) this.$Message.error('[checkNumberSynapses] path error');
+
+      const matches = path.match('\\[(.+)\\]');
+      const index = (matches && matches.length) ? matches[1] : null;
+      if (!index) this.$Message.error('[checkNumberSynapses] path index error');
+
+      const pathMin = `[${index}].${getPathByKey('minNumSyn')}`;
+      const pathMax = `[${index}].${getPathByKey('maxNumSyn')}`;
+      const minSynStr = get(this.rowsData, `${pathMin}.value`);
+      const maxSynStr = get(this.rowsData, `${pathMax}.value`);
+
+      // avoid checking if not defined. Psp backend will take care
+      if (minSynStr === emptyCharacter || maxSynStr === emptyCharacter) return;
+
+      const hasError = (parseInt(maxSynStr, 10) < parseInt(minSynStr, 10));
+
+      if (!hasError) {
+        // reset error style in min and max
+        this.emitError(pathMin, hasError, '');
+        this.emitError(pathMax, hasError, '');
+        return;
+      }
+
+      if (path.includes('minNumSyn')) {
+        this.emitError(path, hasError, 'Min number of synapse higher than max number of synapse');
+      }
+
+      if (path.includes('maxNumSyn')) {
+        this.emitError(path, hasError, 'Max number of synapse lower than min number of synapse');
+      }
+    },
+    emitError(path: string, newValue: boolean, message: string) {
+      this.$emit('set-error', {
+        path,
+        newValue,
+        message,
+      } as ChangeTableCellEventInterface);
     },
     enterPressed() {
       this.doneChanging(this.localValue);

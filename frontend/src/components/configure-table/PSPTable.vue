@@ -29,6 +29,7 @@
           :row="row"
           :column="column"
           :index="index"
+          :rows-data="rowsData"
           @changed="dataChanged"
           @set-editing="setEditing"
           @set-error="setError"
@@ -74,7 +75,7 @@ import { ChangeTableCellEventInterface, TableRowInterface, TableColumnInterface 
 import ConfigTableActionButtons from '@/components/configure-table/ConfigTableActionButtons.vue';
 import { saveTableRowData, getStoredTableRowData } from '@/helpers/db';
 import { getYamlFilesFromData } from '@/helpers/yaml-helper';
-import { hasErrors, emptyCharacter } from '@/helpers/inline-table-helper';
+import { hasErrors } from '@/helpers/inline-table-helper';
 
 export default Vue.extend({
   name: 'PSPTable',
@@ -134,29 +135,7 @@ export default Vue.extend({
     getDataToYamlFiles(): Array<string> {
       return getYamlFilesFromData(this.rowsData);
     },
-    checkMaxNumberSynapses(rowArray: Array<TableRowInterface>) {
-      rowArray.forEach((row: TableRowInterface, index: number) => {
-        const { constraints } = row.pathway;
-        const maxSynStr = constraints.maxNumSyn.value;
-        const minSynStr = constraints.minNumSyn.value;
-
-        // avoid checking if not defined. Psp backend will take care
-        if (minSynStr === emptyCharacter || maxSynStr === emptyCharacter) return;
-
-        const maxSyn = parseInt(constraints.maxNumSyn.value, 10);
-        const minSyn = parseInt(constraints.minNumSyn.value, 10);
-
-        if (maxSyn > minSyn) return;
-
-        this.setError({
-          path: `[${index}].pathway.constraints.maxNumSyn`,
-          newValue: row.pathway.constraints.maxNumSyn.value,
-          message: 'Max number of synapse lower than min number of synapse',
-        } as ChangeTableCellEventInterface);
-      });
-    },
     tableHasErrors() {
-      this.checkMaxNumberSynapses(this.rowsData);
       return hasErrors(this.rowsData);
     },
     removePathway(pathwayId: string) {

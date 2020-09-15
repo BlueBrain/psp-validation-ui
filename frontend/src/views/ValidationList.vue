@@ -66,7 +66,6 @@ export default Vue.extend({
     },
   },
   beforeDestroy() {
-    console.log('beforeDestroy');
     document.removeEventListener('visibilitychange', this.handleVisibilityChange, false);
   },
 });
