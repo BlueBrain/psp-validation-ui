@@ -108,10 +108,10 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
 
   // make runtime depends on the config selected
   runConfig.runtime = extraParams.generalParams.pairs
-    * (extraParams.generalParams.repetitions * 0.5)
+    * (extraParams.generalParams.repetitions)
     * yamlNameList.length
-    * 10 // to seconds
-    + 1800; // + 30 mins
+    * 100
+    + 3600;
 
   runConfig.cpus = yamlNameList.length;
 
