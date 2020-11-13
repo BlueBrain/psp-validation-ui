@@ -19,7 +19,7 @@ const emptyCharacter = '───';
 const mapRuleFunction = {
   [ruleNames.POSITIVE]: (value: string): boolean => (toNumber(value) >= 0),
   [ruleNames.FLOAT]: (value: string): boolean => (!isNaN(toNumber(value))),
-  [ruleNames.INT]: (value: string): boolean => (!isNaN(parseInt(value, 10))),
+  [ruleNames.INT]: (value: string): boolean => (Number.isInteger(parseFloat(value))),
   [ruleNames.URL]: (value: string): boolean => (validURL(value)),
   [ruleNames.REQUIRED]: (value: string): boolean => (value !== emptyCharacter),
 };

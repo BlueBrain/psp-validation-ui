@@ -105,6 +105,8 @@ export default Vue.extend({
       } as ChangeTableCellEventInterface);
 
       const result: CheckResultInterface = checkStringByRule(valueToCommit, rulesToCheck);
+      // TODO: change this emitError to emitMessage or refreshField
+      // because even if it has not error it will refresh the color in value
       this.emitError(fullPathWithRowIndex, result.hasError, result.message);
 
       // reset the editing element in store
@@ -116,13 +118,15 @@ export default Vue.extend({
       // TODO: use constants instead of string
       if (!path.includes('minNumSyn') && !path.includes('maxNumSyn')) return;
 
-      // path contains the index that was modified e.g. "[1].pathway.constraints.maxNumSyn"
       if (!path) this.$Message.error('[checkNumberSynapses] path error');
 
+      // path contains the index that was modified e.g. "[1].pathway.constraints.maxNumSyn"
       const matches = path.match('\\[(.+)\\]');
       const index = (matches && matches.length) ? matches[1] : null;
       if (!index) this.$Message.error('[checkNumberSynapses] path index error');
 
+      const isMinNumSyn = path.includes('minNumSyn');
+      const rulesToCheck = this.column.rules;
       const pathMin = `[${index}].${getPathByKey('minNumSyn')}`;
       const pathMax = `[${index}].${getPathByKey('maxNumSyn')}`;
       const minSynStr = get(this.rowsData, `${pathMin}.value`);
@@ -130,6 +134,20 @@ export default Vue.extend({
 
       // avoid checking if not defined. Psp backend will take care
       if (minSynStr === emptyCharacter || maxSynStr === emptyCharacter) return;
+
+      const checkResultMin: CheckResultInterface = checkStringByRule(minSynStr, rulesToCheck);
+      if (checkResultMin.hasError) {
+        this.emitError(pathMin, checkResultMin.hasError, checkResultMin.message);
+        return;
+      }
+
+      const checkResultMax: CheckResultInterface = checkStringByRule(maxSynStr, rulesToCheck);
+      if (checkResultMax.hasError) {
+        this.emitError(pathMax, checkResultMax.hasError, checkResultMax.message);
+        return;
+      }
+
+      // after checking that each value fulfil the rules, process comparing them
 
       const hasError = (parseInt(maxSynStr, 10) < parseInt(minSynStr, 10));
 
@@ -140,11 +158,9 @@ export default Vue.extend({
         return;
       }
 
-      if (path.includes('minNumSyn')) {
+      if (isMinNumSyn) {
         this.emitError(path, hasError, 'Min number of synapse higher than max number of synapse');
-      }
-
-      if (path.includes('maxNumSyn')) {
+      } else {
         this.emitError(path, hasError, 'Max number of synapse lower than min number of synapse');
       }
     },

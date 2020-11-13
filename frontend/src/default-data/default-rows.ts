@@ -24,7 +24,7 @@ const row1: TableRowInterface = {
         value: 'true',
       },
       minNumSyn: {
-        value: emptyCharacter,
+        value: '0',
       },
       maxNumSyn: {
         value: '2',
