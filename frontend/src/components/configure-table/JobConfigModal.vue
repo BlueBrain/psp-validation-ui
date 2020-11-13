@@ -4,6 +4,8 @@
     <Modal
       v-model="showModal"
       title="Submit Job"
+      :closable="false"
+      :mask-closable="false"
     >
       <Form
         ref="formValidate"
@@ -36,7 +38,7 @@
         </form-item>
       </Form>
       <div slot="footer">
-        <Button @click="cancel" >Cancel</Button>
+        <Button @click="cancel">Cancel</Button>
         <Button
           type="primary"
           :disabled="!fieldsComplete"
@@ -91,6 +93,7 @@ export default Vue.extend({
     },
     cancel() {
       this.$emit('hide-modal');
+      this.isSubmitting = false;
     },
   },
 });
