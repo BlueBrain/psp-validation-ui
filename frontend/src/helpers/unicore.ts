@@ -1,5 +1,5 @@
 
-import axios, { AxiosResponse, AxiosPromise } from 'axios';
+import axios, { AxiosResponse, AxiosPromise, AxiosError } from 'axios';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import cleanDeep from 'clean-deep';
@@ -112,7 +112,12 @@ async function getValidationJobUrls(circuitPath: string): Promise<Array<string>>
   const queryStr = `tags=${tags.VALIDATION},${circuitPath}`;
   return axiosInstance(`${unicoreURL}/jobs?${queryStr}`)
     .then((r: AxiosResponse) => get(r, 'data.jobs', []))
-    .catch((e: Error) => { throw new Error(`getting getValidationJobUrls ${e.message}`); });
+    .catch((e: AxiosError) => {
+      const message = `getting getValidationJobUrls ${e.message}`;
+      // TODO: manage this from upper level
+      if (e.request.status === 403) window.location.reload();
+      else throw new Error(message);
+    });
 }
 
 async function getJobProperties(jobURL: string): Promise<JobProperties | null> {
