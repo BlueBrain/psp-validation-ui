@@ -41,10 +41,11 @@ interface GeneralJobDefinition {
   title: string | null;
   runtime: number;
   cpus: number;
-  memory: string;
+  memory: string | null;
   project: string;
   executable: string;
   tags: Array<string> | null;
+  nodeType: string;
   imports: Array<DataToUpload>;
 }
 
