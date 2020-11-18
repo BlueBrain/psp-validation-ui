@@ -106,12 +106,7 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
 
   inputs = inputs.concat(yamlsToInput);
 
-  // make runtime depends on the config selected
-  runConfig.runtime = extraParams.generalParams.pairs
-    * (extraParams.generalParams.repetitions)
-    * yamlNameList.length
-    * 100
-    + 3600;
+  runConfig.runtime = 86000; // ~24 hours max in piz-daint
 
   runConfig.cpus = yamlNameList.length;
 
