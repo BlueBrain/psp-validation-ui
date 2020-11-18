@@ -18,6 +18,10 @@ const jobExitCode: {[key: string]: string} = {
   137: jobStatus.ERROR,
 };
 
+const globalMessages: {[key: string]: string} = {
+  LOGIN_REQUIRED: 'LOGIN_REQUIRED',
+};
+
 export default {};
 
 export {
@@ -26,4 +30,5 @@ export {
   CIRCUIT_INFO_ENDPOINT,
   jobStatus,
   jobExitCode,
+  globalMessages,
 };

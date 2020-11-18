@@ -9,6 +9,7 @@ import store from '@/store';
 import { init as authInit } from '@/helpers/auth';
 import '@/assets/table.css';
 import { TokenAndUser } from '@/interfaces/auth';
+import { globalMessages } from '@/constants/backend';
 
 
 Vue.use(ViewUI, { locale });
@@ -30,6 +31,6 @@ authInit()
   })
   .catch((e: Error) => {
     // error emitted from oidc-client library
-    if (e.message.includes('login_required')) return;
+    if (e.message.includes(globalMessages.LOGIN_REQUIRED)) return;
     console.warn('General error:', e);
   });
