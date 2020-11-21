@@ -4,8 +4,8 @@ import { RUN_SCRIPT_NAME } from '@/constants/hpc-systems';
 
 const defaultJobConfig: GeneralJobDefinition = {
   title: '',
-  runtime: 14400, // 4hs
-  cpus: 1,
+  runtime: 86000, // ~24hs
+  cpus: 360, // 10 nodes
   memory: null,
   nodeType: 'mc',
   project: 'normal',
@@ -34,7 +34,7 @@ const validationScript: Array<string> = [
   '# psp --version',
   'psp -vv run -c <%= blueConfigPath %> -o . -t $TARGETS -n <%= pairs %> '
     + '-r <%= trials %> <%= saveTraces %> <%= saveAmplitudes %> '
-    + '-j <%= workers %> <%= yamlFiles %>',
+    + `-j ${defaultJobConfig.cpus * 2} <%= yamlFiles %>`, // multitasking
   'if [ $? -eq 0 ]; then psp -vv plot -o . ./*.traces.h5; else echo "PSP FAIL" && false; fi',
 ];
 

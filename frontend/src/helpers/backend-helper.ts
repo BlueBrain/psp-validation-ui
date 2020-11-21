@@ -76,7 +76,6 @@ function getValidationScript(circuitPath: string, extraParams: PspJobExtraParams
     yamlFiles: yamlFileNames.join(' '),
     saveTraces: extraParams.generalParams.saveTraces ? '--dump-traces' : '',
     saveAmplitudes: extraParams.generalParams.saveAmplitudes ? '--dump-amplitudes' : '',
-    workers: yamlFileNames.length,
   });
   return runScript;
 }
@@ -105,10 +104,6 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
   });
 
   inputs = inputs.concat(yamlsToInput);
-
-  runConfig.runtime = 86000; // ~24 hours max in piz-daint
-
-  runConfig.cpus = yamlNameList.length;
 
   const jobInfo = await submitJob(runConfig, inputs);
   try {
