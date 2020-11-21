@@ -11,38 +11,33 @@ function getActualAuthProvider() {
 
 function createAuthConfig() {
   const actualAuthProvider = getActualAuthProvider();
-  const redirect = window.location.origin
-    + process.env.BASE_URL
-    + (window.location.pathname === '/' ? '' : window.location.pathname)
-    + window.location.search;
+  const redirectBase = window.location.origin + process.env.BASE_URL;
 
   const oidcConfig = {
     /* eslint-disable camelcase */
     authority: actualAuthProvider.auth.authUrl,
     client_id: actualAuthProvider.auth.clientId,
-    redirect_uri: redirect,
     response_type: 'id_token token',
     automaticSilentRenew: true,
     loadUserInfo: true,
     scope: actualAuthProvider.auth.scope || 'openid',
+    redirect_uri: `${redirectBase}/callback.html`,
+    post_logout_redirect_uri: `${redirectBase}/`,
+    silent_redirect_uri: `${redirectBase}/silent-renew.html`,
+    userStore: new Oidc.WebStorageStateStore({ store: window.localStorage }),
+    accessTokenExpiringNotificationTime: 10,
+    filterProtocolClaims: true,
     /* eslint-enable camelcase */
   };
   return oidcConfig;
 }
 
 async function login(authMgr: Oidc.UserManager): Promise<TokenAndUser> {
-  const user = window.location.hash
-    ? await authMgr.signinRedirectCallback()
-    : await authMgr.getUser();
-
-  window.history.pushState(
-    '',
-    document.title,
-    window.location.pathname + window.location.search,
-  );
+  const user = await authMgr.getUser();
 
   if (user) {
     if (user.expired || !user.access_token) {
+      sessionStorage.setItem('savedUrl', window.location.href);
       await authMgr.signinRedirect();
     }
     token = user.access_token;
@@ -54,9 +49,9 @@ async function login(authMgr: Oidc.UserManager): Promise<TokenAndUser> {
       userId,
     };
   }
-  await authMgr.removeUser();
+  sessionStorage.setItem('savedUrl', window.location.href);
   await authMgr.signinRedirect();
-  return {} as TokenAndUser;
+  throw new Error('user has no auth');
 }
 
 function init(): Promise<TokenAndUser> {

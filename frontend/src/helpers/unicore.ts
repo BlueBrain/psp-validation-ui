@@ -112,10 +112,7 @@ async function getValidationJobUrls(circuitPath: string): Promise<Array<string>>
   return axiosInstance(`${unicoreURL}/jobs?${queryStr}`)
     .then((r: AxiosResponse) => get(r, 'data.jobs', []))
     .catch((e: AxiosError) => {
-      const message = `getting getValidationJobUrls ${e.message}`;
-      // TODO: manage this from upper level
-      if (e.request.status === 403) window.location.reload();
-      else throw new Error(message);
+      throw new Error(`getting getValidationJobUrls ${e.message}`);
     });
 }
 

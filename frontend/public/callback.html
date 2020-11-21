@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Waiting...</title>
+</head>
+
+<body>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/oidc-client/1.10.1/oidc-client.min.js'></script>
+  <script>
+    console.log('callback.html');
+    var mgr = new Oidc.UserManager({userStore: new Oidc.WebStorageStateStore({ store: window.localStorage })});
+
+    mgr.signinRedirectCallback().then(function (user) {
+      const savedUrl = sessionStorage.getItem('savedUrl');
+      window.location.href = savedUrl;
+    }).catch(function (err) {
+      console.error(err);
+    });
+
+  </script>
+</body>
+
+</html>
