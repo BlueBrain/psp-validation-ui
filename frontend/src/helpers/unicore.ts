@@ -153,7 +153,8 @@ async function generateUnicoreConfig(configParams: GeneralJobDefinition): Promis
     Arguments: [],
     haveClientStageIn: 'true',
     Resources: {
-      CPUs: configParams.cpus,
+      Nodes: configParams.nodes,
+      CPUsPerNode: configParams.cpusPerNode,
       Memory: configParams.memory,
       Runtime: configParams.runtime,
       NodeConstraints: configParams.nodeType,

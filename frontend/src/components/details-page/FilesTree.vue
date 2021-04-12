@@ -67,7 +67,7 @@ export default Vue.extend({
           zip.file(fileNames[index], fileContent);
         });
         zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
-          saveAs(content, 'result-files.zip');
+          saveAs(content, 'psp-result-files.zip');
           this.isDownloading = false;
         });
       });

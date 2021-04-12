@@ -40,7 +40,8 @@ interface UnicoreJobDefinition {
 interface GeneralJobDefinition {
   title: string | null;
   runtime: number;
-  cpus: number;
+  nodes: number;
+  cpusPerNode: number;
   memory: string | null;
   project: string;
   executable: string;
