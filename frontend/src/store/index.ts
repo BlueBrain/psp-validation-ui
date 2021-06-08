@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import tableEditingModule from '@/store/table-editing-module';
 import generalParamsModule from '@/store/general-panel-module';
 import { StateInterface } from '@/interfaces/store';
-import { setToken } from '@/helpers/backend-helper';
+import { setToken, hashString } from '@/helpers/backend-helper';
 
 Vue.use(Vuex);
 
@@ -26,7 +26,12 @@ export default new Vuex.Store({
       state.userId = newUserId;
     },
   },
-  actions: {},
+  actions: {
+    async saveUserId({ commit }, userId) {
+      const hashedUserId = await hashString(userId);
+      commit('setUserId', hashedUserId);
+    },
+  },
   modules: {
     tableEditingModule,
     generalParamsModule,

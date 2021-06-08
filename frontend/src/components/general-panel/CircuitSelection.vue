@@ -107,7 +107,9 @@ export default Vue.extend({
     },
     async saveNewCircuit() {
       this.circuitIsBeingChecked = true;
-      const circuitInfo = await getCircuitInfo(this.newEditingCircuit.path).catch((e: Error) => {
+      const circuitInfo = await getCircuitInfo(
+        this.newEditingCircuit.path, this.$store.state.userId,
+      ).catch((e: Error) => {
         this.circuitIsBeingChecked = false;
         this.$Message.error(e.message);
       });

@@ -104,7 +104,9 @@ export default Vue.extend({
     };
   },
   created() {
-    getFilesFromBackend(this.id).then((files: Array<RowToYamlInterface>) => {
+    getFilesFromBackend(
+      this.id, this.$store.state.userId,
+    ).then((files: Array<RowToYamlInterface>) => {
       this.files = files;
     });
   },

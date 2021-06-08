@@ -24,9 +24,9 @@ const app = new Vue({
 
 
 authInit()
-  .then(({ token, userId }: TokenAndUser) => {
+  .then(async ({ token, userId }: TokenAndUser) => {
     store.commit('setToken', token);
-    store.commit('setUserId', userId);
+    await store.dispatch('saveUserId', userId);
     app.$mount('#app');
   })
   .catch((e: Error) => {

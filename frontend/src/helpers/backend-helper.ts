@@ -1,6 +1,6 @@
 
 /* eslint-disable no-underscore-dangle */
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import template from 'lodash/template';
 import difference from 'lodash/difference';
 import {
@@ -16,6 +16,7 @@ import {
   getImage,
   deleteJob,
   getFile,
+  getAxiosInstance,
 } from '@/helpers/unicore';
 import {
   PspJobExtraParams,
@@ -41,12 +42,7 @@ import { RowToYamlInterface } from '@/interfaces/table';
 import { getStoredCircuitPathSync } from '@/helpers/db';
 
 
-const axiosInstance = axios.create({
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-});
+const axiosInstance = getAxiosInstance();
 
 function convertYamlToInputObj(yamlFile: string) {
   const preAndPost = getPrePostNames(yamlFile);
@@ -59,11 +55,11 @@ function convertYamlToInputObj(yamlFile: string) {
 }
 
 function saveInDatabase(unicoreJobId: string, inputs: Array<DataToUpload>, userId: string): Promise<AxiosResponse> {
-  return axiosInstance.post(JOBS_ENDPOINT, {
-    id: unicoreJobId,
-    files: inputs,
-    user: userId,
-  });
+  return axiosInstance.post(
+    JOBS_ENDPOINT,
+    { id: unicoreJobId, files: inputs },
+    { params: { user: userId } },
+  );
 }
 
 function getValidationScript(circuitPath: string, extraParams: PspJobExtraParams, yamlFileNames: Array<string>): string {
@@ -115,12 +111,15 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
 }
 
 function setToken(token: string) {
+  // set to the instance for backend + Unicore
   setAxiosToken(token);
 }
 
-async function getFilesFromBackend(unicoreJobId: string): Promise<Array<RowToYamlInterface>> {
-  const files = await axiosInstance.get(JOBS_ENDPOINT, { params: { id: unicoreJobId } })
-    .then((r: AxiosResponse) => r.data);
+async function getFilesFromBackend(unicoreJobId: string, userId: string): Promise<Array<RowToYamlInterface>> {
+  const files = await axiosInstance.get(
+    JOBS_ENDPOINT,
+    { params: { id: unicoreJobId, user: userId } },
+  ).then((r: AxiosResponse) => r.data);
   const expandedInfoObj: Array<RowToYamlInterface> = files
     .map((yaml: DataToUpload): RowToYamlInterface => {
       const pathwayObj = transformYamlToObj(yaml.Data);
@@ -150,16 +149,19 @@ async function getValidationsExpanded(circuitPath: string): Promise<Array<Valida
 }
 
 async function getCircuitList(userId: string): Promise<Array<CircuitInterface>> {
-  const circuitList = await axiosInstance.get(CIRCUIT_ENDPOINT, { params: { user: userId } })
-    .then((r: AxiosResponse) => r.data);
+  const circuitList = await axiosInstance.get(
+    CIRCUIT_ENDPOINT,
+    { params: { user: userId } },
+  ).then((r: AxiosResponse) => r.data);
   return circuitList;
 }
 
 function saveCircuitList(userId: string, circuitList: Array<CircuitInterface>) {
-  return axiosInstance.post(CIRCUIT_ENDPOINT, {
-    user: userId,
-    circuits: circuitList,
-  });
+  return axiosInstance.post(
+    CIRCUIT_ENDPOINT,
+    { circuits: circuitList },
+    { params: { user: userId } },
+  );
 }
 
 async function getValidationPlots(jobInfo: JobProperties): Promise<Array<PlotsPathsObj>> {
@@ -271,16 +273,17 @@ async function getRepetitionsParam(workingDirectory: string): Promise<string> {
   return match[1];
 }
 
-function getCircuitInfo(circuitPath: string): Promise<CircuitInfoResponse> {
-  return axiosInstance.get(CIRCUIT_INFO_ENDPOINT, { params: { path: circuitPath } })
-    .then((r: AxiosResponse) => {
-      const response = r.data;
-      if (response.error) throw new Error(response.error);
-      return response.results;
-    })
-    .catch((e: Error) => {
-      throw new Error(`Error fetching Circuit Information: ${e.message}`);
-    });
+function getCircuitInfo(circuitPath: string, userId: string): Promise<CircuitInfoResponse> {
+  return axiosInstance.get(
+    CIRCUIT_INFO_ENDPOINT,
+    { params: { path: circuitPath, user: userId } },
+  ).then((r: AxiosResponse) => {
+    const response = r.data;
+    if (response.error) throw new Error(response.error);
+    return response.results;
+  }).catch((e: Error) => {
+    throw new Error(`Error fetching Circuit Information: ${e.message}`);
+  });
 }
 
 async function getAsyncStoredCircuitAndList(userId: string, defaultList: Array<CircuitInterface>): Promise<StoredCircuitAndList> {
@@ -303,6 +306,16 @@ async function getAsyncStoredCircuitAndList(userId: string, defaultList: Array<C
   return circuitAndList;
 }
 
+async function hashString(str: string) {
+  if (!str) return 'anonymous';
+  // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#converting_a_digest_to_a_hex_string
+  const msgUint8 = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+  return hashHex;
+}
+
 export default {};
 
 export {
@@ -322,4 +335,5 @@ export {
   getRepetitionsParam,
   getCircuitInfo,
   getAsyncStoredCircuitAndList,
+  hashString,
 };

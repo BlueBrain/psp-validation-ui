@@ -1,5 +1,7 @@
 
-import axios, { AxiosResponse, AxiosPromise, AxiosError } from 'axios';
+import axios, {
+  AxiosResponse, AxiosPromise, AxiosError, AxiosInstance,
+} from 'axios';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import cleanDeep from 'clean-deep';
@@ -259,6 +261,10 @@ function getFile(jobURL: string): Promise<Blob> {
     .catch((e: Error) => { throw new Error(`getFile ${e.message}`); });
 }
 
+function getAxiosInstance(): AxiosInstance {
+  return axiosInstance;
+}
+
 export {
   submitJob,
   getFilesList,
@@ -273,6 +279,7 @@ export {
   getImage,
   deleteJob,
   getFile,
+  getAxiosInstance,
 };
 
 export default {};
