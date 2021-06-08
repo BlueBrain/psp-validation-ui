@@ -1,6 +1,5 @@
 
-const BACKEND_BASE = 'https://psp-validation-svc-dev-psp.apps.hbp.eu/api';
-// const BACKEND_BASE = 'http://localhost:3000/api';
+const BACKEND_BASE = `${process.env.VUE_APP_BACKEND_URL}/api`;
 const JOBS_ENDPOINT = `${BACKEND_BASE}/job`;
 const CIRCUIT_ENDPOINT = `${BACKEND_BASE}/circuits`;
 const CIRCUIT_INFO_ENDPOINT = `${BACKEND_BASE}/snap`;
