@@ -3,6 +3,7 @@ import json
 import logging
 import os
 from tornado.web import Application, RequestHandler
+from tornado import httpclient
 from tornado.ioloop import IOLoop
 from pymongo import MongoClient
 from circuit_helper import CircuitHelper
@@ -14,22 +15,42 @@ DB_HOST = os.getenv('DB_HOST')
 DEBUG = os.getenv('DEBUG')
 DB_ENDPOINT = 'mongodb://{}:27017/psp'.format(DB_HOST)
 L.info('Using mongo: %s', DB_ENDPOINT)
-client = MongoClient(DB_ENDPOINT)
+HBP_ENDPOINT = 'https://services.humanbrainproject.eu/idm/v1/api/user/me'
+ALLOWED_ORIGIN = os.getenv('ALLOWED_ORIGIN', 'http://localhost:3000')
 
+client = MongoClient(DB_ENDPOINT)
 db = client.get_default_database()
+
 
 class BaseHandler(RequestHandler):
   def set_default_headers(self):
-    self.set_header("Access-Control-Allow-Origin", "*")
-    self.set_header("Access-Control-Allow-Headers",
-                    "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+    origin = self.request.headers.get('Origin', 'UNKNOWN')
+    self.set_header('Access-Control-Allow-Origin', origin)
+    self.set_header(
+      'Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With'
+    )
     self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-    self.set_header("Content-Type", 'application/json')
+    self.set_header('Content-Type', 'application/json')
 
   def options(self):
     # no body
     self.set_status(204)
     self.finish()
+
+  async def prepare(self):
+    origin = self.request.headers.get('Origin', None)
+    if not origin:
+      return
+
+    is_allowed = self.check_allowed(origin)
+    if not is_allowed:
+      L.error(f'Origin [{origin}] not in [{ALLOWED_ORIGIN}]')
+      self.set_status(403, 'Origin not allowed')
+      self.finish()
+  
+  def check_allowed(self, origin):
+    '''Check if origin is allowed'''
+    return origin in ALLOWED_ORIGIN.split(',')
 
 
 class LandingHandler(BaseHandler):
@@ -51,9 +72,17 @@ class StatusHandler(BaseHandler):
 
 
 class JobHandler(BaseHandler):
-  def get(self):
+  async def get(self):
     L.debug('[Get] job')
-    unicore_job_id = self.get_argument("id")
+    try:
+      await validate_request(self.request)
+    except Exception as e:
+      L.error(e)
+      self.set_status(400, str(e))
+      self.finish()
+      return
+
+    unicore_job_id = self.get_argument('id')
     L.debug('ID: %s', unicore_job_id)
 
     if not unicore_job_id:
@@ -66,8 +95,16 @@ class JobHandler(BaseHandler):
       files = document['files']
     return self.write(json.dumps(files))
 
-  def post(self):
+  async def post(self):
     L.debug('[Post] job')
+    try:
+      await validate_request(self.request)
+    except Exception as e:
+      L.error(e)
+      self.set_status(400, str(e))
+      self.finish()
+      return
+
     try:
       data = self.request.body
       L.debug('Data: %s', data)
@@ -89,19 +126,32 @@ class JobHandler(BaseHandler):
 
 
 class CircuitHandler(BaseHandler):
-  def get(self):
+  async def get(self):
     L.debug('[Get] circuits')
-    user_id = self.get_argument("user")
-
-    if not user_id:
-      return self.write({'message': 'User not found'})
+    try:
+      await validate_request(self.request)
+    except Exception as e:
+      L.error(e)
+      self.set_status(400, str(e))
+      self.finish()
+      return
+    
+    user_id = self.get_argument('user')
 
     circuits = self.get_circuit_list(user_id)
     json_list = json.dumps(circuits)
     return self.write(json_list)
 
-  def post(self):
+  async def post(self):
     L.debug('[Post] circuits')
+    try:
+      await validate_request(self.request)
+    except Exception as e:
+      L.error(e)
+      self.set_status(400, str(e))
+      self.finish()
+      return
+
     try:
       data = self.request.body
       data_json = json.loads(data)
@@ -126,6 +176,28 @@ class CircuitHandler(BaseHandler):
       filter={'userId': user_id},
       update={'$set': {'circuits': circuits}},
       upsert=True)
+
+
+async def validate_request(req):
+  L.debug('Validating user ...')
+  user_id = req.arguments.get('user')
+  if not user_id:
+    raise Exception('User id not present')
+
+  L.debug('Validating auth token ...')
+  token = req.headers.get('Authorization')
+  if not token:
+    raise Exception('Authorization not present')
+
+  http_client = httpclient.AsyncHTTPClient()
+  try:
+    headers = {'Authorization': token}
+    await http_client.fetch(HBP_ENDPOINT, headers=headers)
+  except httpclient.HTTPError as e:
+    error_message = e.response.body
+    L.debug(error_message)
+    raise Exception('Authorization not valid')
+  L.debug('Authorization is valid')
 
 def make_app():
   urls = [
