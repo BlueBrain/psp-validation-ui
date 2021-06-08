@@ -32,17 +32,22 @@ class BaseHandler(RequestHandler):
     self.finish()
 
 
+class LandingHandler(BaseHandler):
+  async def get(self):
+    self.write({'To check status use': '/api/status'})
+
+
 class StatusHandler(BaseHandler):
   def get(self):
     L.debug('Showing status. Check DB conenction')
-    do_find_validation() # to check the connection with the DB
+    self.do_find_validation() # to check the connection with the DB
     L.debug('DB connection correct')
     self.write({'status': 'OK'})
+  
+  def do_find_validation(self):
+    document = db.validation_config.find_one()
+    return document
 
-
-class LandingHandler(BaseHandler):
-  def get(self):
-    self.write({'To check status use': '/api/status'})
 
 
 class JobHandler(BaseHandler):
@@ -54,7 +59,7 @@ class JobHandler(BaseHandler):
     if not unicore_job_id:
       return self.write({'message': 'Object not found'})
 
-    document = get_validation_files_by_unicore_id(unicore_job_id)
+    document = self.get_validation_files_by_unicore_id(unicore_job_id)
     if not document:
       files = []
     else:
@@ -67,12 +72,20 @@ class JobHandler(BaseHandler):
       data = self.request.body
       L.debug('Data: %s', data)
       data_json = json.loads(data)
-      do_insert(data_json)
+      self.do_insert(data_json)
       message = 'job was created'
     except:
       message = 'There was an error'
 
     self.write({'message': message})
+  
+  def get_validation_files_by_unicore_id(self, unicore_id):
+    document = db.validation_config.find_one({'id': unicore_id})
+    return document
+
+  def do_insert(self, data):
+    L.debug('[Insert] validations %s', data)
+    db.validation_config.insert_one(data)
 
 
 class CircuitHandler(BaseHandler):
@@ -83,7 +96,7 @@ class CircuitHandler(BaseHandler):
     if not user_id:
       return self.write({'message': 'User not found'})
 
-    circuits = get_circuit_list(user_id)
+    circuits = self.get_circuit_list(user_id)
     json_list = json.dumps(circuits)
     return self.write(json_list)
 
@@ -93,50 +106,36 @@ class CircuitHandler(BaseHandler):
       data = self.request.body
       data_json = json.loads(data)
       L.debug('data %s', data_json)
-      insert_circuit_list(data_json)
-      message = 'circuits were saved'
-    except:
-      message = 'There was an error'
+      self.insert_circuit_list(data_json)
+      self.write({'message': 'circuits were saved'})
+    except Exception as e:
+      message = f'There was an error: {e}'
+      self.write({'message': message})
 
-    self.write({'message': message})
+  def get_circuit_list(self, user_id):
+    document = db.circuits.find_one({'userId': user_id})
+    if not document:
+      return []
+    return document['circuits']
 
-
-def get_circuit_list(user_id):
-  document = db.circuits.find_one({'userId': user_id})
-  if not document:
-    return []
-  return document['circuits']
-
-def insert_circuit_list(data_json):
-  L.debug('[Insert] circuits %s', data_json)
-  user_id = data_json['user']
-  circuits = data_json['circuits']
-  db.circuits.update_one(
-    filter={'userId': user_id},
-    update={"$set": {'circuits': circuits}},
-    upsert=True)
-
-def do_find_validation():
-  document = db.validation_config.find_one()
-  return document
-
-def get_validation_files_by_unicore_id(unicore_id):
-  document = db.validation_config.find_one({'id': unicore_id})
-  return document
-
-def do_insert(data):
-  L.debug('[Insert] validations %s', data)
-  db.validation_config.insert_one(data)
+  def insert_circuit_list(self, data_json):
+    L.debug('[Insert] circuits %s', data_json)
+    user_id = data_json['user']
+    circuits = data_json['circuits']
+    db.circuits.update_one(
+      filter={'userId': user_id},
+      update={'$set': {'circuits': circuits}},
+      upsert=True)
 
 def make_app():
   urls = [
-    ("/api", LandingHandler),
-    ("/", LandingHandler),
-    ("/api/", LandingHandler),
-    ("/api/status", StatusHandler),
-    ("/api/job", JobHandler),
-    ("/api/circuits", CircuitHandler),
-    ("/api/snap", CircuitHelper),
+    ('/', LandingHandler),
+    ('/api', LandingHandler),
+    ('/api/', LandingHandler),
+    ('/api/status', StatusHandler),
+    ('/api/circuits', CircuitHandler),
+    ('/api/job', JobHandler),
+    ('/api/snap', CircuitHelper),
   ]
   return Application(urls, db=db, debug=DEBUG)
 
