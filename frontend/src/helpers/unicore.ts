@@ -53,7 +53,7 @@ function init() {
 init();
 
 function setAxiosToken(token: string) {
-  axiosInstance.defaults.headers.Authorization = `Bearer ${token}`;
+  axiosInstance.defaults.headers.Authorization = token;
 }
 
 function getComputerUrl(): string {

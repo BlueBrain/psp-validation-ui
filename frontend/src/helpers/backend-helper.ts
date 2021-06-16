@@ -262,6 +262,20 @@ async function hashString(str: string) {
   return hashHex;
 }
 
+export function setupVmmAuth() {
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const vmmAuth = urlSearchParams.get(dbConstants.VMM_TOKEN);
+  const savedAuth = getUserTokenFromVMM();
+  if (!vmmAuth) {
+    if (!savedAuth) return;
+    setToken(savedAuth);
+    return;
+  }
+
+  if (savedAuth !== vmmAuth) setUserTokenFromVMM(vmmAuth);
+  setToken(vmmAuth);
+}
+
 export default {};
 
 export {

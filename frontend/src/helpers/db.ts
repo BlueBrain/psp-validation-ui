@@ -12,6 +12,7 @@ const constants = {
   ROWS_DATA: 'rowsData',
   CIRCUIT_PATH: 'circuitPath',
   PROJECT_SELECTED: 'projectSelected',
+  VMM_TOKEN: 'auth',
 };
 
 function generatePairStr(str1: string, str2: string) {
@@ -60,6 +61,14 @@ function getStoredImageByUrl(imageUrl: string): Promise<string | null> {
   return localForage.getItem(imageUrl);
 }
 
+export function setUserTokenFromVMM(userHash: string) {
+  localStorage.setItem(constants.VMM_TOKEN, userHash);
+}
+
+export function getUserTokenFromVMM() {
+  return localStorage.getItem(constants.VMM_TOKEN) || 'unknown_user';
+}
+
 export default {};
 
 export {
@@ -74,4 +83,5 @@ export {
   setProjectSelected,
   saveImageByUrl,
   getStoredImageByUrl,
+  constants,
 };
