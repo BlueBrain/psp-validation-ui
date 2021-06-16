@@ -187,7 +187,6 @@ async function submitJob(
 
     const workingDirectory = jobProperties._links.workingDirectory.href;
     const actionStartURL = jobProperties._links['action:start'].href;
-    // const { id } = urlToComputerAndId(jobProperties._links.self.href);
 
     // upload all the inputs
     await Promise.all(inputs.map((input: DataToUpload) => uploadData(input, `${workingDirectory}/files`)));

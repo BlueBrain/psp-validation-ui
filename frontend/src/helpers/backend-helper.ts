@@ -1,7 +1,5 @@
 
 /* eslint-disable no-underscore-dangle */
-import { AxiosResponse } from 'axios';
-import template from 'lodash/template';
 import difference from 'lodash/difference';
 import {
   submitJob,
@@ -16,33 +14,30 @@ import {
   getImage,
   deleteJob,
   getFile,
-  getAxiosInstance,
 } from '@/helpers/unicore';
 import {
   PspJobExtraParams,
   PlotsPathsObj,
   FilesTreeInterface,
 } from '@/interfaces/backend';
-import defaultJobConfig, { validationScript } from '@/helpers/job-config';
+import defaultJobConfig from '@/helpers/job-config';
 import { DataToUpload, JobProperties, FileObjInterface } from '@/interfaces/unicore';
-import {
-  CircuitInterface,
-  CircuitInfoResponse,
-  StoredCircuitAndList,
-} from '@/interfaces/general-panel';
 import { getPrePostNames, transformYamlToObj } from '@/helpers/yaml-helper';
-import { tags, RUN_SCRIPT_NAME } from '@/constants/hpc-systems';
 import {
-  JOBS_ENDPOINT,
-  CIRCUIT_ENDPOINT,
-  CIRCUIT_INFO_ENDPOINT,
-} from '@/constants/backend';
+  tags,
+  RUN_SCRIPT_NAME,
+  PATHWAY_LIST,
+  RUN_CONFIG_FILE,
+  RUN_SCRIPT_PLACEHOLDER,
+} from '@/constants/hpc-systems';
 import { ValidationsExpanded } from '@/interfaces/results';
 import { RowToYamlInterface } from '@/interfaces/table';
-import { getStoredCircuitPathSync } from '@/helpers/db';
+import {
+  getUserTokenFromVMM,
+  setUserTokenFromVMM,
+  constants as dbConstants,
+} from '@/helpers/db';
 
-
-const axiosInstance = getAxiosInstance();
 
 function convertYamlToInputObj(yamlFile: string) {
   const preAndPost = getPrePostNames(yamlFile);
@@ -54,26 +49,15 @@ function convertYamlToInputObj(yamlFile: string) {
   return fileObj;
 }
 
-function saveInDatabase(unicoreJobId: string, inputs: Array<DataToUpload>, userId: string): Promise<AxiosResponse> {
-  return axiosInstance.post(
-    JOBS_ENDPOINT,
-    { id: unicoreJobId, files: inputs },
-    { params: { user: userId } },
-  );
-}
-
-function getValidationScript(circuitPath: string, extraParams: PspJobExtraParams, yamlFileNames: Array<string>): string {
-  const runScriptTemplate = validationScript.join('\n');
-  const compiled = template(runScriptTemplate);
-  const runScript = compiled({
-    blueConfigPath: circuitPath,
+function getValidationConfigFile(extraParams: PspJobExtraParams, yamlFileNames: Array<string>): string {
+  const validationConfigFile = {
     pairs: extraParams.generalParams.pairs,
     trials: extraParams.generalParams.repetitions,
     yamlFiles: yamlFileNames.join(' '),
     saveTraces: extraParams.generalParams.saveTraces ? '--dump-traces' : '',
     saveAmplitudes: extraParams.generalParams.saveAmplitudes ? '--dump-amplitudes' : '',
-  });
-  return runScript;
+  };
+  return JSON.stringify(validationConfigFile);
 }
 
 async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extraParams: PspJobExtraParams): Promise<JobProperties> {
@@ -83,7 +67,6 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
     runConfig.tags.push(circuitPath);
   }
   runConfig.title = extraParams.name;
-  runConfig.project = extraParams.project;
 
   let inputs: Array<DataToUpload> = [];
   const yamlNameList: Array<string> = [];
@@ -95,32 +78,44 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
   });
 
   inputs.push({
-    Data: getValidationScript(circuitPath, extraParams, yamlNameList),
+    Data: getValidationConfigFile(extraParams, yamlNameList),
+    To: RUN_CONFIG_FILE,
+  });
+
+  inputs.push({
+    Data: RUN_SCRIPT_PLACEHOLDER,
     To: RUN_SCRIPT_NAME,
+  });
+
+  // to get the content faster later all in one file
+  inputs.push({
+    Data: JSON.stringify(yamlsToInput),
+    To: PATHWAY_LIST,
   });
 
   inputs = inputs.concat(yamlsToInput);
 
   const jobInfo = await submitJob(runConfig, inputs);
-  try {
-    await saveInDatabase(jobInfo.id, yamlsToInput, extraParams.userId);
-  } catch (e) {
-    throw new Error(`Error saving in the database: ${e.message}`);
-  }
   return jobInfo;
 }
 
 function setToken(token: string) {
-  // set to the instance for backend + Unicore
+  // set to the instance for Unicore
   setAxiosToken(token);
 }
 
-async function getFilesFromBackend(unicoreJobId: string, userId: string): Promise<Array<RowToYamlInterface>> {
-  const files = await axiosInstance.get(
-    JOBS_ENDPOINT,
-    { params: { id: unicoreJobId, user: userId } },
-  ).then((r: AxiosResponse) => r.data);
-  const expandedInfoObj: Array<RowToYamlInterface> = files
+async function getFilesFromBackend(unicoreJobId: string): Promise<Array<RowToYamlInterface>> {
+  const jobInfo = await getJobExpandedById(unicoreJobId);
+  if (!jobInfo) throw new Error('error fetching jobInfo for files tree');
+
+  const url = `${jobInfo._links.workingDirectory.href}/files/${PATHWAY_LIST}`;
+  const response = await getFile(url);
+  if (!response) throw new Error('No File Found');
+
+  const responseText = await response.text();
+  const pathwaysFile = JSON.parse(responseText);
+
+  const expandedInfoObj: Array<RowToYamlInterface> = pathwaysFile
     .map((yaml: DataToUpload): RowToYamlInterface => {
       const pathwayObj = transformYamlToObj(yaml.Data);
       return pathwayObj;
@@ -155,7 +150,7 @@ async function getValidationPlots(jobInfo: JobProperties): Promise<Array<PlotsPa
   const folders = Object.keys(filesObj).filter((file: string) => file.endsWith('/'));
 
   const plotObjectsPromises = folders.map(async (pathwayName: string) => {
-    const folderURL = url + pathwayName;
+    const folderURL = `${url}/${pathwayName}`;
     const plotPathArray = await getFilesList(folderURL) as Array<string>;
     // fetch images for each path
     const plots = plotPathArray.map((imgPath: string) => getImage(url + imgPath));
@@ -189,7 +184,7 @@ async function getValidationResultFiles(jobId: string): Promise<Array<FilesTreeI
   const jobInfo = await getJobExpandedById(jobId);
   if (!jobInfo) throw new Error('error fetching jobInfo for files tree');
 
-  const url = `${jobInfo._links.workingDirectory.href}/files/`;
+  const url = `${jobInfo._links.workingDirectory.href}/files`;
   const returnFullObject = true;
   const filesObj = (await getFilesList(url, returnFullObject) as FileObjInterface);
 

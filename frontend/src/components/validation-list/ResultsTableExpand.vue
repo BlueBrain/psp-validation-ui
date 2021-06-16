@@ -1,6 +1,16 @@
 
 <template>
   <div class="results-table-expand">
+    <Alert
+      v-if="error"
+      type="warning"
+      class="error-message"
+    >File was not found</Alert>
+
+    <div v-if="!error && !files.length">
+      <Spin size="large"></Spin>
+    </div>
+
     <div v-for="(file, index) in files" :key="index">
       <div class="pre-post">{{ file.pathway.pre }} - {{ file.pathway.post }}</div>
 
@@ -101,14 +111,18 @@ export default Vue.extend({
     return {
       files: [] as Array<RowToYamlInterface>,
       defaultColumSize,
+      error: false,
     };
   },
   created() {
-    getFilesFromBackend(
-      this.id, this.$store.state.userId,
-    ).then((files: Array<RowToYamlInterface>) => {
-      this.files = files;
-    });
+    getFilesFromBackend(this.id)
+      .then((files: Array<RowToYamlInterface>) => {
+        this.files = files;
+        this.error = false;
+      })
+      .catch(() => {
+        this.error = true;
+      });
   },
 });
 </script>
@@ -133,6 +147,9 @@ export default Vue.extend({
     color: #0083CB;
     text-align: center;
     border-bottom: 2px dashed;
+  }
+  .error-message {
+    text-align: center;
   }
 }
 </style>
