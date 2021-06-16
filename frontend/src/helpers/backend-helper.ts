@@ -14,6 +14,7 @@ import {
   getImage,
   deleteJob,
   getFile,
+  checkTokenValid,
 } from '@/helpers/unicore';
 import {
   PspJobExtraParams,
@@ -296,4 +297,5 @@ export {
   getBulkFilesById,
   getValidationParams,
   hashString,
+  checkTokenValid,
 };

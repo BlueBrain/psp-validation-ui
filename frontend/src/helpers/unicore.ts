@@ -266,6 +266,13 @@ function getAxiosInstance(): AxiosInstance {
   return axiosInstance;
 }
 
+async function checkTokenValid() {
+  const computerEndpoint = getComputerUrl();
+  const info = await axiosInstance(computerEndpoint);
+  if (info?.statusText !== 'OK') throw new Error();
+  return true;
+}
+
 export {
   submitJob,
   getFilesList,
@@ -281,6 +288,7 @@ export {
   deleteJob,
   getFile,
   getAxiosInstance,
+  checkTokenValid,
 };
 
 export default {};
