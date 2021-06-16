@@ -6,10 +6,7 @@ import App from '@/App.vue';
 import '@/registerServiceWorker';
 import router from '@/router';
 import store from '@/store';
-import { init as authInit } from '@/helpers/auth';
 import '@/assets/table.css';
-import { TokenAndUser } from '@/interfaces/auth';
-import { globalMessages } from '@/constants/backend';
 
 
 Vue.use(ViewUI, { locale });
@@ -23,14 +20,4 @@ const app = new Vue({
 });
 
 
-authInit()
-  .then(async ({ token, userId }: TokenAndUser) => {
-    store.commit('setToken', token);
-    await store.dispatch('saveUserId', userId);
-    app.$mount('#app');
-  })
-  .catch((e: Error) => {
-    // error emitted from oidc-client library
-    if (e.message.includes(globalMessages.LOGIN_REQUIRED)) return;
-    console.warn('General error:', e);
-  });
+app.$mount('#app');
