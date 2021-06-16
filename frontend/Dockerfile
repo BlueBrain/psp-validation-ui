@@ -2,10 +2,15 @@
 FROM node:14-alpine as builder
 RUN mkdir /frontend
 WORKDIR /frontend
-COPY package.json ./
+
+COPY package.json vue.config.js vue-global.d.ts \
+  babel.config.js tsconfig.json ./
 RUN npm install
-COPY . .
-ARG VUE_APP_BACKEND_URL
+
+COPY src ./src
+COPY public ./public
+# production deployment 
+ARG BASE_URL='/psp-validation'
 RUN npm run build
 
 FROM nginx:alpine

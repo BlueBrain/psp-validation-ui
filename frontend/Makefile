@@ -1,8 +1,7 @@
 
-TAG:=hbp
+TAG:=mooc-bbp
 IMAGE_FRONTEND:=psp-validation-ui
-REGISTRY:=docker-registry.ebrains.eu/bsp-epfl
-
+REGISTRY:=docker-registry-default.ocp.bbp.epfl.ch/bbp-ou-nse
 
 define HELPTEXT
 Makefile usage
@@ -21,24 +20,14 @@ help:
 build_latest:
 	@echo 'Building frontend...'
 	@echo $(IMAGE_FRONTEND)
-	docker build -t $(IMAGE_FRONTEND):$(TAG) \
-	--build-arg VUE_APP_BACKEND_URL=https://psp-validation.apps.hbp.eu \
-	.
+	docker build -t $(IMAGE_FRONTEND):$(TAG) .
 
 push_latest: | build_latest
 	@echo 'Pushing frontend...'
+	# oc login
+	# docker login -p $(oc whoami -t) -u unused docker-registry-default.ocp.bbp.epfl.ch
 	docker tag $(IMAGE_FRONTEND):$(TAG) $(REGISTRY)/$(IMAGE_FRONTEND):$(TAG)
 	docker push $(REGISTRY)/$(IMAGE_FRONTEND):$(TAG)
 
 run_dev:
-	VUE_APP_BACKEND_URL='http://localhost:3000' \
 	npm run dev
-
-build_dev:
-	docker build -t $(IMAGE_FRONTEND):dev \
-	--build-arg VUE_APP_BACKEND_URL=https://psp-validation-dev-psp.apps.hbp.eu \
-	.
-
-push_dev: | build_dev
-	docker tag $(IMAGE_FRONTEND):dev $(REGISTRY)/$(IMAGE_FRONTEND):dev
-	docker push $(REGISTRY)/$(IMAGE_FRONTEND):dev

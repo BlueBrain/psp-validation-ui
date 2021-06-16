@@ -1,0 +1,12 @@
+include:
+  - project: cs/gitlabci-templates
+    file: /build-image-using-kaniko.yml
+
+docker-publish-image:
+  extends: .build-image-using-kaniko
+  variables:
+    CI_REGISTRY_IMAGE: $CI_REGISTRY/$NSE_PROJECT/psp-validation-ui
+    REGISTRY_IMAGE_TAG: mooc-bbp
+    CI_PROJECT_DIR: /builds/nse/psp-validation-ui/frontend/
+  rules:
+     - if: $CI_COMMIT_BRANCH == "mooc-bbp"
