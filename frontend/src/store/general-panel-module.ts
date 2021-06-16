@@ -3,18 +3,14 @@ import {
   CircuitInterface,
   GeneralPanelParamsInterface,
   StoreStateInterface,
-  StoredCircuitAndList,
 } from '@/interfaces/general-panel';
-import defaultCircuits from '@/default-data/default-circuits';
-import { getAsyncStoredCircuitAndList } from '@/helpers/backend-helper';
-
-const moocCircuit: CircuitInterface = defaultCircuits[0];
+import moocBbpCircuit from '@/default-data/default-circuits';
 
 const stateValues: StoreStateInterface = {
-  currentCircuit: moocCircuit,
-  circuitList: defaultCircuits as Array<CircuitInterface>,
+  currentCircuit: moocBbpCircuit,
+  circuitList: [moocBbpCircuit] as Array<CircuitInterface>,
   // circuitPath will be used to identify the config for table data or jobs
-  circuitPath: moocCircuit.path,
+  circuitPath: moocBbpCircuit.path,
   generalParams: {
     pairs: 4,
     repetitions: 3,
@@ -40,7 +36,7 @@ const tableEditingModule = {
   },
   getters: {
     circuitPath: (state: StoreStateInterface): string => {
-      const storedCircuitPath = state.circuitPath || moocCircuit.path;
+      const storedCircuitPath = state.circuitPath || moocBbpCircuit.path;
       return storedCircuitPath;
     },
     circuitName: (state: StoreStateInterface): string => (state.currentCircuit.displayName || 'job'),
@@ -49,12 +45,8 @@ const tableEditingModule = {
   },
   actions: {
     fetchCurrentCircuit(context: any) {
-      const { userId } = context.rootState;
-      getAsyncStoredCircuitAndList(userId, defaultCircuits)
-        .then((circuitAndList: StoredCircuitAndList) => {
-          context.commit('setCurrentCircuitObj', circuitAndList.circuit);
-          context.commit('setCircuitList', circuitAndList.list);
-        });
+      context.commit('setCurrentCircuitObj', moocBbpCircuit);
+      context.commit('setCircuitList', [moocBbpCircuit]);
     },
   },
 };

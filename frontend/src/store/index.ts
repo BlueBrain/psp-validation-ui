@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import tableEditingModule from '@/store/table-editing-module';
 import generalParamsModule from '@/store/general-panel-module';
+import hpcModule from '@/store/hpc-module';
 import { StateInterface } from '@/interfaces/store';
 import { setToken, hashString } from '@/helpers/backend-helper';
 
@@ -35,5 +36,6 @@ export default new Vuex.Store({
   modules: {
     tableEditingModule,
     generalParamsModule,
+    hpcModule,
   },
 });

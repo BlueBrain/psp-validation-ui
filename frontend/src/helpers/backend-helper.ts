@@ -148,24 +148,8 @@ async function getValidationsExpanded(circuitPath: string): Promise<Array<Valida
   return Promise.all(promises);
 }
 
-async function getCircuitList(userId: string): Promise<Array<CircuitInterface>> {
-  const circuitList = await axiosInstance.get(
-    CIRCUIT_ENDPOINT,
-    { params: { user: userId } },
-  ).then((r: AxiosResponse) => r.data);
-  return circuitList;
-}
-
-function saveCircuitList(userId: string, circuitList: Array<CircuitInterface>) {
-  return axiosInstance.post(
-    CIRCUIT_ENDPOINT,
-    { circuits: circuitList },
-    { params: { user: userId } },
-  );
-}
-
 async function getValidationPlots(jobInfo: JobProperties): Promise<Array<PlotsPathsObj>> {
-  const url = `${jobInfo._links.workingDirectory.href}/files/`;
+  const url = `${jobInfo._links.workingDirectory.href}/files`;
   const returnFullObject = true;
   const filesObj = (await getFilesList(url, returnFullObject) as FileObjInterface);
   const folders = Object.keys(filesObj).filter((file: string) => file.endsWith('/'));
@@ -273,39 +257,6 @@ async function getRepetitionsParam(workingDirectory: string): Promise<string> {
   return match[1];
 }
 
-function getCircuitInfo(circuitPath: string, userId: string): Promise<CircuitInfoResponse> {
-  return axiosInstance.get(
-    CIRCUIT_INFO_ENDPOINT,
-    { params: { path: circuitPath, user: userId } },
-  ).then((r: AxiosResponse) => {
-    const response = r.data;
-    if (response.error) throw new Error(response.error);
-    return response.results;
-  }).catch((e: Error) => {
-    throw new Error(`Error fetching Circuit Information: ${e.message}`);
-  });
-}
-
-async function getAsyncStoredCircuitAndList(userId: string, defaultList: Array<CircuitInterface>): Promise<StoredCircuitAndList> {
-  const circuitPath = getStoredCircuitPathSync(userId);
-
-  const storedCircuitList: Array<CircuitInterface> = await getCircuitList(userId);
-  // if no stored use default and obj defaul[0]
-  const circuitObjFound = storedCircuitList.find((circuitObj: CircuitInterface) => (
-    circuitObj.path === circuitPath
-  ));
-
-  if (circuitObjFound && circuitPath !== circuitObjFound.path) {
-    throw new Error('Circuit saved does not match');
-  }
-
-  const circuitAndList: StoredCircuitAndList = {
-    circuit: circuitObjFound || Object.assign([], defaultList[0]),
-    list: storedCircuitList.length ? storedCircuitList : Object.assign([], defaultList),
-  };
-  return circuitAndList;
-}
-
 async function hashString(str: string) {
   if (!str) return 'anonymous';
   // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#converting_a_digest_to_a_hex_string
@@ -322,8 +273,6 @@ export {
   submitPspJob,
   getValidationsExpanded,
   setToken,
-  getCircuitList,
-  saveCircuitList,
   getFilesFromBackend,
   getFinalStatus,
   getJobPhysicalLocation,
@@ -333,7 +282,5 @@ export {
   getValidationResultFiles,
   getBulkFilesById,
   getRepetitionsParam,
-  getCircuitInfo,
-  getAsyncStoredCircuitAndList,
   hashString,
 };

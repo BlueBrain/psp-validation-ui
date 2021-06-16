@@ -57,7 +57,7 @@ function setAxiosToken(token: string) {
 }
 
 function getComputerUrl(): string {
-  return hpc.PIZ_DAINT.url;
+  return hpc.BB5.url;
 }
 
 function actionJob(actionURL: string) {

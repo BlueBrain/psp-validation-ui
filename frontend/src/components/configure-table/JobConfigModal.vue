@@ -28,7 +28,10 @@
             slot="label"
             content="Project"
           >Project</tooltip>
-          <i-select v-model="projectSelected">
+          <i-select
+            v-model="projectSelected"
+            :disabled="projectList.length === 1"
+          >
             <i-option
               v-for="project in projectList"
               :key="project"
@@ -54,6 +57,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { JobUserSelectedParams } from '@/interfaces/general-panel';
+import hpc from '@/constants/hpc-systems';
+import { setJobTitle, getJobTitle } from '@/helpers/db';
 
 export default Vue.extend({
   name: 'JobConfigModal',
@@ -63,13 +68,13 @@ export default Vue.extend({
   data() {
     return {
       jobName: '',
-      projectSelected: 'Service Account (Piz-Daint)',
-      projectList: ['Service Account (Piz-Daint)'] as Array<string>,
+      projectSelected: '',
+      projectList: [] as Array<string>,
       isSubmitting: false,
     };
   },
   mounted() {
-    this.jobName = `${this.$store.getters.circuitName} - ${(new Date()).toDateString()}`;
+    this.setup();
   },
   computed: {
     fieldsComplete(): boolean {
@@ -77,12 +82,23 @@ export default Vue.extend({
     },
   },
   methods: {
+    setup() {
+      if (!this.$store.state.hpcModule.hpc.name) {
+        const selectedHpc = hpc.BB5;
+        this.$store.commit('setHpc', selectedHpc);
+      }
+      this.projectSelected = this.$store.state.hpcModule.hpc.name;
+      this.projectList = [this.projectSelected];
+      const defaultName = `${this.$store.getters.circuitName} - ${(new Date()).toDateString()}`;
+      this.jobName = getJobTitle() || defaultName;
+    },
     submitValidation() {
       this.isSubmitting = true;
       this.$emit('run', {
         name: this.jobName || null,
         project: this.projectSelected,
       } as JobUserSelectedParams);
+      setJobTitle(this.jobName);
     },
     cancel() {
       this.$emit('hide-modal');

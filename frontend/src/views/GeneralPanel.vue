@@ -37,7 +37,6 @@ export default Vue.extend({
   },
   /* eslint-disable @typescript-eslint/typedef */
   beforeRouteLeave(to, from, next) {
-    (this.$refs.circuitSelectionRef as any).saveToDB();
     (this.$refs.generalParamsRef as any).saveToDB();
     next();
   },
