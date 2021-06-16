@@ -26,28 +26,30 @@ interface UnicoreJobDefinition {
   Arguments?: never[];
   haveClientStageIn?: string;
   Resources?: {
-    Nodes?: number | null;
+    Nodes?: number;
     CPUsPerNode?: number;
-    Runtime?: number;
+    Runtime?: string | number;
+    Memory?: string | number;
     NodeConstraints?: string;
     Queue?: string;
   }
-  Tags?: string[] | null;
+  Tags?: string[];
   // TODO: check if this is correct
   Imports?: DataToUpload[];
 }
 
 interface GeneralJobDefinition {
-  title: string | null;
-  runtime: number;
+  title: string;
+  runtime: string | number;
   nodes: number;
-  cpusPerNode: number;
-  memory: string | null;
+  cpusPerNode?: number;
+  memory: number | string;
   project: string;
   executable: string;
-  tags: Array<string> | null;
+  tags: Array<string>;
   nodeType: string;
   imports: Array<DataToUpload>;
+  queue: string;
 }
 
 interface JobProperties {
