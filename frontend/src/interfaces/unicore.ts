@@ -112,6 +112,14 @@ interface UnicoreJobFiles {
   content: FileObjInterface
 }
 
+interface ValidationConfigInterface {
+  pairs: string;
+  trials: string;
+  yamlFiles: string;
+  saveTraces: string;
+  saveAmplitudes: string;
+}
+
 export default {};
 
 export {
@@ -124,4 +132,5 @@ export {
   HPCDefinition,
   UnicoreJobFiles,
   FileObjInterface,
+  ValidationConfigInterface,
 };

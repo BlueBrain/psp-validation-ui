@@ -19,6 +19,11 @@
       <Tag>{{ repetitions }}</Tag>
     </span>
 
+    <span class="custom-tag-group">
+      <Tag color="primary">Pairs</Tag>
+      <Tag>{{ pairs }}</Tag>
+    </span>
+
     <br/>
 
     <span class="custom-tag-group">
@@ -44,12 +49,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { JobProperties } from '@/interfaces/unicore';
+import { JobProperties, ValidationConfigInterface } from '@/interfaces/unicore';
 import {
   getFinalStatus,
   getJobPhysicalLocation,
   deleteJob,
-  getRepetitionsParam,
+  getValidationParams,
 } from '@/helpers/backend-helper';
 import CopyToClipboardBtn from '@/components/details-page/CopyToClipboardBtn.vue';
 
@@ -82,12 +87,13 @@ export default Vue.extend({
   data() {
     return {
       repetitions: loadingMessage,
+      pairs: loadingMessage,
     };
   },
   watch: {
     jobInfo() {
       if (!this.jobInfo) return;
-      this.fillRepetitions();
+      this.fillRepetitionsAndPairs();
     },
   },
   methods: {
@@ -110,10 +116,11 @@ export default Vue.extend({
         },
       });
     },
-    fillRepetitions() {
-      getRepetitionsParam(this.jobInfo._links.workingDirectory.href)
-        .then((repetitions: string) => {
-          this.repetitions = repetitions;
+    fillRepetitionsAndPairs() {
+      getValidationParams(this.jobInfo._links.workingDirectory.href)
+        .then((params: ValidationConfigInterface) => {
+          this.repetitions = params.trials;
+          this.pairs = params.pairs;
         });
     },
   },

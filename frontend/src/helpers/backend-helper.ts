@@ -21,7 +21,12 @@ import {
   FilesTreeInterface,
 } from '@/interfaces/backend';
 import defaultJobConfig from '@/helpers/job-config';
-import { DataToUpload, JobProperties, FileObjInterface } from '@/interfaces/unicore';
+import {
+  DataToUpload,
+  JobProperties,
+  FileObjInterface,
+  ValidationConfigInterface,
+} from '@/interfaces/unicore';
 import { getPrePostNames, transformYamlToObj } from '@/helpers/yaml-helper';
 import {
   tags,
@@ -241,15 +246,14 @@ async function getBulkFilesById(jobId: string, filePathList: Array<string>): Pro
   return fileContentList;
 }
 
-async function getRepetitionsParam(workingDirectory: string): Promise<string> {
-  const url = `${workingDirectory}/files/${RUN_SCRIPT_NAME}`;
+async function getValidationParams(workingDirectory: string): Promise<ValidationConfigInterface> {
+  const url = `${workingDirectory}/files/${RUN_CONFIG_FILE}`;
   const file = await getFile(url);
-  if (!file) throw new Error('No run script found');
+  if (!file) throw new Error('No config file found');
 
-  const regexp = new RegExp('-r (\\d+)');
-  const match = (await file.text()).match(regexp);
-  if (!match || !match.length) return 'Unknown';
-  return match[1];
+  const paramsText = await file.text();
+  const paramsObj = JSON.parse(paramsText);
+  return paramsObj;
 }
 
 async function hashString(str: string) {
@@ -290,6 +294,6 @@ export {
   deleteJob,
   getValidationResultFiles,
   getBulkFilesById,
-  getRepetitionsParam,
+  getValidationParams,
   hashString,
 };
