@@ -13,6 +13,7 @@ const constants = {
   CIRCUIT_PATH: 'circuitPath',
   PROJECT_SELECTED: 'projectSelected',
   VMM_TOKEN: 'auth',
+  JOB_TITLE: 'jobTitle',
 };
 
 function generatePairStr(str1: string, str2: string) {
@@ -67,6 +68,14 @@ export function setUserTokenFromVMM(userHash: string) {
 
 export function getUserTokenFromVMM() {
   return localStorage.getItem(constants.VMM_TOKEN) || 'unknown_user';
+}
+
+export function setJobTitle(title: string) {
+  localStorage.setItem(constants.JOB_TITLE, title);
+}
+
+export function getJobTitle() {
+  return localStorage.getItem(constants.JOB_TITLE);
 }
 
 export default {};
