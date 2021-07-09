@@ -156,7 +156,7 @@ async function getValidationPlots(jobInfo: JobProperties): Promise<Array<PlotsPa
   const folders = Object.keys(filesObj).filter((file: string) => file.endsWith('/'));
 
   const plotObjectsPromises = folders.map(async (pathwayName: string) => {
-    const folderURL = `${url}/${pathwayName}`;
+    const folderURL = `${url}${pathwayName}`;
     const plotPathArray = await getFilesList(folderURL) as Array<string>;
     // fetch images for each path
     const plots = plotPathArray.map((imgPath: string) => getImage(url + imgPath));
