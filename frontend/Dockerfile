@@ -9,9 +9,9 @@ RUN npm install
 
 COPY src ./src
 COPY public ./public
-# production deployment 
-ARG BASE_URL='/psp-validation'
-RUN npm run build
+COPY .env* ./
+ARG BUILD_MODE='development'
+RUN npm run build  -- --mode $BUILD_MODE
 
 FROM nginx:alpine
 

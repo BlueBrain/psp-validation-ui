@@ -1,11 +1,13 @@
 
 import { HPCDefinition } from '@/interfaces/unicore';
 
+const bb5VmmUrl = process.env.VUE_APP_VMM_URL;
+
 const hpc: HPCDefinition = {
   BB5: {
     name: 'Service Account (BlueBrain5)',
     id: 'bb5',
-    url: 'https://bbp-mooc-sim-neuro.epfl.ch/vmm/rest/core',
+    url: `${bb5VmmUrl}/rest/core`,
   },
 };
 

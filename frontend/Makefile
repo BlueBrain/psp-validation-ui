@@ -1,7 +1,9 @@
 
-TAG:=mooc-bbp
 IMAGE_FRONTEND:=psp-validation-ui
 REGISTRY:=docker-registry-default.ocp.bbp.epfl.ch/bbp-ou-nse
+
+DEV_TAG:=mooc-bbp-dev
+PROD_TAG:=mooc-bbp
 
 define HELPTEXT
 Makefile usage
@@ -17,17 +19,29 @@ export HELPTEXT
 help:
 	@echo "$$HELPTEXT"
 
-build_latest:
-	@echo 'Building frontend...'
+docker_build_dev:
+	@echo 'Building DEV frontend...'
 	@echo $(IMAGE_FRONTEND)
-	docker build -t $(IMAGE_FRONTEND):$(TAG) .
+	docker build --build-arg BUILD_MODE='development' -t $(IMAGE_FRONTEND):$(DEV_TAG) .
 
-push_latest: | build_latest
-	@echo 'Pushing frontend...'
-	# oc login
-	# docker login -p $(oc whoami -t) -u unused docker-registry-default.ocp.bbp.epfl.ch
-	docker tag $(IMAGE_FRONTEND):$(TAG) $(REGISTRY)/$(IMAGE_FRONTEND):$(TAG)
-	docker push $(REGISTRY)/$(IMAGE_FRONTEND):$(TAG)
+docker_build_prod:
+	@echo 'Building PROD frontend...'
+	@echo $(IMAGE_FRONTEND)
+	docker build --build-arg BUILD_MODE='production' -t $(IMAGE_FRONTEND):$(PROD_TAG) .
+
+docker_login:
+	oc login
+	docker login -p $(oc whoami -t) -u unused docker-registry-default.ocp.bbp.epfl.ch
+
+docker_push_dev: | docker_build_dev
+	@echo 'Pushing DEV frontend...'
+	docker tag $(IMAGE_FRONTEND):$(DEV_TAG) $(REGISTRY)/$(IMAGE_FRONTEND):$(DEV_TAG)
+	docker push $(REGISTRY)/$(IMAGE_FRONTEND):$(DEV_TAG)
+
+docker_push_prod: | docker_build_prod
+	@echo 'Pushing PROD frontend...'
+	docker tag $(IMAGE_FRONTEND):$(PROD_TAG) $(REGISTRY)/$(IMAGE_FRONTEND):$(PROD_TAG)
+	docker push $(REGISTRY)/$(IMAGE_FRONTEND):$(PROD_TAG)
 
 run_dev:
 	npm run dev
