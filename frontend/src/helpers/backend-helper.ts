@@ -135,10 +135,23 @@ async function getValidationsExpanded(circuitPath: string): Promise<Array<Valida
 
   const promises = jobUrlsSorted.map(async (url: string) => {
     const { id } = urlToComputerAndId(url);
-    if (!id) throw new Error(`no job id was found for ${url}`);
+    if (!id) {
+      console.error(`no job id was found for ${id}`);
+      return null;
+    }
 
-    const jobInfo = await getJobProperties(url);
-    if (!jobInfo) throw new Error(`no job info was found for ${id}`);
+    let jobInfo = null;
+    try {
+      jobInfo = await getJobProperties(url);
+    } catch (e) {
+      console.error(`no job id was found for ${id}`);
+      return null;
+    }
+
+    if (!jobInfo) {
+      console.error(`no job id was found for ${id}`);
+      return null;
+    }
 
     return {
       id,
@@ -146,7 +159,8 @@ async function getValidationsExpanded(circuitPath: string): Promise<Array<Valida
     };
   });
 
-  return Promise.all(promises);
+  const resolved = await Promise.all(promises);
+  return resolved.filter((j) => j) as Array<ValidationsExpanded>;
 }
 
 async function getValidationPlots(jobInfo: JobProperties): Promise<Array<PlotsPathsObj>> {
