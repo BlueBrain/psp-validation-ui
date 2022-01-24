@@ -8,7 +8,7 @@ docker-publish-image-prod:
     CI_REGISTRY_IMAGE: $CI_REGISTRY/$NSE_PROJECT/psp-validation-ui
     REGISTRY_IMAGE_TAG: mooc-bbp
     CI_PROJECT_DIR: /builds/nse/psp-validation-ui/frontend/
-    KANIKO_EXTRA_ARGS: --build-arg BUILD_MODE='production'
+    KANIKO_EXTRA_ARGS: --build-arg BUILD_MODE=production
   rules:
      - if: $CI_COMMIT_BRANCH == "mooc-bbp"
 
@@ -18,6 +18,6 @@ docker-publish-image-dev:
     CI_REGISTRY_IMAGE: $CI_REGISTRY/$NSE_PROJECT/psp-validation-ui
     REGISTRY_IMAGE_TAG: mooc-bbp-dev
     CI_PROJECT_DIR: /builds/nse/psp-validation-ui/frontend/
-    KANIKO_EXTRA_ARGS: --build-arg BUILD_MODE='development'
+    KANIKO_EXTRA_ARGS: --build-arg BUILD_MODE=development
   rules:
-     - if: $CI_COMMIT_BRANCH != "mooc-bbp"
+     - if: $CI_COMMIT_BRANCH != "mooc-bbp" && $CI_PIPELINE_SOURCE == "merge_request_event"

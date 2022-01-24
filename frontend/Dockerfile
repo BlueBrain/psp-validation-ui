@@ -3,15 +3,14 @@ FROM node:14-alpine as builder
 RUN mkdir /frontend
 WORKDIR /frontend
 
-COPY package.json vue.config.js vue-global.d.ts \
-  babel.config.js tsconfig.json ./
+COPY package.json vue.config.js vue-global.d.ts babel.config.js tsconfig.json ./
 RUN npm install
 
 COPY src ./src
 COPY public ./public
 COPY .env* ./
-ARG BUILD_MODE='development'
-RUN npm run build  -- --mode $BUILD_MODE
+ARG BUILD_MODE=development
+RUN npm run build -- --mode $BUILD_MODE
 
 FROM nginx:alpine
 
