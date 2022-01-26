@@ -9,8 +9,10 @@ docker-publish-image-prod:
     REGISTRY_IMAGE_TAG: mooc-bbp
     CI_PROJECT_DIR: /builds/nse/psp-validation-ui/frontend/
     KANIKO_EXTRA_ARGS: --build-arg BUILD_MODE=production
+    KUBERNETES_MEMORY_LIMIT: 3Gi
+    KUBERNETES_MEMORY_REQUEST: 3Gi
   rules:
-     - if: $CI_COMMIT_BRANCH == "mooc-bbp"
+    - if: $CI_COMMIT_BRANCH == "mooc-bbp"
 
 docker-publish-image-dev:
   extends: .build-image-using-kaniko
@@ -19,5 +21,7 @@ docker-publish-image-dev:
     REGISTRY_IMAGE_TAG: mooc-bbp-dev
     CI_PROJECT_DIR: /builds/nse/psp-validation-ui/frontend/
     KANIKO_EXTRA_ARGS: --build-arg BUILD_MODE=development
+    KUBERNETES_MEMORY_LIMIT: 3Gi
+    KUBERNETES_MEMORY_REQUEST: 3Gi
   rules:
-     - if: $CI_COMMIT_BRANCH != "mooc-bbp" && $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH != "mooc-bbp" && $CI_PIPELINE_SOURCE == "merge_request_event"
