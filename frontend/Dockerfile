@@ -1,5 +1,5 @@
 
-FROM node:14-alpine as builder
+FROM --platform=linux/amd64 node:14-alpine as builder
 RUN mkdir /frontend
 WORKDIR /frontend
 
@@ -12,7 +12,7 @@ COPY .env* ./
 ARG BUILD_MODE=development
 RUN npm run build -- --mode $BUILD_MODE
 
-FROM nginx:alpine
+FROM --platform=linux/amd64 nginx:alpine
 
 # Create the directories we will need
 RUN mkdir -p /tmp/nginx/vue-single-page-app
