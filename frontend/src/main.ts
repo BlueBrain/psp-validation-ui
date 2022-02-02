@@ -8,6 +8,7 @@ import router from '@/router';
 import store from '@/store';
 import '@/assets/table.css';
 import { setupVmmAuth, checkTokenValid } from '@/helpers/backend-helper';
+import '@/helpers/sentry';
 
 
 Vue.use(ViewUI, { locale });
