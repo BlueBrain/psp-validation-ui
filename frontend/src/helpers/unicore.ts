@@ -110,7 +110,10 @@ function uploadData(dataToUpload: DataToUpload, uploadURL: string): Promise<Axio
 async function getValidationJobUrls(circuitPath: string): Promise<Array<string>> {
   const unicoreURL = getComputerUrl();
   // get sims only for this specific circuit
-  const queryStr = `tags=${tags.VALIDATION},${circuitPath}`;
+  const tagList = [tags.VALIDATION, circuitPath];
+  if (tags.UNICORE_MODE_TAG) tagList.push(tags.UNICORE_MODE_TAG);
+
+  const queryStr = `tags=${tagList.join(',')}`;
   return axiosInstance(`${unicoreURL}/jobs?${queryStr}`)
     .then((r: AxiosResponse) => get(r, 'data.jobs', []))
     .catch((e: AxiosError) => {

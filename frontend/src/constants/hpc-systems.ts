@@ -1,6 +1,8 @@
 
 import { HPCDefinition } from '@/interfaces/unicore';
 
+const unicoreModeTag = process.env.VUE_APP_UNICORE_MODE_TAG || '';
+
 const bb5VmmUrl = process.env.VUE_APP_VMM_URL;
 
 const hpc: HPCDefinition = {
@@ -13,6 +15,7 @@ const hpc: HPCDefinition = {
 
 const tags = {
   VALIDATION: 'psp-validation',
+  UNICORE_MODE_TAG: unicoreModeTag,
 };
 
 const RUN_SCRIPT_NAME = 'input.sh';

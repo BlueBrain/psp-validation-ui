@@ -71,6 +71,7 @@ async function submitPspJob(yamlFiles: Array<string>, circuitPath: string, extra
   if (runConfig.tags) {
     runConfig.tags.push(tags.VALIDATION);
     runConfig.tags.push(circuitPath);
+    if (tags.UNICORE_MODE_TAG) runConfig.tags.push(tags.UNICORE_MODE_TAG);
   }
   runConfig.title = extraParams.name;
 
