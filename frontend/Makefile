@@ -6,13 +6,13 @@ DEV_TAG:=mooc-bbp-dev
 PROD_TAG:=mooc-bbp
 
 define HELPTEXT
-Makefile usage
- Targets:
-    run_dev          Run development instance of the frontend.
-    build_latest     Create the frontend project
-    push_latest      Push the frontend image to Harbor
-    build_dev        Create DEV frontend project
-    push_dev         Push DEV frontend image to Harbor
+Makefile usage - Targets:
+  run_dev            Run development instance of the frontend.
+  docker_build_prod  Create PROD frontend project
+  docker_build_dev   Create DEV frontend project
+  docker_login       Ask for credentials OC and Docker
+  docker_push_dev    Push DEV frontend image
+  docker_push_prod   Push PROD frontend image
 endef
 export HELPTEXT
 
@@ -31,7 +31,7 @@ docker_build_prod:
 
 docker_login:
 	oc login
-	docker login -p $(oc whoami -t) -u unused docker-registry-default.ocp.bbp.epfl.ch
+	docker login -p $$(oc whoami -t) -u unused docker-registry-default.ocp.bbp.epfl.ch
 
 docker_push_dev: | docker_build_dev
 	@echo 'Pushing DEV frontend...'
