@@ -2,26 +2,24 @@ include:
   - project: cs/gitlabci-templates
     file: /build-image-using-kaniko.yml
 
+variables:
+  CI_REGISTRY_IMAGE: $CI_REGISTRY/nse/psp-validation-ui
+  CI_PROJECT_DIR: /builds/nse/psp-validation-ui/frontend/
+  KUBERNETES_MEMORY_LIMIT: 3Gi
+  KUBERNETES_MEMORY_REQUEST: 3Gi
+
 docker-publish-image-prod:
   extends: .build-image-using-kaniko
   variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY/nse/psp-validation-ui
     REGISTRY_IMAGE_TAG: mooc-bbp
-    CI_PROJECT_DIR: /builds/nse/psp-validation-ui/frontend/
     KANIKO_EXTRA_ARGS: --build-arg BUILD_MODE=production
-    KUBERNETES_MEMORY_LIMIT: 3Gi
-    KUBERNETES_MEMORY_REQUEST: 3Gi
   rules:
     - if: $CI_COMMIT_BRANCH == "mooc-bbp"
 
 docker-publish-image-dev:
   extends: .build-image-using-kaniko
   variables:
-    CI_REGISTRY_IMAGE: $CI_REGISTRY/nse/psp-validation-ui
     REGISTRY_IMAGE_TAG: mooc-bbp-dev
-    CI_PROJECT_DIR: /builds/nse/psp-validation-ui/frontend/
     KANIKO_EXTRA_ARGS: --build-arg BUILD_MODE=development
-    KUBERNETES_MEMORY_LIMIT: 3Gi
-    KUBERNETES_MEMORY_REQUEST: 3Gi
   rules:
     - if: $CI_COMMIT_BRANCH != "mooc-bbp" && $CI_PIPELINE_SOURCE == "merge_request_event"
