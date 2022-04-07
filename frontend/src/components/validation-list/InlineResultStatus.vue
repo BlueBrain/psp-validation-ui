@@ -57,9 +57,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .inline-result-status {
-  text-align: left;
-  width: 120px;
-  margin: 0 auto;
+  text-align: center;
 
   .status-icon {
     margin-right: 5px;
