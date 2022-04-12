@@ -272,7 +272,7 @@ function getAxiosInstance(): AxiosInstance {
 async function checkTokenValid() {
   const computerEndpoint = getComputerUrl();
   const info = await axiosInstance(computerEndpoint);
-  if (info?.statusText !== 'OK') throw new Error();
+  if (info?.status !== 200) throw new Error();
   return true;
 }
 
