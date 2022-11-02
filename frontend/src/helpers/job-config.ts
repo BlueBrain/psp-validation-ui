@@ -8,12 +8,12 @@ const defaultJobConfig: GeneralJobDefinition = {
   nodes: 1,
   cpusPerNode: 72,
   memory: '8G',
-  nodeType: 'uc3',
+  nodeType: 'cpu',
   project: 'proj133',
   executable: `/bin/sh ${RUN_SCRIPT_NAME}`,
   tags: [],
   imports: [],
-  queue: 'prod',
+  partition: 'prod',
 };
 
 export default defaultJobConfig;

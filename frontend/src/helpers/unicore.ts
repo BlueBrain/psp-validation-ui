@@ -164,8 +164,8 @@ async function generateUnicoreConfig(configParams: GeneralJobDefinition): Promis
       Runtime: configParams.runtime,
       NodeConstraints: configParams.nodeType,
       Project: configParams.project,
-      Queue: configParams.queue,
     },
+    Partition: configParams.partition,
     Tags: configParams.tags,
     Imports: configParams.imports,
   });

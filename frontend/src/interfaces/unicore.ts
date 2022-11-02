@@ -49,7 +49,7 @@ interface GeneralJobDefinition {
   tags: Array<string>;
   nodeType: string;
   imports: Array<DataToUpload>;
-  queue: string;
+  partition: string;
 }
 
 interface JobProperties {
