@@ -18,3 +18,9 @@ Some of the changes are:
 - Show token expiration page when VMM fails
 - Dedicated plan to deploy in Openshift (https://bbpgitlab.epfl.ch/nse/psp-validation-ui/-/jobs/29875)
 - Dedicated deployment (https://ocp.bbp.epfl.ch:8443/console/project/bbp-ou-nse/browse/dc/mooc-psp-validation?tab=history)
+
+## Funding & Acknowledgment
+ 
+The development of this software was supported by funding to the Blue Brain Project, a research center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government's ETH Board of the Swiss Federal Institutes of Technology.
+ 
+Copyright © 2024 Blue Brain Project/EPFL
